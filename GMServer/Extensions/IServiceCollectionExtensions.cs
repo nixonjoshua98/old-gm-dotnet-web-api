@@ -66,7 +66,7 @@ namespace GMServer
 
                             // Our JWT handler may throw a custom exception which will 'hopefully' force the user to
                             // invalidate and delete all local game progress.
-                            if (context.Exception.GetType() == typeof(InvalidTokenException))
+                            if (context.Exception.GetType() == typeof(ExpiredTokenException))
                             {
                                 // Client should read this header and then invalidate itself
                                 context.Response.Headers.Add("Token-Expired", "true");

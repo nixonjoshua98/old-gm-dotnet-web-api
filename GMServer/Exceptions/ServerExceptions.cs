@@ -13,9 +13,9 @@ namespace GMServer.Exceptions
         }
     }
 
-    public class InvalidTokenException : ServerException
+    public class ExpiredTokenException : ServerException
     {
-        public InvalidTokenException() : base("Unauthorized", (int)HttpStatusCode.Unauthorized)
+        public ExpiredTokenException() : base("Unauthorized", (int)HttpStatusCode.Unauthorized)
         {
 
         }

@@ -29,7 +29,7 @@ namespace GMServer.MediatR.Login
 
         public async Task<DeviceLoginResponse> Handle(DeviceLoginRequest request, CancellationToken cancellationToken)
         {
-            User user = await _users.GetUserByDeviceIDAsync(request.DeviceID + "f");
+            User user = await _users.GetUserByDeviceIDAsync(request.DeviceID);
 
             if (user is null)
             {

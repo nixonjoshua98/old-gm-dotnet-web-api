@@ -26,7 +26,7 @@ namespace GMServer.Authentication
 
             if (!session.IsValid)
             {
-                throw new InvalidTokenException();
+                throw new ExpiredTokenException();
             }
 
             return claimsPrincipal;
