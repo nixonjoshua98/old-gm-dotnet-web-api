@@ -1,9 +1,11 @@
-﻿using GMServer.MediatR.Login;
+﻿using GMServer.Exceptions;
+using GMServer.Extensions;
+using GMServer.MediatR.Login;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using Serilog;
-using GMServer.Exceptions;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -32,7 +34,7 @@ namespace GMServer.Controllers
 
                 return Ok(response);
             }
-            catch (HandledException ex)
+            catch (ServerException ex)
             {
                 Log.Information(ex, "DeviceLogin");
                 return new ServerError(ex.Message, ex.StatusCode);
@@ -42,6 +44,13 @@ namespace GMServer.Controllers
                 Log.Error(ex, "DeviceLogin");
                 return new InternalServerError(ex.Message);
             }
+        }
+
+        [HttpGet("/Validate")]
+        [Authorize]
+        public IActionResult Validate()
+        {
+            return Ok(User.UserID());
         }
     }
 }

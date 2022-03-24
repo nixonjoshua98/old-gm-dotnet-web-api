@@ -1,10 +1,13 @@
-﻿using GMServer.Models;
+﻿using GMServer.Authentication;
+using GMServer.Exceptions;
+using GMServer.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GMServer
 {
@@ -30,14 +33,20 @@ namespace GMServer
             return model;
         }
 
-        public static void AddJWTAuthentication(this IServiceCollection services, AuthenticationSettings settings)
+        public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            AuthenticationSettings settings = services.AddConfigurationSingleton<AuthenticationSettings>(configuration, "AuthenticationSettings");
+
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(opt =>
             {
+                // Setup our JWT authentication handler
+                opt.SecurityTokenValidators.Clear();
+                opt.SecurityTokenValidators.Add(new JWTSecurityTokenHandler(services.BuildServiceProvider()));
+
                 opt.RequireHttpsMetadata = false;
                 opt.SaveToken = true;
                 opt.TokenValidationParameters = new()
@@ -47,6 +56,27 @@ namespace GMServer
                     ValidateIssuer = false,
                     ValidateLifetime = true,
                     ValidateAudience = false,
+                };
+
+                opt.Events = new JwtBearerEvents()
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        context.Response.OnStarting(() => {
+
+                            // Our JWT handler may throw a custom exception which will 'hopefully' force the user to
+                            // invalidate and delete all local game progress.
+                            if (context.Exception.GetType() == typeof(InvalidTokenException))
+                            {
+                                // Client should read this header and then invalidate itself
+                                context.Response.Headers.Add("Token-Expired", "true");
+                            }
+
+                            return Task.CompletedTask;
+                        });
+
+                        return Task.CompletedTask;
+                    }
                 };
             });
         }

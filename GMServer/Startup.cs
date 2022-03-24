@@ -1,4 +1,3 @@
-using GMServer.Models;
 using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -30,12 +29,8 @@ namespace GMServer
         }
 
         public void ConfigureServices(IServiceCollection services)
-        {
-            AuthenticationSettings authSettings = services.AddConfigurationSingleton<AuthenticationSettings>(Configuration, "AuthenticationSettings");
-                
+        {               
             services.AddControllers();
-
-            services.AddJWTAuthentication(authSettings);
 
             services.AddSwaggerGen(c =>
             {
@@ -51,9 +46,10 @@ namespace GMServer
             services.AddMongo(Configuration);
             services.AddSingleton<AuthenticationService>();
             services.AddSingleton<UserService>();
+
+            services.AddJWTAuthentication(Configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

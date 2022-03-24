@@ -4,8 +4,11 @@ using System;
 
 namespace GMServer.Models
 {
-    public class AuthenticationSession
+    public class AuthenticatedSession
     {
+        [BsonId, BsonRepresentation(BsonType.ObjectId)]
+        public string ID { get; set; }
+
         public string Token { get; set; }
 
         [BsonRepresentation(BsonType.ObjectId)]

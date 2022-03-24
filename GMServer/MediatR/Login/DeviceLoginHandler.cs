@@ -1,4 +1,6 @@
-﻿using GMServer.Models;
+﻿using GMServer.Common;
+using GMServer.Exceptions;
+using GMServer.Models;
 using GMServer.Services;
 using MediatR;
 using System;
@@ -27,14 +29,18 @@ namespace GMServer.MediatR.Login
 
         public async Task<DeviceLoginResponse> Handle(DeviceLoginRequest request, CancellationToken cancellationToken)
         {
+            User user = await _users.GetUserByDeviceIDAsync(request.DeviceID + "f");
 
-            User user = await _users.GetUserByDeviceIDAsync(request.DeviceID);
+            if (user is null)
+            {
+                throw new ServerException("Account not found", HTTPCodes.AccountNotFound);
+            }
 
             await _auth.InvalidateUserSessionsAsync(user);
 
-            string token = _auth.CreateToken();
+            string token = _auth.CreateToken(user);
 
-            AuthenticationSession session = new()
+            AuthenticatedSession session = new()
             {
                 Token = token,
                 UserID = user.ID,
