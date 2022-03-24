@@ -1,7 +1,7 @@
-﻿using System.Security.Claims;
-using GMServer.Authentication;
-using System.Linq;
+﻿using GMServer.Authentication;
 using GMServer.Exceptions;
+using System.Linq;
+using System.Security.Claims;
 
 namespace GMServer.Extensions
 {

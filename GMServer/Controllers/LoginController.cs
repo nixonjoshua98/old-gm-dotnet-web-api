@@ -1,8 +1,6 @@
 ﻿using GMServer.Exceptions;
-using GMServer.Extensions;
 using GMServer.MediatR.Login;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
@@ -22,12 +20,12 @@ namespace GMServer.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost]
+        [HttpPost("Device")]
         public async Task<IActionResult> DeviceLogin([FromHeader, Required] string deviceId)
         {
             try
             {
-                var response = await _mediator.Send(new DeviceLoginRequest()
+                var response = await _mediator.Send(new DeviceLoginRequest
                 {
                     DeviceID = deviceId
                 });
@@ -44,13 +42,6 @@ namespace GMServer.Controllers
                 Log.Error(ex, "DeviceLogin");
                 return new InternalServerError(ex.Message);
             }
-        }
-
-        [HttpGet("/Validate")]
-        [Authorize]
-        public IActionResult Validate()
-        {
-            return Ok(User.UserID());
         }
     }
 }

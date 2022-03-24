@@ -1,16 +1,16 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GMServer.Models
+namespace GMServer.Models.UserModels
 {
     [BsonIgnoreExtraElements]
-    public class AuthenticatedSession
+    public class UserArtefact
     {
-        public string Token { get; set; }
-
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID { get; set; }
 
-        public bool IsValid { get; set; } = true;
+        public int ArtefactID { get; set; }
+
+        public int Level { get; set; } = 0;
     }
 }

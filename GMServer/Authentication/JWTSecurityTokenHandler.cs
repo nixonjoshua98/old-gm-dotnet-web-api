@@ -24,7 +24,7 @@ namespace GMServer.Authentication
 
             AuthenticatedSession session = _auth.GetSession(token);
 
-            if (!session.IsValid)
+            if (session is null || !session.IsValid)
             {
                 throw new ExpiredTokenException();
             }

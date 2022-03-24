@@ -1,0 +1,147 @@
+[
+  {
+    "ArtefactId": 1,
+    "BonusType": 601,
+    "CostCoeff": 0.5,
+    "CostExpo": 1.6,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  },
+  {
+    "ArtefactId": 2,
+    "BonusType": 802,
+    "CostCoeff": 1,
+    "CostExpo": 1.4,
+    "BaseEffect": 1.6,
+    "LevelEffect": 0.6
+  },
+  {
+    "ArtefactId": 3,
+    "BonusType": 601,
+    "CostCoeff": 0.7,
+    "CostExpo": 1.6,
+    "BaseEffect": 1.8,
+    "LevelEffect": 0.8
+  },
+  {
+    "ArtefactId": 4,
+    "BonusType": 801,
+    "CostCoeff": 0.8,
+    "CostExpo": 1.5,
+    "BaseEffect": 1.4,
+    "LevelEffect": 0.4
+  },
+  {
+    "ArtefactId": 6,
+    "BonusType": 601,
+    "CostCoeff": 0.6,
+    "CostExpo": 1.7,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  },
+  {
+    "ArtefactId": 7,
+    "BonusType": 800,
+    "CostCoeff": 1,
+    "CostExpo": 1.4,
+    "BaseEffect": 1.3,
+    "LevelEffect": 0.3
+  },
+  {
+    "ArtefactId": 8,
+    "BonusType": 602,
+    "CostCoeff": 0.5,
+    "CostExpo": 1.3,
+    "BaseEffect": 1.75,
+    "LevelEffect": 0.75
+  },
+  {
+    "ArtefactId": 9,
+    "BonusType": 300,
+    "MaxLevel": 10,
+    "CostCoeff": 1,
+    "CostExpo": 3,
+    "BaseEffect": 0.005,
+    "LevelEffect": 0.005
+  },
+  {
+    "ArtefactId": 10,
+    "BonusType": 800,
+    "CostCoeff": 0.7,
+    "CostExpo": 1.4,
+    "BaseEffect": 1.4,
+    "LevelEffect": 0.4
+  },
+  {
+    "ArtefactId": 11,
+    "BonusType": 603,
+    "CostCoeff": 0.7,
+    "CostExpo": 1.4,
+    "BaseEffect": 1.75,
+    "LevelEffect": 0.75
+  },
+  {
+    "ArtefactId": 12,
+    "BonusType": 500,
+    "CostCoeff": 0.5,
+    "CostExpo": 1.7,
+    "BaseEffect": 1.05,
+    "LevelEffect": 0.05
+  },
+  {
+    "ArtefactId": 13,
+    "BonusType": 802,
+    "CostCoeff": 0.9,
+    "CostExpo": 1.3,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  },
+  {
+    "ArtefactId": 14,
+    "BonusType": 400,
+    "CostCoeff": 0.5,
+    "CostExpo": 1.3,
+    "BaseEffect": 1.25,
+    "LevelEffect": 0.25
+  },
+  {
+    "ArtefactId": 17,
+    "BonusType": 602,
+    "CostCoeff": 0.5,
+    "CostExpo": 1.3,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  },
+  {
+    "ArtefactId": 18,
+    "BonusType": 601,
+    "CostCoeff": 0.8,
+    "CostExpo": 1.3,
+    "BaseEffect": 1.3,
+    "LevelEffect": 0.4
+  },
+  {
+    "ArtefactId": 19,
+    "BonusType": 603,
+    "CostCoeff": 0.5,
+    "CostExpo": 1.3,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  },
+  {
+    "ArtefactId": 23,
+    "BonusType": 801,
+    "CostCoeff": 0.6,
+    "CostExpo": 1.6,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  },
+  {
+    "ArtefactId": 25,
+    "BonusType": 801,
+    "CostCoeff": 0.75,
+    "CostExpo": 1.6,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.5
+  }
+]

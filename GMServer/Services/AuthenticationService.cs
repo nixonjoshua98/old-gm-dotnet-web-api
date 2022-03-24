@@ -56,9 +56,8 @@ namespace GMServer.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimNames.UserID, user.ID),
-                    new Claim(ClaimNames.DeviceID, user.DeviceID)
                 }),
-
+                Audience = _settings.Audience,
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

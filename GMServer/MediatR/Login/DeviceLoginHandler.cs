@@ -3,13 +3,12 @@ using GMServer.Exceptions;
 using GMServer.Models;
 using GMServer.Services;
 using MediatR;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GMServer.MediatR.Login
 {
-    public record class DeviceLoginRequest : IRequest<DeviceLoginResponse>
+    public class DeviceLoginRequest : IRequest<DeviceLoginResponse>
     {
         public string DeviceID { get; set; }   
     }
@@ -43,9 +42,7 @@ namespace GMServer.MediatR.Login
             AuthenticatedSession session = new()
             {
                 Token = token,
-                UserID = user.ID,
-                DeviceID = request.DeviceID,
-                CreatedAt = DateTime.Now
+                UserID = user.ID
             };
 
             await _auth.InsertSessionAsync(session);

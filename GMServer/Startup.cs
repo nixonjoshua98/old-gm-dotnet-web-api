@@ -1,10 +1,10 @@
-using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -30,7 +30,7 @@ namespace GMServer
 
         public void ConfigureServices(IServiceCollection services)
         {               
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(opt => opt.UseMemberCasing());
 
             services.AddSwaggerGen(c =>
             {
@@ -44,8 +44,7 @@ namespace GMServer
 
             services.AddMediatR(typeof(Startup));
             services.AddMongo(Configuration);
-            services.AddSingleton<AuthenticationService>();
-            services.AddSingleton<UserService>();
+            services.AddSingletons();
 
             services.AddJWTAuthentication(Configuration);
         }
@@ -54,6 +53,8 @@ namespace GMServer
         {
             if (env.IsDevelopment())
             {
+                IdentityModelEventSource.ShowPII = true;
+
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "GMServer v1"));

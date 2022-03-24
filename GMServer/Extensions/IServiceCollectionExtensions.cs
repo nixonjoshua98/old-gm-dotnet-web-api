@@ -1,6 +1,7 @@
 ﻿using GMServer.Authentication;
 using GMServer.Exceptions;
 using GMServer.Models;
+using GMServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,14 @@ namespace GMServer
 {
     public static class IServiceCollectionExtensions
     {
+        public static void AddSingletons(this IServiceCollection services)
+        {
+            services.AddSingleton<AuthenticationService>();
+            services.AddSingleton<UserService>();
+            services.AddSingleton<IDataFileCache, DataFileCache>();
+            services.AddSingleton<ArtefactsService>();
+        }
+
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
         {
             var client = new MongoClient(configuration["MongoSettings:ConnectionString"]);
@@ -55,7 +64,8 @@ namespace GMServer
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = false,
                     ValidateLifetime = true,
-                    ValidateAudience = false,
+                    ValidateAudience = true,
+                    ValidAudience = settings.Audience
                 };
 
                 opt.Events = new JwtBearerEvents()
