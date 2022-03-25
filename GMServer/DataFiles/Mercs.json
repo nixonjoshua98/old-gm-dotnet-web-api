@@ -1,0 +1,144 @@
+{
+  "MaxSquadSize": 5,
+  "Passives": [
+    {
+      "PassiveID": 0,
+      "BonusType": 802,
+      "BonusValue": 1.1
+    },
+    {
+      "PassiveID": 1,
+      "BonusType": 600,
+      "BonusValue": 1.25
+    },
+    {
+      "PassiveID": 2,
+      "BonusType": 700,
+      "BonusValue": 2
+    },
+    {
+      "PassiveID": 3,
+      "BonusType": 400,
+      "BonusValue": 1.5
+    },
+    {
+      "PassiveID": 4,
+      "BonusType": 800,
+      "BonusValue": 1.2
+    }
+  ],
+  "Mercs": [
+    {
+      "Name": "Stone Golem",
+      "MercID": 0,
+      "BaseDamage": 10,
+      "SpawnEnergyRequired": 25,
+      "Passives": [
+        {
+          "PassiveID": 0,
+          "UnlockLevel": 10
+        },
+        {
+          "PassiveID": 1,
+          "UnlockLevel": 25
+        },
+        {
+          "PassiveID": 2,
+          "UnlockLevel": 50
+        },
+        {
+          "PassiveID": 3,
+          "UnlockLevel": 100
+        },
+        {
+          "PassiveID": 4,
+          "UnlockLevel": 150
+        }
+      ]
+    },
+    {
+      "Name": "Fallen Angel",
+      "MercID": 1,
+      "BaseDamage": 15,
+      "SpawnEnergyRequired": 50,
+      "Passives": [
+        {
+          "PassiveID": 0,
+          "UnlockLevel": 10
+        },
+        {
+          "PassiveID": 1,
+          "UnlockLevel": 25
+        },
+        {
+          "PassiveID": 2,
+          "UnlockLevel": 50
+        },
+        {
+          "PassiveID": 3,
+          "UnlockLevel": 100
+        },
+        {
+          "PassiveID": 4,
+          "UnlockLevel": 150
+        }
+      ]
+    },
+    {
+      "Name": "Demon Knight",
+      "MercID": 2,
+      "BaseDamage": 20,
+      "SpawnEnergyRequired": 60,
+      "Passives": [
+        {
+          "PassiveID": 0,
+          "UnlockLevel": 10
+        },
+        {
+          "PassiveID": 1,
+          "UnlockLevel": 25
+        },
+        {
+          "PassiveID": 2,
+          "UnlockLevel": 50
+        },
+        {
+          "PassiveID": 3,
+          "UnlockLevel": 100
+        },
+        {
+          "PassiveID": 4,
+          "UnlockLevel": 150
+        }
+      ]
+    },
+    {
+      "Name": "Skeleton Knight Apprentice",
+      "MercID": 3,
+      "BaseDamage": 25,
+      "SpawnEnergyRequired": 65,
+      "Passives": [
+        {
+          "PassiveID": 0,
+          "UnlockLevel": 10
+        },
+        {
+          "PassiveID": 1,
+          "UnlockLevel": 25
+        },
+        {
+          "PassiveID": 2,
+          "UnlockLevel": 50
+        },
+        {
+          "PassiveID": 3,
+          "UnlockLevel": 100
+        },
+        {
+          "PassiveID": 4,
+          "UnlockLevel": 150
+        }
+      ]
+    }
+  ]
+}

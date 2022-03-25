@@ -1,30 +1,36 @@
-﻿using GMServer.Models.DataFileModels;
-using GMServer.Services;
+﻿using GMServer.Exceptions;
+using GMServer.MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace GMServer.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class DataFileController : ControllerBase
     {
-        private readonly ArtefactsService _artefacts;
+        private readonly IMediator _mediator;
 
-        public DataFileController(ArtefactsService artefacts)
+        public DataFileController(IMediator mediator)
         {
-            _artefacts = artefacts;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            GameDataFile datafile = new()
+            try
             {
-                Artefacts = _artefacts.GetDataFile()
-            };
+                var datafile = await _mediator.Send(new GetDataFileRequest());
 
-            return Ok(datafile);
+                return Ok(datafile);
+            }
+            catch (Exception ex)
+            {
+                return new InternalServerError(ex.Message);
+            }
         }
     }
 }

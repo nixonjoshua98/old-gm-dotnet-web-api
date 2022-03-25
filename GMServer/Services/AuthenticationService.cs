@@ -31,7 +31,7 @@ namespace GMServer.Services
             var update = Builders<AuthenticatedSession>.Update
                 .Set(s => s.IsValid, false);
 
-            _sessions.FindOneAndUpdate(x => x.IsValid && x.Token == token, update);
+            _sessions.UpdateMany(x => x.IsValid && x.Token == token, update);
         }
 
         public async Task InvalidateUserSessionsAsync(User user)

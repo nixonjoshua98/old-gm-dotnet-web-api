@@ -18,7 +18,11 @@ namespace GMServer.Services
 
     public static class DataFiles
     {
+        public const string Mercs = "Datafiles/Mercs.json";
         public const string Artefacts = "DataFiles/Artefacts.json";
+        public const string Armoury = "Datafiles/Armoury.json";
+        public const string Bounties = "Datafiles/Bounties.json";
+        public const string Quests = "Datafiles/Quests.json";
     }
 
 

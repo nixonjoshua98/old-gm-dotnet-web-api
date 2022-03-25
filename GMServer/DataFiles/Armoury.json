@@ -1,0 +1,56 @@
+[
+  {
+    "ItemID": 0,
+    "BonusType": 400,
+    "BaseEffect": 1.25,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 1,
+    "BonusType": 600,
+    "BaseEffect": 1.2,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 2,
+    "BonusType": 601,
+    "BaseEffect": 1.25,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 3,
+    "BonusType": 602,
+    "BaseEffect": 1.3,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 4,
+    "BonusType": 603,
+    "BaseEffect": 1.3,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 5,
+    "BonusType": 700,
+    "BaseEffect": 1.5,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 6,
+    "BonusType": 800,
+    "BaseEffect": 1.2,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 7,
+    "BonusType": 801,
+    "BaseEffect": 1.3,
+    "LevelEffect": 0.05
+  },
+  {
+    "ItemID": 8,
+    "BonusType": 802,
+    "BaseEffect": 1.3,
+    "LevelEffect": 0.05
+  }
+]

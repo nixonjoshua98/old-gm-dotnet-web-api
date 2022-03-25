@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace GMServer.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
         private readonly IMediator _mediator;

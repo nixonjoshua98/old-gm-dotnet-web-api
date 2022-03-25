@@ -1,0 +1,50 @@
+{
+  "MercQuests": [
+    {
+      "QuestId": 0,
+      "RequiredStage": 0,
+      "RewardMercId": 0
+    },
+    {
+      "QuestId": 1,
+      "RequiredStage": 5,
+      "RewardMercId": 1
+    },
+    {
+      "QuestId": 2,
+      "RequiredStage": 25,
+      "RewardMercId": 2
+    },
+    {
+      "QuestId": 3,
+      "RequiredStage": 50,
+      "RewardMercId": 3
+    }
+  ],
+  "DailyQuests": [
+    {
+      "QuestId": 0,
+      "ActionType": 0,
+      "LongValue": 3,
+      "DiamondsRewarded": 25
+    },
+    {
+      "QuestId": 1,
+      "ActionType": 1,
+      "LongValue": 100,
+      "DiamondsRewarded": 25
+    },
+    {
+      "QuestId": 2,
+      "ActionType": 2,
+      "LongValue": 25,
+      "DiamondsRewarded": 25
+    },
+    {
+      "QuestId": 3,
+      "ActionType": 3,
+      "LongValue": 100,
+      "DiamondsRewarded": 25
+    }
+  ]
+}

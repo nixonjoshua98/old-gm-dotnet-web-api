@@ -1,6 +1,7 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Context;
+using GMServer.Exceptions;
 using GMServer.Extensions;
-using GMServer.MediatR.UserData;
+using GMServer.MediatR;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 namespace GMServer.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -23,16 +24,30 @@ namespace GMServer.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromServices] RequestContext context)
         {
             try
             {
-                var response = await _mediator.Send(new GetUserDataRequest()
+                var userdata = await _mediator.Send(new GetUserDataRequest
                 {
                     UserID = User.UserID()
                 });
 
-                return Ok(response);
+                var quests = await _mediator.Send(new GetUserQuestsRequest()
+                {
+                    UserID = User.UserID(),
+                    DailyRefresh = context.DailyRefresh
+                });
+
+                return Ok(new
+                {
+                    userdata.Artefacts,
+                    userdata.ArmouryItems,
+                    userdata.Currencies,
+                    userdata.UnlockedMercs,
+                    userdata.Bounties,
+                    Quests = quests,
+                });
             }
             catch (Exception ex)
             {
