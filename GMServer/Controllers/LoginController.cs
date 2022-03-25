@@ -34,14 +34,14 @@ namespace GMServer.Controllers
 
                 var dataResp = await _mediator.Send(new GetUserDataRequest
                 {
-                    UserID = loginResp.userId,
+                    UserID = loginResp.UserID,
                     DailyRefresh = context.DailyRefresh
                 });
 
                 return Ok(new
                 {
                     UserData = dataResp,
-                    Token = loginResp.Token
+                    loginResp.Token
                 });
             }
             catch (ServerException ex)

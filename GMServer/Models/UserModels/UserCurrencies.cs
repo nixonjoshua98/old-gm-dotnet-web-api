@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using GMServer.Attributes;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace GMServer.UserModels.UserModels
@@ -9,12 +10,16 @@ namespace GMServer.UserModels.UserModels
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID { get; set; }
 
+        [MongoIncrement]
         public int Diamonds { get; set; } = 0;
 
-        public int PrestigePoints { get; set; } = 0;
+        [MongoIncrement]
+        public long PrestigePoints { get; set; } = 0;
 
-        public int BountyPoints { get; set; } = 0;
+        [MongoIncrement]
+        public long BountyPoints { get; set; } = 0;
 
-        public int ArmouryPoints { get; set; } = 0;
+        [MongoIncrement]
+        public long ArmouryPoints { get; set; } = 0;
     }
 }

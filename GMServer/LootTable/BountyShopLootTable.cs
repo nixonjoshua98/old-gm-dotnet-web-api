@@ -8,9 +8,9 @@ namespace GMServer.LootTable
 {
     public class BountyShopLootTable
     {
-        RDSTable RootTable;
-        BountyShopDataFile bountyshopDataFile;
-        List<ArmouryItem> armouryDataFile;
+        readonly RDSTable RootTable;
+        readonly BountyShopDataFile bountyshopDataFile;
+        readonly List<ArmouryItem> armouryDataFile;
 
         public BountyShopLootTable(BountyShopDataFile datafile, List<ArmouryItem> armouryIitems)
         {
@@ -25,7 +25,7 @@ namespace GMServer.LootTable
 
         public BountyShopItems GetItems(int count, int seed)
         {
-            Random rnd = new Random(seed);
+            Random rnd = new(seed);
 
             BountyShopItems shop = new();
 
@@ -71,7 +71,7 @@ namespace GMServer.LootTable
                     PurchaseCost = bountyshopDataFile.ArmouryItems.PurchaseCost
                 };
 
-                RDSValue<BountyShopArmouryItem> rdsItem = new RDSValue<BountyShopArmouryItem>(bsItem)
+                RDSValue<BountyShopArmouryItem> rdsItem = new(bsItem)
                 {
 
                 };
