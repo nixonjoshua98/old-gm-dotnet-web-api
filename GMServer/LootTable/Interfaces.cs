@@ -40,15 +40,6 @@ namespace GMServer.LootTable
 		/// Note to inheritors: This property has to be auto-set when an item is added to a table via the AddEntry method.
 		/// </summary>
 		RDSTable Table { get; set; }
-
-		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents this instance.
-		/// </summary>
-		/// <param name="indentationlevel">The indentationlevel. 4 blanks at the beginning of each line for each level.</param>
-		/// <returns>
-		/// A <see cref="System.String"/> that represents this instance.
-		/// </returns>
-		string ToString(int indentationlevel);
 	}
 
 	/// <summary>
@@ -56,7 +47,7 @@ namespace GMServer.LootTable
 	/// </summary>
 	public interface IRDSTable : IRDSObject
 	{
-		List<IRDSObject> GetResults(Random rnd);
+		List<IRDSObject> GetResults(int count, Random rnd);
 	}
 
 	/// <summary>

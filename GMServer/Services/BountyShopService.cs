@@ -20,9 +20,9 @@ namespace GMServer.Services
         {
             int seed = $"{userId}{refresh.Previous.ToFileTimeUtc()}".GetHashCode();
 
-            BountyShopLootTable table = new(GetDataFile(), _armoury.GetDataFile(), 5);
+            BountyShopLootTable table = new(GetDataFile(), _armoury.GetDataFile());
 
-            return table.GetItems(seed);
+            return table.GetItems(5, seed);
         }
 
         public BountyShopDataFile GetDataFile()

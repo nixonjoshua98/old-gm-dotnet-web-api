@@ -12,9 +12,9 @@ namespace GMServer.LootTable
         BountyShopDataFile bountyshopDataFile;
         List<ArmouryItem> armouryDataFile;
 
-        public BountyShopLootTable(BountyShopDataFile datafile, List<ArmouryItem> armouryIitems, int count)
+        public BountyShopLootTable(BountyShopDataFile datafile, List<ArmouryItem> armouryIitems)
         {
-            RootTable = new() { Count = count };
+            RootTable = new();
 
             armouryDataFile = armouryIitems;
             bountyshopDataFile = datafile;
@@ -23,13 +23,13 @@ namespace GMServer.LootTable
             AddArmouryItemsTable();
         }
 
-        public UserBountyShop GetItems(int seed)
+        public UserBountyShop GetItems(int count, int seed)
         {
             Random rnd = new Random(seed);
 
             UserBountyShop shop = new UserBountyShop();
 
-            foreach (var x in RootTable.GetResults(rnd))
+            foreach (var x in RootTable.GetResults(count, rnd))
             {
                 Console.WriteLine(x);
                 if (x is RDSValue<BountyShopCurrencyItem> cItem)
