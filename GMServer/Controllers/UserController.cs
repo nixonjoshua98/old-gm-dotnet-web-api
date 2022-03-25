@@ -30,24 +30,11 @@ namespace GMServer.Controllers
             {
                 var userdata = await _mediator.Send(new GetUserDataRequest
                 {
-                    UserID = User.UserID()
-                });
-
-                var quests = await _mediator.Send(new GetUserQuestsRequest()
-                {
                     UserID = User.UserID(),
                     DailyRefresh = context.DailyRefresh
                 });
 
-                return Ok(new
-                {
-                    userdata.Artefacts,
-                    userdata.ArmouryItems,
-                    userdata.Currencies,
-                    userdata.UnlockedMercs,
-                    userdata.Bounties,
-                    Quests = quests,
-                });
+                return Ok(userdata);
             }
             catch (Exception ex)
             {

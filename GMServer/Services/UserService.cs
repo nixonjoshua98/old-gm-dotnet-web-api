@@ -1,4 +1,4 @@
-﻿using GMServer.Models;
+﻿using GMServer.UserModels;
 using MongoDB.Driver;
 using System.Linq;
 using System.Threading.Tasks;

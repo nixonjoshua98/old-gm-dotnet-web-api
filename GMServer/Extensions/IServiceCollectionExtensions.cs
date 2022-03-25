@@ -1,7 +1,7 @@
 ﻿using GMServer.Authentication;
 using GMServer.Context;
 using GMServer.Exceptions;
-using GMServer.Models;
+using GMServer.UserModels;
 using GMServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;

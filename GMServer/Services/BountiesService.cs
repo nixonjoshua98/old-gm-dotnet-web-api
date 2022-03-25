@@ -1,5 +1,5 @@
-﻿using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+﻿using GMServer.UserModels.DataFileModels;
+using GMServer.UserModels.UserModels;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,5 +1,5 @@
 ﻿using GMServer.Exceptions;
-using GMServer.Models;
+using GMServer.UserModels;
 using GMServer.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;

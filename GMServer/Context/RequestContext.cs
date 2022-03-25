@@ -2,7 +2,7 @@
 {
     public class RequestContext
     {
-        public CurrentServerRefresh DailyRefresh;
+        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
 
         public RequestContext (ServerRefresh<IDailyServerRefresh> daily)
         {

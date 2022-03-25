@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace GMServer.Models.UserModels
+namespace GMServer.UserModels.UserModels
 {
     [BsonIgnoreExtraElements]
     public class UserDailyQuest

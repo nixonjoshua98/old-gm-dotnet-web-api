@@ -1,6 +1,6 @@
 ﻿using GMServer.Common;
 using GMServer.Exceptions;
-using GMServer.Models;
+using GMServer.UserModels;
 using GMServer.Services;
 using MediatR;
 using System.Threading;

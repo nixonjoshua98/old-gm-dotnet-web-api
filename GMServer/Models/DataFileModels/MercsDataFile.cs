@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace GMServer.Models.DataFileModels
+namespace GMServer.UserModels.DataFileModels
 {
     public class PassiveBonus
     {

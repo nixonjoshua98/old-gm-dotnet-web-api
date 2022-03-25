@@ -1,4 +1,4 @@
-﻿namespace GMServer.Models
+﻿namespace GMServer.UserModels
 {
     public class AuthenticationSettings
     {

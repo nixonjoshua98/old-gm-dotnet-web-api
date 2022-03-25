@@ -1,7 +1,8 @@
 ﻿using GMServer.Context;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+using GMServer.UserModels.DataFileModels;
+using GMServer.UserModels.UserModels;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,7 +22,18 @@ namespace GMServer.Services
             _mercQuests = mongo.GetCollection<UserMercQuest>("UserMercQuests");
         }
 
-        public async Task<List<int>> GetCompletedDailyQuestsAsync(string userId, CurrentServerRefresh refresh)
+        public async Task<UserQuests> GetUserQuestsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> dailyRefresh)
+        {
+            return new UserQuests
+            {
+                DateTime = DateTime.UtcNow,
+                Quests = GetDataFile(),
+                CompletedMercQuests = await GetCompletedMercQuestsAsync(userId),
+                CompletedDailyQuests = await GetCompletedDailyQuestsAsync(userId, dailyRefresh)
+            };
+        }
+
+        public async Task<List<int>> GetCompletedDailyQuestsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
         {
             var ls = await _dailyQuests.Find(x => x.UserID == userId && x.CompletedTime > refresh.Previous && x.CompletedTime < refresh.Next).ToListAsync();
 

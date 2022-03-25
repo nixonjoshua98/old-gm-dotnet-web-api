@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GMServer.Models.UserModels
+namespace GMServer.UserModels.UserModels
 {
     [BsonIgnoreExtraElements]
     public class UserArmouryItem

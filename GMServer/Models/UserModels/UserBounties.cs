@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.Models.UserModels
+namespace GMServer.UserModels.UserModels
 {
     public class UserBounty
     {

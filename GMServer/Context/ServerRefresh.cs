@@ -2,7 +2,7 @@
 
 namespace GMServer.Context
 {
-    public record CurrentServerRefresh(DateTime Previous, DateTime Next);
+    public record CurrentServerRefresh<T>(DateTime Previous, DateTime Next);
 
     public interface IDailyServerRefresh { }
 
@@ -17,9 +17,9 @@ namespace GMServer.Context
         public int Minute;
         public int Second = 0;
 
-        public CurrentServerRefresh Current => RefreshPairFromDate(DateTime.UtcNow);
+        public CurrentServerRefresh<T> Current => RefreshPairFromDate(DateTime.UtcNow);
 
-        CurrentServerRefresh RefreshPairFromDate(DateTime dt)
+        CurrentServerRefresh<T> RefreshPairFromDate(DateTime dt)
         {
             DateTime refreshTime = new DateTime(dt.Year, dt.Month, dt.Day, Hour, Minute, Second);
 

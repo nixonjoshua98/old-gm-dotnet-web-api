@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GMServer.Models
+namespace GMServer.UserModels
 {
     [BsonIgnoreExtraElements]
     public class AuthenticatedSession
