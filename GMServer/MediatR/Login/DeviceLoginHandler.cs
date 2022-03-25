@@ -13,7 +13,7 @@ namespace GMServer.MediatR.Login
         public string DeviceID { get; set; }   
     }
 
-    public record DeviceLoginResponse(string Token);
+    public record DeviceLoginResponse(string userId, string Token);
 
     public class DeviceLoginHandler : IRequestHandler<DeviceLoginRequest, DeviceLoginResponse>
     {
@@ -47,7 +47,7 @@ namespace GMServer.MediatR.Login
 
             await _auth.InsertSessionAsync(session);
 
-            return new DeviceLoginResponse(session.Token);
+            return new DeviceLoginResponse(user.ID, session.Token);
         }
     }
 }

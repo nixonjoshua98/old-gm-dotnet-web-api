@@ -1,12 +1,11 @@
 ﻿using GMServer.Context;
-using GMServer.UserModels.UserModels;
+using GMServer.Models.UserModels;
 using GMServer.Services;
+using GMServer.UserModels.UserModels;
 using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
 
 namespace GMServer.MediatR
 {
@@ -18,13 +17,14 @@ namespace GMServer.MediatR
 
     public class GetUserDataResponse
     {
-        public List<UserArtefact> Artefacts { get; set; }
-        public List<UserArmouryItem> ArmouryItems { get; set; }
-        public UserCurrencies Currencies { get; set; }
-        public List<UserMerc> UnlockedMercs { get; set; }
-        public UserBounties Bounties { get; set; }
-        public UserQuests Quests { get; set; }
-        public UserBountyShop BountyShop { get; set; }
+        public List<UserArtefact> Artefacts;
+        public List<UserArmouryItem> ArmouryItems;
+        public UserCurrencies Currencies;
+        public List<UserMerc> UnlockedMercs;
+        public UserBounties Bounties;
+        public UserQuests Quests;
+        public UserBountyShop BountyShop;
+        public AccountStats UserStats;
     }
 
     public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, GetUserDataResponse>
@@ -35,6 +35,7 @@ namespace GMServer.MediatR
         private readonly BountyShopService _bountyshop;
         private readonly CurrenciesService _currencies;
         private readonly MercService _mercs;
+        private readonly AccountStatsService _stats;
         private readonly BountiesService _bounties;
 
         public GetUserDataHandler(
@@ -44,7 +45,8 @@ namespace GMServer.MediatR
             MercService mercs, 
             BountiesService bounties,
             QuestsService quests,
-            BountyShopService bountyshop)
+            BountyShopService bountyshop,
+            AccountStatsService stats)
         {
             _artefacts = artefacts;
             _armoury = armoury;
@@ -52,6 +54,7 @@ namespace GMServer.MediatR
             _bountyshop = bountyshop;
             _currencies = currencies;
             _mercs = mercs;
+            _stats = stats;
             _bounties = bounties;
         }
 
@@ -65,7 +68,16 @@ namespace GMServer.MediatR
                 UnlockedMercs = await _mercs.GetUserMercsAsync(request.UserID),
                 Bounties = await _bounties.GetUserBountiesAsync(request.UserID),
                 Quests = await _quests.GetUserQuestsAsync(request.UserID, request.DailyRefresh),
-                BountyShop = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh),
+                BountyShop = new()
+                {
+                    ShopItems = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh),
+                    Purchases = await _bountyshop.GetUserDailyPurchasesAsync(request.UserID, request.DailyRefresh)
+                },
+                UserStats = new()
+                {
+                    Lifetime = await _stats.GetUserLifetimeStatsAsync(request.UserID),
+                    Daily = await _stats.GetUserDailyStatsAsync(request.UserID, request.DailyRefresh)
+                }
             };
 
             return response;

@@ -2,6 +2,9 @@
 using GMServer.LootTable;
 using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
+using MongoDB.Driver;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace GMServer.Services
 {
@@ -9,14 +12,21 @@ namespace GMServer.Services
     {
         private readonly IDataFileCache _cache;
         private readonly ArmouryService _armoury;
+        private readonly IMongoCollection<BountyShopPurchase> _purchases;
 
-        public BountyShopService(IDataFileCache cache, ArmouryService armoury)
+        public BountyShopService(IMongoDatabase mongo, IDataFileCache cache, ArmouryService armoury)
         {
             _cache = cache;
             _armoury = armoury;
+            _purchases = mongo.GetCollection<BountyShopPurchase>("BountyShopPurchases");
         }
 
-        public UserBountyShop GetUserBountyShop(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        public async Task<List<BountyShopPurchase>> GetUserDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        {
+            return await _purchases.Find(x => x.UserID == userId && x.PurchaseTime > refresh.Previous && x.PurchaseTime < refresh.Next).ToListAsync();
+        }
+
+        public BountyShopItems GetUserBountyShop(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
         {
             int seed = $"{userId}{refresh.Previous.ToFileTimeUtc()}".GetHashCode();
 

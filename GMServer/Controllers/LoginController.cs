@@ -1,4 +1,6 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Context;
+using GMServer.Exceptions;
+using GMServer.MediatR;
 using GMServer.MediatR.Login;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,21 +22,31 @@ namespace GMServer.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("Device")]
-        public async Task<IActionResult> DeviceLogin([FromHeader, Required] string deviceId)
+        [HttpGet("Device")]
+        public async Task<IActionResult> DeviceLogin([FromHeader, Required] string deviceId, [FromServices] RequestContext context)
         {
             try
             {
-                var response = await _mediator.Send(new DeviceLoginRequest
+                var loginResp = await _mediator.Send(new DeviceLoginRequest
                 {
                     DeviceID = deviceId
                 });
 
-                return Ok(response);
+                var dataResp = await _mediator.Send(new GetUserDataRequest
+                {
+                    UserID = loginResp.userId,
+                    DailyRefresh = context.DailyRefresh
+                });
+
+                return Ok(new
+                {
+                    UserData = dataResp,
+                    Token = loginResp.Token
+                });
             }
             catch (ServerException ex)
             {
-                Log.Information(ex, "DeviceLogin");
+                Log.Information(ex.Message);
                 return new ServerError(ex.Message, ex.StatusCode);
             }
             catch (Exception ex)

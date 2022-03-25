@@ -1,4 +1,6 @@
 ﻿using GMServer.Common;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,8 +31,21 @@ namespace GMServer.Models.UserModels
         public List<UserBountyShopArmouryItem> ArmouryItems { get; set; } = new();
     }
 
+    [BsonIgnoreExtraElements]
+    public class BountyShopPurchase
+    {
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserID { get; set; }
+
+        public string ItemID { get; set; }
+
+        public DateTime PurchaseTime { get; set; }
+    }
+
     public class UserBountyShop
     {
         public BountyShopItems ShopItems { get; set; } = new();
+
+        public List<BountyShopPurchase> Purchases { get; set; }
     }
 }

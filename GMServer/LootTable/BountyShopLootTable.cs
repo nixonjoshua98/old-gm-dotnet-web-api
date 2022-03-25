@@ -23,18 +23,18 @@ namespace GMServer.LootTable
             AddArmouryItemsTable();
         }
 
-        public UserBountyShop GetItems(int count, int seed)
+        public BountyShopItems GetItems(int count, int seed)
         {
             Random rnd = new Random(seed);
 
-            UserBountyShop shop = new UserBountyShop();
+            BountyShopItems shop = new();
 
             foreach (var x in RootTable.GetResults(count, rnd))
             {
                 Console.WriteLine(x);
                 if (x is RDSValue<BountyShopCurrencyItem> cItem)
                 {
-                    shop.ShopItems.CurrencyItems.Add(new()
+                    shop.CurrencyItems.Add(new()
                     {
                         Quantity = cItem.Value.Quantity,
                         CurrencyType = cItem.Value.CurrencyType,
@@ -43,7 +43,7 @@ namespace GMServer.LootTable
                 }
                 else if (x is RDSValue<BountyShopArmouryItem> aItem)
                 {
-                    shop.ShopItems.ArmouryItems.Add(new()
+                    shop.ArmouryItems.Add(new()
                     {
                         ItemID = aItem.Value.ID,
                         PurchaseCost = aItem.Value.PurchaseCost
