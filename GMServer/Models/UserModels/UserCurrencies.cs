@@ -1,4 +1,4 @@
-﻿using GMServer.Attributes;
+﻿using GMServer.Mongo;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

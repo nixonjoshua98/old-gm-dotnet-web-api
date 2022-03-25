@@ -1,9 +1,8 @@
-﻿using GMServer.Attributes;
-using GMServer.UserModels.UserModels;
+﻿using GMServer.UserModels.UserModels;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace GMServer.Models.MongoModels
+namespace GMServer.Mongo
 {
     public class MongoDynamicUpdate
     {

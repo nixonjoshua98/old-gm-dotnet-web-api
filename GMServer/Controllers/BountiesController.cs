@@ -38,7 +38,7 @@ namespace GMServer.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "ClaimBountyPoints");
-                return new InternalServerError(ex.Message);
+                return new InternalServerError("Failed to claim points");
             }
         }
     }

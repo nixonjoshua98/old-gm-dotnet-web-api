@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GMServer.Attributes
+namespace GMServer.Mongo
 {
     [AttributeUsage(AttributeTargets.Property)]
 

@@ -16,14 +16,15 @@ namespace GMServer.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IMediator _mediator;
-
-        public LoginController(IMediator mediator)
+        private readonly RequestContext _context;
+        public LoginController(IMediator mediator, RequestContext context)
         {
+            _context = context;
             _mediator = mediator;
         }
 
         [HttpGet("Device")]
-        public async Task<IActionResult> DeviceLogin([FromHeader, Required] string deviceId, [FromServices] RequestContext context)
+        public async Task<IActionResult> DeviceLogin([FromHeader, Required] string deviceId)
         {
             try
             {
@@ -35,7 +36,7 @@ namespace GMServer.Controllers
                 var dataResp = await _mediator.Send(new GetUserDataRequest
                 {
                     UserID = loginResp.UserID,
-                    DailyRefresh = context.DailyRefresh
+                    DailyRefresh = _context.DailyRefresh
                 });
 
                 return Ok(new
@@ -52,7 +53,7 @@ namespace GMServer.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "DeviceLogin");
-                return new InternalServerError(ex.Message);
+                return new InternalServerError("Device login failed");
             }
         }
     }
