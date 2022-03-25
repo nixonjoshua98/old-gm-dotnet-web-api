@@ -22,6 +22,7 @@ namespace GMServer.Services
         public const string Artefacts = "DataFiles/Artefacts.json";
         public const string Armoury = "Datafiles/Armoury.json";
         public const string Bounties = "Datafiles/Bounties.json";
+        public const string BountyShop = "Datafiles/BountyShop.json";
         public const string Quests = "Datafiles/Quests.json";
     }
 

@@ -27,6 +27,7 @@ namespace GMServer
             services.AddSingleton<BountiesService>();
             services.AddSingleton<QuestsService>();
             services.AddSingleton<CurrenciesService>();
+            services.AddSingleton<BountyShopService>();
 
             // Scoped
             services.AddScoped<RequestContext>();

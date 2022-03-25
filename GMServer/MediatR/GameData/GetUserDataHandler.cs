@@ -5,6 +5,8 @@ using MediatR;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
 
 namespace GMServer.MediatR
 {
@@ -22,6 +24,7 @@ namespace GMServer.MediatR
         public List<UserMerc> UnlockedMercs { get; set; }
         public UserBounties Bounties { get; set; }
         public UserQuests Quests { get; set; }
+        public UserBountyShop BountyShop { get; set; }
     }
 
     public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, GetUserDataResponse>
@@ -29,15 +32,24 @@ namespace GMServer.MediatR
         private readonly ArtefactsService _artefacts;
         private readonly ArmouryService _armoury;
         private readonly QuestsService _quests;
+        private readonly BountyShopService _bountyshop;
         private readonly CurrenciesService _currencies;
         private readonly MercService _mercs;
         private readonly BountiesService _bounties;
 
-        public GetUserDataHandler(ArtefactsService artefacts, ArmouryService armoury, CurrenciesService currencies, MercService mercs, BountiesService bounties, QuestsService quests)
+        public GetUserDataHandler(
+            ArtefactsService artefacts, 
+            ArmouryService armoury, 
+            CurrenciesService currencies, 
+            MercService mercs, 
+            BountiesService bounties,
+            QuestsService quests,
+            BountyShopService bountyshop)
         {
             _artefacts = artefacts;
             _armoury = armoury;
             _quests = quests;
+            _bountyshop = bountyshop;
             _currencies = currencies;
             _mercs = mercs;
             _bounties = bounties;
@@ -52,7 +64,8 @@ namespace GMServer.MediatR
                 Currencies = await _currencies.GetUserCurrenciesAsync(request.UserID),
                 UnlockedMercs = await _mercs.GetUserMercsAsync(request.UserID),
                 Bounties = await _bounties.GetUserBountiesAsync(request.UserID),
-                Quests = await _quests.GetUserQuestsAsync(request.UserID, request.DailyRefresh)
+                Quests = await _quests.GetUserQuestsAsync(request.UserID, request.DailyRefresh),
+                BountyShop = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh),
             };
 
             return response;
