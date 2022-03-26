@@ -2,7 +2,19 @@
 
 namespace GMServer.Context
 {
-    public record CurrentServerRefresh<T>(DateTime Previous, DateTime Next);
+    public class CurrentServerRefresh<T>
+    {
+        public DateTime Previous;
+        public DateTime Next;
+
+        public CurrentServerRefresh(DateTime prev, DateTime next)
+        {
+            Previous = prev;
+            Next = next;
+        }
+
+        public bool IsBetween(DateTime dt) => Previous < dt && Next > dt;
+    }
 
     public interface IDailyServerRefresh { }
 

@@ -4,12 +4,12 @@ using System;
 
 namespace GMServer.Models.UserModels
 {
-    [BsonIgnoreExtraElements]
+    /*
+     * NB, When adding a new statistic we will need to update the service update methods to include it
+     */
+
     public class UserAccountStatsModelBase
     {
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
-
         public int TotalPrestiges = 0;
         public int HighestPrestigeStage = 0;
         public int TotalEnemiesDefeated = 0;
@@ -17,14 +17,19 @@ namespace GMServer.Models.UserModels
         public int TotalTaps = 0;
     }
 
+    [BsonIgnoreExtraElements]
     public class DailyUserAccountStats : UserAccountStatsModelBase
     {
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserID { get; set; }
+
         public DateTime DateTime = DateTime.UtcNow;
     }
 
-    public class UserAccountStats
+    [BsonIgnoreExtraElements]
+    public class LifetimeUserAccountStats : UserAccountStatsModelBase
     {
-        public UserAccountStatsModelBase Lifetime;
-        public DailyUserAccountStats Daily;
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserID { get; set; }
     }
 }

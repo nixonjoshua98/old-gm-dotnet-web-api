@@ -17,6 +17,16 @@ namespace GMServer.Services
             _mercs = mongo.GetCollection<UserMerc>("UnlockedMercs");
         }
 
+        public async Task InsertMercAsync(UserMerc merc)
+        {
+            await _mercs.InsertOneAsync(merc);
+        }
+
+        public async Task<UserMerc> GetMerc(string userId, int mercId)
+        {
+            return await _mercs.Find(x => x.UserID == userId && x.MercID == mercId).FirstOrDefaultAsync();
+        }
+
         public async Task<List<UserMerc>> GetUserMercsAsync(string userId)
         {
             return await _mercs.Find(m => m.UserID == userId).ToListAsync();

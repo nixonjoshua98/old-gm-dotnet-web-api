@@ -5,15 +5,20 @@ namespace GMServer.Exceptions
 {
     public class ServerError : ObjectResult
     {
-        public ServerError(object value, int statusCode) : base(value)
+        public ServerError(string message, int code) : base(Serialise(message, code))
         {
-            StatusCode = statusCode;
+            StatusCode = code;
+        }
+
+        static string Serialise(string message, int code)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(new { Message = message, StatusCode = code });
         }
     }
 
     public class InternalServerError : ServerError
     {
-        public InternalServerError(object value) : base(value, StatusCodes.Status500InternalServerError)
+        public InternalServerError(string value) : base(value, StatusCodes.Status500InternalServerError)
         {
 
         }

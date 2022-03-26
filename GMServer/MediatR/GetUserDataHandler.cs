@@ -3,6 +3,7 @@ using GMServer.Models.UserModels;
 using GMServer.Services;
 using GMServer.UserModels.UserModels;
 using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ namespace GMServer.MediatR
         public UserBounties Bounties;
         public UserQuests Quests;
         public UserBountyShop BountyShop;
-        public UserAccountStats UserStats;
+        public object UserStats; // Anonymous type - Unsure if I like it
     }
 
     public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, GetUserDataResponse>
@@ -67,16 +68,22 @@ namespace GMServer.MediatR
                 Currencies = await _currencies.GetUserCurrenciesAsync(request.UserID),
                 UnlockedMercs = await _mercs.GetUserMercsAsync(request.UserID),
                 Bounties = await _bounties.GetUserBountiesAsync(request.UserID),
-                Quests = await _quests.GetUserQuestsAsync(request.UserID, request.DailyRefresh),
+                Quests = new()
+                {
+                    DateTime = DateTime.UtcNow,
+                    CompletedDailyQuests = await _quests.GetCompletedDailyQuestsAsync(request.UserID, request.DailyRefresh),
+                    CompletedMercQuests = await _quests.GetCompletedMercQuestsAsync(request.UserID),
+                    Quests = _quests.GetDataFile()
+                },
                 BountyShop = new()
                 {
                     ShopItems = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh),
                     Purchases = await _bountyshop.GetUserDailyPurchasesAsync(request.UserID, request.DailyRefresh)
                 },
-                UserStats = new()
+                UserStats = new
                 {
-                    Lifetime = await _stats.GetUserLifetimeStatsAsync(request.UserID),
-                    Daily = await _stats.GetUserDailyStatsAsync(request.UserID, request.DailyRefresh)
+                    LifetimeStats = await _stats.GetUserLifetimeStatsAsync(request.UserID),
+                    DailyStats = await _stats.GetUserDailyStatsAsync(request.UserID, request.DailyRefresh)
                 }
             };
 

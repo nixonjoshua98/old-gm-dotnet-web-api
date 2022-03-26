@@ -7,8 +7,8 @@ namespace GMServer.UserModels.UserModels
     public class UserQuests
     {
         public DateTime DateTime;
-        public QuestsDataFile Quests { get; set; }
-        public List<int> CompletedDailyQuests { get; set; }
-        public List<int> CompletedMercQuests { get; set; }
+        public QuestsDataFile Quests;
+        public List<int> CompletedDailyQuests;
+        public List<int> CompletedMercQuests;
     }
 }

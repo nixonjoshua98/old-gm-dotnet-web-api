@@ -2,7 +2,6 @@
 using GMServer.UserModels.DataFileModels;
 using GMServer.UserModels.UserModels;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,19 +17,18 @@ namespace GMServer.Services
         public QuestsService(IDataFileCache cache, IMongoDatabase mongo)
         {
             _cache = cache;
-            _dailyQuests = mongo.GetCollection<UserDailyQuest>("UserDailyQuests");
+            _dailyQuests = mongo.GetCollection<UserDailyQuest>("DailyQuestsProgress");
             _mercQuests = mongo.GetCollection<UserMercQuest>("UserMercQuests");
         }
 
-        public async Task<UserQuests> GetUserQuestsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> dailyRefresh)
+        public MercQuest GetMercQuest(string userId, int questId)
         {
-            return new UserQuests
-            {
-                DateTime = DateTime.UtcNow,
-                Quests = GetDataFile(),
-                CompletedMercQuests = await GetCompletedMercQuestsAsync(userId),
-                CompletedDailyQuests = await GetCompletedDailyQuestsAsync(userId, dailyRefresh)
-            };
+            return GetDataFile().MercQuests.First(x => x.ID == questId);
+        }
+
+        public DailyQuest GetDailyQuest(string userId, int questId)
+        {
+            return GetDataFile().DailyQuests.First(x => x.ID == questId);
         }
 
         public async Task<List<int>> GetCompletedDailyQuestsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
@@ -38,6 +36,26 @@ namespace GMServer.Services
             var ls = await _dailyQuests.Find(x => x.UserID == userId && x.CompletedTime > refresh.Previous && x.CompletedTime < refresh.Next).ToListAsync();
 
             return ls.Select(x => x.QuestID).ToList();
+        }
+
+        public async Task InsertDailyQuestProgressAsync(UserDailyQuest quest)
+        {
+            await _dailyQuests.InsertOneAsync(quest);
+        }
+
+        public async Task InsertMercQuestProgressAsync(UserMercQuest quest)
+        {
+            await _mercQuests.InsertOneAsync(quest);
+        }
+
+        public async Task<UserMercQuest> GetMercQuestProgressAsync(string userId, int questId)
+        {
+            return await _mercQuests.Find(x => x.UserID == userId && x.QuestID == questId).FirstOrDefaultAsync();
+        }
+
+        public async Task<UserDailyQuest> GetDailyQuestProgressAsync(string userId, int questId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        {
+            return await _dailyQuests.Find(x => x.UserID == userId && x.QuestID == questId && x.CompletedTime > refresh.Previous && x.CompletedTime < refresh.Next).FirstOrDefaultAsync();
         }
 
         public async Task<List<int>> GetCompletedMercQuestsAsync(string userId)

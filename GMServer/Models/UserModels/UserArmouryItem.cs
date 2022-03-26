@@ -13,8 +13,6 @@ namespace GMServer.UserModels.UserModels
 
         public int Level { get; set; } = 0;
 
-        public int MergeLevel { get; set; } = 0;
-
         public int Owned { get; set; }
     }
 }

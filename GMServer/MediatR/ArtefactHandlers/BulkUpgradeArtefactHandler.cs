@@ -34,36 +34,56 @@ namespace GMServer.MediatR.ArtefactHandler
 
         public async Task<BulkUpgradeArtefactResponse> Handle(BulkUpgradeArtefactRequest request, CancellationToken cancellationToken)
         {
-            if (request.Artefacts.Count == 0)
-                throw new ServerException("No artefacts provided", 400);
-
-            else if (!IsUniqueArtefacts(request.Artefacts))
-                throw new ServerException("Duplicate artefacts found", 400);
-
             var userArtefacts = await _artefacts.GetUserArtefactsAsync(request.UserID);
-
-            if (!UserOwnsAllArtefacts(userArtefacts, request.Artefacts))
-                throw new ServerException("Invalid artefacts found", 400);
 
             var datafile = _artefacts.GetDataFile();
 
-            var upgradeDict = CreateUpgradeCostDictionary(userArtefacts, datafile, request.Artefacts);
+            if (request.Artefacts.Count == 0)
+                throw new ServerException("No artefacts provided", 400);
 
-            double totalUpgradeCost = upgradeDict.Values.Sum();
+            else if (!AllUniqueArtefacts(request.Artefacts))
+                throw new ServerException("Duplicate artefacts found", 400);
+
+            else if(!UserOwnsAllArtefacts(userArtefacts, request.Artefacts))
+                throw new ServerException("Invalid artefact found", 400);
+
+            else if (!UpgradeLevelsValid(userArtefacts, datafile, request.Artefacts))
+                throw new ServerException("Some artefact upgrade requests are not valid", 400);
+
+            // Calculate total upgrade cost for all upgrades
+            double totalUpgradeCost = CalculateTotalUpgradeCost(userArtefacts, datafile, request.Artefacts);
 
             UserCurrencies currencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
-            if (totalUpgradeCost > currencies.PrestigePoints)
+            if (totalUpgradeCost <= 0 || totalUpgradeCost > currencies.PrestigePoints)
                 throw new ServerException("Cannot afford upgrade", 400);
 
+            // Decrement the upgrade cost and get the new values
             var userCurrencies = await _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = -totalUpgradeCost });
 
+            // Perform the update on the database
             await _artefacts.BulkUpgradeArtefacts(request.UserID, request.Artefacts);
 
             // Re-fetch the updated artefacts
             userArtefacts = await _artefacts.GetUserArtefactsAsync(request.UserID);
 
             return new BulkUpgradeArtefactResponse(userArtefacts, totalUpgradeCost, userCurrencies.PrestigePoints);
+        }
+
+        bool UpgradeLevelsValid(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
+        {
+            foreach (var artUpgrade in artefactUpgrades)
+            {
+                Artefact artefact = artefactsDatafile.FirstOrDefault(x => x.ID == artUpgrade.ArtefactID);
+                UserArtefact userArtefact = unlockedArtefacts.FirstOrDefault(x => x.ArtefactID == artUpgrade.ArtefactID);
+
+                if (artUpgrade.Levels <= 0 || userArtefact.Level + artUpgrade.Levels > artefact.MaxLevel)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         bool UserOwnsAllArtefacts(List<UserArtefact> unlockedArtefacts, List<UserArtefactUpgrade> artefacts)
@@ -73,33 +93,29 @@ namespace GMServer.MediatR.ArtefactHandler
             return artefacts.All(art => unlockedArtefactsId.Contains(art.ArtefactID));
         }
 
-        bool IsUniqueArtefacts(List<UserArtefactUpgrade> artefacts)
+        bool AllUniqueArtefacts(List<UserArtefactUpgrade> artefacts)
         {
             return artefacts.Select(x => x.ArtefactID).ToHashSet().Count() == artefacts.Count;
         }
 
-        Dictionary<int, double> CreateUpgradeCostDictionary(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
+        double CalculateTotalUpgradeCost(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
         {
-            Dictionary<int, double> upgradeCostDictionary = new Dictionary<int, double>();
+            double totalCost = 0;
 
             foreach (var artUpgrade in artefactUpgrades)
             {
-                Artefact artefact = artefactsDatafile.FirstOrDefault(x => x.ID == artUpgrade.ArtefactID);
-                UserArtefact userArtefact = unlockedArtefacts.FirstOrDefault(x => x.ArtefactID == artUpgrade.ArtefactID);
+                Artefact artefact = artefactsDatafile.First(x => x.ID == artUpgrade.ArtefactID);
+                UserArtefact userArtefact = unlockedArtefacts.First(x => x.ArtefactID == artUpgrade.ArtefactID);
 
-                if (artefact is null || userArtefact is null)
-                    continue;
-
-                upgradeCostDictionary.Add(artUpgrade.ArtefactID, CalculateUpgradeCost(userArtefact, artefact, artUpgrade.Levels));
+                totalCost += CalculateUpgradeCost(userArtefact, artefact, artUpgrade.Levels);
             }
 
-            return upgradeCostDictionary;
+            return totalCost;
         }
 
         double CalculateUpgradeCost(UserArtefact userArtefact, Artefact artefact, int levels)
         {
             return artefact.CostCoeff * GameFormulas.SumNonIntegerPowerSeq(userArtefact.Level, levels, artefact.CostExpo);
         }
-
     }
 }
