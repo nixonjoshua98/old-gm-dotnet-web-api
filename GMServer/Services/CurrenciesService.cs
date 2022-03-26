@@ -1,7 +1,5 @@
-﻿using GMServer.Mongo;
-using GMServer.UserModels.UserModels;
+﻿using GMServer.UserModels.UserModels;
 using MongoDB.Driver;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GMServer.Services
@@ -22,21 +20,14 @@ namespace GMServer.Services
 
         public async Task<UserCurrencies> IncrementAsync(string userId, UserCurrencies incr)
         {
-            return await UpdateCurrenciesAsync(userId, MongoDynamicUpdate.CreateDictionary(incr));
-        }
-
-        async Task<UserCurrencies> UpdateCurrenciesAsync(string userId, Dictionary<string, object> incr)
-        {
             var filter = Builders<UserCurrencies>.Filter.Eq(x => x.UserID, userId);
-            var update = new List<UpdateDefinition<UserCurrencies>>();
+            var update = Builders<UserCurrencies>.Update
+                .Inc(x => x.Diamonds, incr.Diamonds)
+                .Inc(x => x.PrestigePoints, incr.PrestigePoints)
+                .Inc(x => x.BountyPoints, incr.BountyPoints)
+                .Inc(x => x.ArmouryPoints, incr.ArmouryPoints);
 
-            foreach (var pair in incr)
-            {
-                update.Add(Builders<UserCurrencies>.Update
-                    .Inc(pair.Key, pair.Value));
-            }
-
-            return await _currencies.FindOneAndUpdateAsync(filter, Builders<UserCurrencies>.Update.Combine(update), new() { IsUpsert = true, ReturnDocument = ReturnDocument.After });
+            return await _currencies.FindOneAndUpdateAsync(filter, update, new() { IsUpsert = true, ReturnDocument = ReturnDocument.After });
         }
     }
 }

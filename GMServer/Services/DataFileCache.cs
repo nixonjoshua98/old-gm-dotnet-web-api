@@ -61,7 +61,7 @@ namespace GMServer.Services
         void ReloadCachedItem(ref DataFileCachedObject cachedObject)
         {
             cachedObject.LoadedAt = DateTime.UtcNow;
-            cachedObject.Text = LoadFile(cachedObject.Text);
+            cachedObject.Text = LoadFile(cachedObject.File);
         }
 
         string LoadFile(string fp)

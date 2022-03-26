@@ -24,7 +24,7 @@ namespace GMServer.MediatR
         public UserBounties Bounties;
         public UserQuests Quests;
         public UserBountyShop BountyShop;
-        public AccountStats UserStats;
+        public UserAccountStats UserStats;
     }
 
     public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, GetUserDataResponse>

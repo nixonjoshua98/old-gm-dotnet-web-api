@@ -31,7 +31,6 @@ namespace GMServer.LootTable
 
             foreach (var x in RootTable.GetResults(count, rnd))
             {
-                Console.WriteLine(x);
                 if (x is RDSValue<BountyShopCurrencyItem> cItem)
                 {
                     shop.CurrencyItems.Add(new()

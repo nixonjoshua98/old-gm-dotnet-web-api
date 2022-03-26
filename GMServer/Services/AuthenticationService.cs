@@ -12,10 +12,10 @@ namespace GMServer.Services
 {
     public class AuthenticationService
     {
-        private readonly AuthenticationSettings _settings;
+        private readonly JWTBearerSettings _settings;
         private readonly IMongoCollection<AuthenticatedSession> _sessions;
 
-        public AuthenticationService(AuthenticationSettings settings, IMongoDatabase mongo)
+        public AuthenticationService(JWTBearerSettings settings, IMongoDatabase mongo)
         {
             _settings = settings;
             _sessions = mongo.GetCollection<AuthenticatedSession>("AuthenticationSessions");

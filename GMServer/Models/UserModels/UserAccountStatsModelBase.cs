@@ -1,14 +1,11 @@
-﻿using GMServer.Common;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 
 namespace GMServer.Models.UserModels
 {
     [BsonIgnoreExtraElements]
-    public class AccountStatsModel
+    public class UserAccountStatsModelBase
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID { get; set; }
@@ -20,14 +17,14 @@ namespace GMServer.Models.UserModels
         public int TotalTaps = 0;
     }
 
-    public class DailyAccountStats : AccountStatsModel
+    public class DailyUserAccountStats : UserAccountStatsModelBase
     {
         public DateTime DateTime = DateTime.UtcNow;
     }
 
-    public class AccountStats
+    public class UserAccountStats
     {
-        public AccountStatsModel Lifetime;
-        public DailyAccountStats Daily;
+        public UserAccountStatsModelBase Lifetime;
+        public DailyUserAccountStats Daily;
     }
 }

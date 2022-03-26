@@ -26,6 +26,14 @@ namespace GMServer.Services
             return await _bounties.FindOneAndUpdateAsync(x => x.UserID == userId, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true});
         }
 
+        public async Task SetActiveBountiesAsync(string userId, IEnumerable<int> bountyIds)
+        {
+            var update = Builders<UserBounties>.Update
+                .Set(s => s.ActiveBounties, bountyIds);
+
+            await _bounties.UpdateOneAsync(x => x.UserID == userId, update, new() { IsUpsert = true });
+        }
+
         public async Task SetClaimTimeAsync(string userId, DateTime claimTime)
         {
             var update = Builders<UserBounties>.Update

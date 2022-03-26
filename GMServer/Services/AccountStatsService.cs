@@ -7,23 +7,23 @@ namespace GMServer.Services
 {
     public class AccountStatsService
     {
-        private readonly IMongoCollection<AccountStatsModel> _lifetime;
-        private readonly IMongoCollection<AccountStatsModel> _daily;
+        private readonly IMongoCollection<UserAccountStatsModelBase> _lifetime;
+        private readonly IMongoCollection<UserAccountStatsModelBase> _daily;
 
         public AccountStatsService(IMongoDatabase mongo)
         {
-            _lifetime = mongo.GetCollection<AccountStatsModel>("LifetimeUserStats");
-            _daily = mongo.GetCollection<AccountStatsModel>("DailyUserStats");
+            _lifetime = mongo.GetCollection<UserAccountStatsModelBase>("LifetimeUserStats");
+            _daily = mongo.GetCollection<UserAccountStatsModelBase>("DailyUserStats");
         }
 
-        public async Task<AccountStatsModel> GetUserLifetimeStatsAsync(string userId)
+        public async Task<UserAccountStatsModelBase> GetUserLifetimeStatsAsync(string userId)
         {
             return await _lifetime.Find(x => x.UserID == userId).FirstOrDefaultAsync() ?? new() { UserID = userId };
         }
 
-        public Task<DailyAccountStats> GetUserDailyStatsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        public Task<DailyUserAccountStats> GetUserDailyStatsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
         {
-            return Task.FromResult(new DailyAccountStats());
+            return Task.FromResult(new DailyUserAccountStats());
         }
     }
 }

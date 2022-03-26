@@ -59,7 +59,7 @@ namespace GMServer
 
         public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            AuthenticationSettings settings = services.AddConfigurationSingleton<AuthenticationSettings>(configuration, "AuthenticationSettings");
+            JWTBearerSettings settings = services.AddConfigurationSingleton<JWTBearerSettings>(configuration, "AuthenticationSettings");
 
             services.AddAuthentication(opt =>
             {
