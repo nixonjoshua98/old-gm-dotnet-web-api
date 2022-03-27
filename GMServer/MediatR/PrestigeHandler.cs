@@ -24,13 +24,15 @@ namespace GMServer.MediatR
 
     public class PrestigeHandler : IRequestHandler<PrestigeRequest, PrestigeResponse>
     {
+        private readonly AccountStatsService _accountStats;
         private readonly ArtefactsService _artefacts;
         private readonly CurrenciesService _currencies;
-        private readonly PrestigeService _prestige;
+        private readonly PrestigeService _prestige;        
         private readonly BountiesService _bounties;
 
-        public PrestigeHandler(ArtefactsService artefacts, CurrenciesService currencies, PrestigeService prestige, BountiesService bounties)
+        public PrestigeHandler(ArtefactsService artefacts, CurrenciesService currencies, PrestigeService prestige, BountiesService bounties, AccountStatsService accountStats)
         {
+            _accountStats = accountStats;
             _artefacts = artefacts;
             _currencies = currencies;
             _prestige = prestige;
@@ -56,6 +58,9 @@ namespace GMServer.MediatR
                 Stage = request.PrestigeStage,
                 PrestigePointsGained = points,
             });
+
+            // Update the relevant stats
+            await _accountStats.UpdateUserLifetimeStatsAsync(request.UserID, new() { HighestPrestigeStage = request.PrestigeStage, TotalPrestiges = 1 });
 
             if (unlockedBounties.Count > 0)
                 await _bounties.InsertBountiesAsync(request.UserID, unlockedBounties);

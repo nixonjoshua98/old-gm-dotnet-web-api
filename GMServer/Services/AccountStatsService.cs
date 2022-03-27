@@ -24,7 +24,7 @@ namespace GMServer.Services
             var filter = Builders<LifetimeUserAccountStats>.Filter.Eq(x => x.UserID, userId);
             var update = Builders<LifetimeUserAccountStats>.Update
                 .Inc(x => x.TotalPrestiges, incr.TotalPrestiges)
-                .Inc(x => x.HighestPrestigeStage, incr.HighestPrestigeStage)
+                .Max(x => x.HighestPrestigeStage, incr.HighestPrestigeStage)
                 .Inc(x => x.TotalEnemiesDefeated, incr.TotalEnemiesDefeated)
                 .Inc(x => x.TotalBossesDefeated, incr.TotalBossesDefeated)
                 .Inc(x => x.TotalTaps, incr.TotalTaps);
