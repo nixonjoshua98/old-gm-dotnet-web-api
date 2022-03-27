@@ -6,11 +6,11 @@ namespace GMServer.Models
     [BsonIgnoreExtraElements]
     public class AuthenticatedSession
     {
-        public string Token { get; set; }
+        public string Token;
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
-        public bool IsValid { get; set; } = true;
+        public bool IsValid = true;
     }
 }

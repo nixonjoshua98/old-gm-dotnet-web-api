@@ -2,7 +2,7 @@
 
 namespace GMServer.Models.RequestModels
 {
-    public class UpdateActiveBountiesModel
+    public class UpdateActiveBountiesBody
     {
         public HashSet<int> BountyIds; // Remove the chance of having duplicate bounties
     }

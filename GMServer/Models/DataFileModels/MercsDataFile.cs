@@ -7,30 +7,30 @@ namespace GMServer.Models.DataFileModels
     public class PassiveBonus
     {
         [JsonProperty(PropertyName = "PassiveID")]
-        public int ID { get; set; }
-        public BonusType BonusType { get; set; }
-        public float BonusValue { get; set; }
+        public int ID;
+        public BonusType BonusType;
+        public float BonusValue;
     }
 
     public class MercPassiveBonus
     {
-        public int PassiveID { get; set; }
-        public int UnlockLevel { get; set; }
+        public int PassiveID;
+        public int UnlockLevel;
     }
 
     public class Merc
     {
         [JsonProperty(PropertyName = "MercID")]
-        public int ID { get; set; }
-        public string Name { get; set; }
-        public float BaseDamage { get; set; }
-        public int SpawnEnergyRequired { get; set; }
+        public int ID;
+        public string Name;
+        public float BaseDamage;
+        public int SpawnEnergyRequired;
         public List<MercPassiveBonus> Passives;
     }
 
     public class MercsDataFile
     {
-        public int MaxSquadSize { get; set; }
+        public int MaxSquadSize;
         public List<Merc> Mercs;
         public List<PassiveBonus> Passives;
     }

@@ -45,7 +45,7 @@ namespace GMServer.Controllers
 
         [HttpPut("Update")]
         [Authorize]
-        public async Task<IActionResult> UpdateActiveBounties(UpdateActiveBountiesModel body)
+        public async Task<IActionResult> UpdateActiveBounties(UpdateActiveBountiesBody body)
         {
             try
             {
