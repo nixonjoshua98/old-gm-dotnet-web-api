@@ -1,7 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,7 +21,7 @@ namespace GMServer
 
         public IConfiguration Configuration { get; }
 
-        void ConfigureLogging()
+        private void ConfigureLogging()
         {
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
@@ -30,7 +29,7 @@ namespace GMServer
         }
 
         public void ConfigureServices(IServiceCollection services)
-        {               
+        {
             services.AddControllers().AddNewtonsoftJson(opt => opt.UseMemberCasing());
 
             services.AddSwaggerGen(c =>

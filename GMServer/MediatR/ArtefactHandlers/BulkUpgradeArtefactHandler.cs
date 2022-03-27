@@ -1,9 +1,9 @@
 ﻿using GMServer.Common;
 using GMServer.Exceptions;
+using GMServer.Models.DataFileModels;
 using GMServer.Models.RequestModels;
+using GMServer.Models.UserModels;
 using GMServer.Services;
-using GMServer.UserModels.DataFileModels;
-using GMServer.UserModels.UserModels;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -44,7 +44,7 @@ namespace GMServer.MediatR.ArtefactHandler
             else if (!AllUniqueArtefacts(request.Artefacts))
                 throw new ServerException("Duplicate artefacts found", 400);
 
-            else if(!UserOwnsAllArtefacts(userArtefacts, request.Artefacts))
+            else if (!UserOwnsAllArtefacts(userArtefacts, request.Artefacts))
                 throw new ServerException("Invalid artefact found", 400);
 
             else if (!UpgradeLevelsValid(userArtefacts, datafile, request.Artefacts))
@@ -70,7 +70,7 @@ namespace GMServer.MediatR.ArtefactHandler
             return new BulkUpgradeArtefactResponse(userArtefacts, totalUpgradeCost, userCurrencies.PrestigePoints);
         }
 
-        bool UpgradeLevelsValid(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
+        private bool UpgradeLevelsValid(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
         {
             foreach (var artUpgrade in artefactUpgrades)
             {
@@ -86,19 +86,19 @@ namespace GMServer.MediatR.ArtefactHandler
             return true;
         }
 
-        bool UserOwnsAllArtefacts(List<UserArtefact> unlockedArtefacts, List<UserArtefactUpgrade> artefacts)
+        private bool UserOwnsAllArtefacts(List<UserArtefact> unlockedArtefacts, List<UserArtefactUpgrade> artefacts)
         {
             IEnumerable<int> unlockedArtefactsId = unlockedArtefacts.Select(x => x.ArtefactID);
 
             return artefacts.All(art => unlockedArtefactsId.Contains(art.ArtefactID));
         }
 
-        bool AllUniqueArtefacts(List<UserArtefactUpgrade> artefacts)
+        private bool AllUniqueArtefacts(List<UserArtefactUpgrade> artefacts)
         {
             return artefacts.Select(x => x.ArtefactID).ToHashSet().Count() == artefacts.Count;
         }
 
-        double CalculateTotalUpgradeCost(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
+        private double CalculateTotalUpgradeCost(List<UserArtefact> unlockedArtefacts, List<Artefact> artefactsDatafile, List<UserArtefactUpgrade> artefactUpgrades)
         {
             double totalCost = 0;
 
@@ -113,7 +113,7 @@ namespace GMServer.MediatR.ArtefactHandler
             return totalCost;
         }
 
-        double CalculateUpgradeCost(UserArtefact userArtefact, Artefact artefact, int levels)
+        private double CalculateUpgradeCost(UserArtefact userArtefact, Artefact artefact, int levels)
         {
             return artefact.CostCoeff * GameFormulas.SumNonIntegerPowerSeq(userArtefact.Level, levels, artefact.CostExpo);
         }

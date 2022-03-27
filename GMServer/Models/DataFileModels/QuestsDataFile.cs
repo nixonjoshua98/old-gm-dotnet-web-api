@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GMServer.UserModels.DataFileModels
+namespace GMServer.Models.DataFileModels
 {
     public class MercQuest
     {

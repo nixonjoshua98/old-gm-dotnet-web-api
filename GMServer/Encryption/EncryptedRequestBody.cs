@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GMServer.Encryption

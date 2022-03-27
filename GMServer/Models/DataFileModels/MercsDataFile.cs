@@ -1,8 +1,8 @@
 ﻿using GMServer.Common;
-using System.Collections.Generic;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
-namespace GMServer.UserModels.DataFileModels
+namespace GMServer.Models.DataFileModels
 {
     public class PassiveBonus
     {
@@ -23,7 +23,7 @@ namespace GMServer.UserModels.DataFileModels
         [JsonProperty(PropertyName = "MercID")]
         public int ID { get; set; }
         public string Name { get; set; }
-        public float BaseDamage { get; set; }  
+        public float BaseDamage { get; set; }
         public int SpawnEnergyRequired { get; set; }
         public List<MercPassiveBonus> Passives;
     }

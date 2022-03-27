@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System;
-using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace GMServer.Services
 {
-    class DataFileCachedObject
+    internal class DataFileCachedObject
     {
         public string File;
         public DateTime LoadedAt;
@@ -29,9 +29,8 @@ namespace GMServer.Services
 
     public class DataFileCache : IDataFileCache
     {
-        Dictionary<string, DataFileCachedObject> _cache;
-
-        long CacheInterval = 60 * 15;
+        private readonly Dictionary<string, DataFileCachedObject> _cache;
+        private readonly long CacheInterval = 60 * 15;
 
         public DataFileCache()
         {
@@ -43,7 +42,7 @@ namespace GMServer.Services
             return JsonConvert.DeserializeObject<T>(LoadOrCache(fp));
         }
 
-        string LoadOrCache(string fp)
+        private string LoadOrCache(string fp)
         {
             if (!_cache.TryGetValue(fp, out DataFileCachedObject cachedObject))
             {
@@ -58,18 +57,18 @@ namespace GMServer.Services
             return cachedObject.Text;
         }
 
-        void ReloadCachedItem(ref DataFileCachedObject cachedObject)
+        private void ReloadCachedItem(ref DataFileCachedObject cachedObject)
         {
             cachedObject.LoadedAt = DateTime.UtcNow;
             cachedObject.Text = LoadFile(cachedObject.File);
         }
 
-        string LoadFile(string fp)
+        private string LoadFile(string fp)
         {
             return System.IO.File.ReadAllText(fp);
         }
 
-        bool IsOutdated(DataFileCachedObject cachedObject)
+        private bool IsOutdated(DataFileCachedObject cachedObject)
         {
             long nowTimestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
             long lastLoadTimestamp = new DateTimeOffset(cachedObject.LoadedAt).ToUnixTimeSeconds();

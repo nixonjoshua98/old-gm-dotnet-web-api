@@ -31,7 +31,7 @@ namespace GMServer.Context
 
         public CurrentServerRefresh<T> Current => RefreshPairFromDate(DateTime.UtcNow);
 
-        CurrentServerRefresh<T> RefreshPairFromDate(DateTime dt)
+        private CurrentServerRefresh<T> RefreshPairFromDate(DateTime dt)
         {
             DateTime refreshTime = new DateTime(dt.Year, dt.Month, dt.Day, Hour, Minute, Second);
 
@@ -50,7 +50,7 @@ namespace GMServer.Context
                 while (refreshTime.Day != MonthDate)
                     refreshTime -= TimeSpan.FromDays(1);
 
-                DateTime nextRefresh = new DateTime(refreshTime.Year, refreshTime.Month + 1, refreshTime.Day, refreshTime.Hour, refreshTime.Minute, refreshTime.Second);
+                DateTime nextRefresh = new(refreshTime.Year, refreshTime.Month + 1, refreshTime.Day, refreshTime.Hour, refreshTime.Minute, refreshTime.Second);
 
                 return new(refreshTime, nextRefresh);
             }

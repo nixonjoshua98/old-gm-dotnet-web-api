@@ -30,7 +30,7 @@ namespace GMServer.Controllers
             {
                 var resp = await _mediator.Send(new UpgradeArmouryItemRequest()
                 {
-                    UserID=User.UserID(),
+                    UserID = User.UserID(),
                     ItemID = body.ItemID
                 });
 
@@ -40,7 +40,7 @@ namespace GMServer.Controllers
             {
                 return new ServerError(ex.Message, ex.StatusCode);
             }
-            
+
             catch (Exception ex)
             {
                 Log.Error(ex, "UpgradeArmouryItem");

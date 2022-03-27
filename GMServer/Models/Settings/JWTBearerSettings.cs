@@ -1,4 +1,4 @@
-﻿namespace GMServer.UserModels
+﻿namespace GMServer.Models.Settings
 {
     public class JWTBearerSettings
     {

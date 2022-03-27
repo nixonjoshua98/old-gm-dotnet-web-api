@@ -1,6 +1,6 @@
-﻿using GMServer.Services;
-using GMServer.UserModels.DataFileModels;
-using GMServer.UserModels.UserModels;
+﻿using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
+using GMServer.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -42,7 +42,7 @@ namespace GMServer.MediatR.BountyHandlers
             return new(request.DateTime, points, updatedCurrencies);
         }
 
-        long CalculateClaimPoints(DateTime now, UserBounties bounties)
+        private long CalculateClaimPoints(DateTime now, UserBounties bounties)
         {
             var datafile = _bounties.GetDataFile();
 

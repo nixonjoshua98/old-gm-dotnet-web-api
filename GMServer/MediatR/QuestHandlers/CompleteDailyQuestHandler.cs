@@ -1,9 +1,9 @@
 ﻿using GMServer.Common;
 using GMServer.Context;
 using GMServer.Exceptions;
+using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
-using GMServer.UserModels.DataFileModels;
 using MediatR;
 using System;
 using System.Threading;
@@ -40,7 +40,7 @@ namespace GMServer.MediatR.QuestHandlers
             if (!request.DailyRefresh.IsBetween(request.LocalDailyStats.DateTime))
                 request.LocalDailyStats = new() { DateTime = DateTime.UtcNow };
 
-            var quest = _quests.GetDailyQuest(request.UserID, request.QuestID);
+            var quest = _quests.GetDailyQuest(request.QuestID);
             var userQuest = await _quests.GetDailyQuestProgressAsync(request.UserID, request.QuestID, request.DailyRefresh);
 
             if (quest is null)
@@ -60,13 +60,13 @@ namespace GMServer.MediatR.QuestHandlers
                 QuestID = request.QuestID,
                 CompletedTime = DateTime.UtcNow
             });
-            
+
             await _currencies.IncrementAsync(request.UserID, new() { Diamonds = quest.DiamondsRewarded });
 
             return new CompleteDailyQuestResponse(quest.DiamondsRewarded);
         }
 
-        bool IsQuestCompleted(DailyQuest quest, UserAccountStatsModelBase localStats, DailyUserAccountStats dailyStats)
+        private bool IsQuestCompleted(DailyQuest quest, UserAccountStatsModelBase localStats, DailyUserAccountStats dailyStats)
         {
             return quest.ActionType switch
             {

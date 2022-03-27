@@ -1,6 +1,6 @@
 ﻿using GMServer.Context;
-using GMServer.UserModels.DataFileModels;
-using GMServer.UserModels.UserModels;
+using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +21,12 @@ namespace GMServer.Services
             _mercQuests = mongo.GetCollection<UserMercQuest>("UserMercQuests");
         }
 
-        public MercQuest GetMercQuest(string userId, int questId)
+        public MercQuest GetMercQuest(int questId)
         {
             return GetDataFile().MercQuests.First(x => x.ID == questId);
         }
 
-        public DailyQuest GetDailyQuest(string userId, int questId)
+        public DailyQuest GetDailyQuest(int questId)
         {
             return GetDataFile().DailyQuests.First(x => x.ID == questId);
         }

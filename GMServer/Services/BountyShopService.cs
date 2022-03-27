@@ -21,18 +21,34 @@ namespace GMServer.Services
             _purchases = mongo.GetCollection<BountyShopPurchase>("BountyShopPurchases");
         }
 
-        public async Task<List<BountyShopPurchase>> GetUserDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        public async Task InsertShopPurchaseAsync(BountyShopPurchase bountyShopPurchase)
         {
-            return await _purchases.Find(x => x.UserID == userId && x.PurchaseTime > refresh.Previous && x.PurchaseTime < refresh.Next).ToListAsync();
+            await _purchases.InsertOneAsync(bountyShopPurchase);
+        }
+
+        public async Task<List<BountyShopPurchase>> GetDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        {
+            return await _purchases.Find(x =>
+                x.UserID == userId &&
+                x.PurchaseTime > refresh.Previous &&
+                x.PurchaseTime < refresh.Next).ToListAsync();
+        }
+
+        public async Task<List<BountyShopPurchase>> GetDailyItemPurchasesAsync(string userId, string itemId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        {
+            return await _purchases.Find(x =>
+                x.UserID == userId &&
+                x.ItemID == itemId &&
+                x.PurchaseTime > refresh.Previous &&
+                x.PurchaseTime < refresh.Next).ToListAsync();
         }
 
         public BountyShopItems GetUserBountyShop(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
         {
-            int seed = $"{userId}{refresh.Previous.ToFileTimeUtc()}".GetHashCode();
-
             BountyShopLootTable table = new(GetDataFile(), _armoury.GetDataFile());
 
-            return table.GetItems(5, seed);
+            // Seed is on a per-user basis
+            return table.GetItems(5, $"{userId}-{refresh.Previous}");
         }
 
         public BountyShopDataFile GetDataFile()

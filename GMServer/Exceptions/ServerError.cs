@@ -10,7 +10,10 @@ namespace GMServer.Exceptions
             StatusCode = code;
         }
 
-        static string Serialise(string message, int code)
+        /// <summary>
+        /// Replaces the response message to JSON {"Message": message, "StatusCode": code}
+        /// </summary>
+        private static string Serialise(string message, int code)
         {
             return Newtonsoft.Json.JsonConvert.SerializeObject(new { Message = message, StatusCode = code });
         }

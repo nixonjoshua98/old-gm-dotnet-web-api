@@ -1,6 +1,6 @@
-﻿using GMServer.Models.RequestModels;
-using GMServer.UserModels.DataFileModels;
-using GMServer.UserModels.UserModels;
+﻿using GMServer.Models.DataFileModels;
+using GMServer.Models.RequestModels;
+using GMServer.Models.UserModels;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,7 +34,7 @@ namespace GMServer.Services
 
             foreach (UserArtefactUpgrade upgrade in upgrades)
             {
-                var query = new UpdateOneModel<UserArtefact> (
+                var query = new UpdateOneModel<UserArtefact>(
                     Builders<UserArtefact>.Filter.Eq(x => x.UserID, userId) & Builders<UserArtefact>.Filter.Eq(x => x.ArtefactID, upgrade.ArtefactID),
                     Builders<UserArtefact>.Update.Inc(x => x.Level, upgrade.Levels)
                     );

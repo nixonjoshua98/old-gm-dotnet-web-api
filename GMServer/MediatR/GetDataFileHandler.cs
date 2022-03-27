@@ -1,4 +1,4 @@
-﻿using GMServer.UserModels.DataFileModels;
+﻿using GMServer.Models.DataFileModels;
 using GMServer.Services;
 using MediatR;
 using System.Collections.Generic;

@@ -1,7 +1,6 @@
 ﻿using GMServer.Context;
 using GMServer.Models.UserModels;
 using GMServer.Services;
-using GMServer.UserModels.UserModels;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -40,10 +39,10 @@ namespace GMServer.MediatR
         private readonly BountiesService _bounties;
 
         public GetUserDataHandler(
-            ArtefactsService artefacts, 
-            ArmouryService armoury, 
-            CurrenciesService currencies, 
-            MercService mercs, 
+            ArtefactsService artefacts,
+            ArmouryService armoury,
+            CurrenciesService currencies,
+            MercService mercs,
             BountiesService bounties,
             QuestsService quests,
             BountyShopService bountyshop,
@@ -78,7 +77,7 @@ namespace GMServer.MediatR
                 BountyShop = new()
                 {
                     ShopItems = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh),
-                    Purchases = await _bountyshop.GetUserDailyPurchasesAsync(request.UserID, request.DailyRefresh)
+                    Purchases = await _bountyshop.GetDailyPurchasesAsync(request.UserID, request.DailyRefresh)
                 },
                 UserStats = new
                 {

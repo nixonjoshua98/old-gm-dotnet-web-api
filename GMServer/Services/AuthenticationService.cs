@@ -1,5 +1,6 @@
 ﻿using GMServer.Authentication;
-using GMServer.UserModels;
+using GMServer.Models;
+using GMServer.Models.Settings;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 using System;

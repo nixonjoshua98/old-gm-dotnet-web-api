@@ -3,13 +3,12 @@ using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.UserModels.UserModels
+namespace GMServer.Models.UserModels
 {
     public class UserBounty
     {
-        public int BountyID { get; set; }
+        public int BountyID;
     }
-
 
     [BsonIgnoreExtraElements]
     public class UserBounties

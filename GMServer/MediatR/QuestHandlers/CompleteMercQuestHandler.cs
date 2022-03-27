@@ -28,7 +28,7 @@ namespace GMServer.MediatR.QuestHandlers
 
         public async Task<CompleteMercQuestResponse> Handle(CompleteMercQuestRequest request, CancellationToken cancellationToken)
         {
-            var quest = _quests.GetMercQuest(request.UserID, request.QuestID);
+            var quest = _quests.GetMercQuest(request.QuestID);
             var questProgress = await _quests.GetMercQuestProgressAsync(request.UserID, request.QuestID);
 
             if (questProgress is not null)

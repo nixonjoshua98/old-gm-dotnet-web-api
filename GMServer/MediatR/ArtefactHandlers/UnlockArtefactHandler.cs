@@ -1,7 +1,7 @@
 ﻿using GMServer.Exceptions;
+using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
 using GMServer.Services;
-using GMServer.UserModels.DataFileModels;
-using GMServer.UserModels.UserModels;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -54,7 +54,7 @@ namespace GMServer.MediatR.ArtefactHandler
             return new UnlockArtefactResponse(newArtefact, unlockCost);
         }
 
-        UserArtefact GetNewArtefact(string userId, List<UserArtefact> userArtefacts, List<Artefact> artefacts)
+        private UserArtefact GetNewArtefact(string userId, List<UserArtefact> userArtefacts, List<Artefact> artefacts)
         {
             IEnumerable<int> userArtefactIds = userArtefacts.Select(x => x.ArtefactID);
 
@@ -65,7 +65,7 @@ namespace GMServer.MediatR.ArtefactHandler
             return new UserArtefact() { UserID = userId, ArtefactID = newArtefact.ID, Level = 1 };
         }
 
-        double CalculateUnlockCost(List<UserArtefact> userArtefacts)
+        private double CalculateUnlockCost(List<UserArtefact> userArtefacts)
         {
             return Math.Max(1, userArtefacts.Count) * Math.Pow(1.35, userArtefacts.Count);
         }

@@ -1,7 +1,7 @@
 ﻿using GMServer.Common;
 using Newtonsoft.Json;
 
-namespace GMServer.UserModels.DataFileModels
+namespace GMServer.Models.DataFileModels
 {
     public class Artefact
     {

@@ -7,7 +7,7 @@ namespace GMServer.Extensions
 {
     public static class ClaimsIdentityExtensions
     {
-        public static string UserID (this ClaimsPrincipal principal)
+        public static string UserID(this ClaimsPrincipal principal)
         {
             return principal.Claims.FirstOrDefault(claim => claim.Type == ClaimNames.UserID)?.Value ?? throw new MissingRequiredClaimException(ClaimNames.UserID);
         }

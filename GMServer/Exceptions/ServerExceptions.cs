@@ -5,7 +5,7 @@ namespace GMServer.Exceptions
 {
     public class ServerException : Exception
     {
-        public int StatusCode { get; set; }    
+        public int StatusCode { get; set; }
 
         public ServerException(string message, int status) : base(message)
         {

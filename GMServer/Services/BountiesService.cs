@@ -1,9 +1,9 @@
-﻿using GMServer.UserModels.DataFileModels;
-using GMServer.UserModels.UserModels;
+﻿using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 
 namespace GMServer.Services
 {
@@ -23,7 +23,7 @@ namespace GMServer.Services
             var update = Builders<UserBounties>.Update
                 .SetOnInsert(s => s.LastClaimTime, DateTime.UtcNow);
 
-            return await _bounties.FindOneAndUpdateAsync(x => x.UserID == userId, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true});
+            return await _bounties.FindOneAndUpdateAsync(x => x.UserID == userId, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true });
         }
 
         public async Task SetActiveBountiesAsync(string userId, IEnumerable<int> bountyIds)

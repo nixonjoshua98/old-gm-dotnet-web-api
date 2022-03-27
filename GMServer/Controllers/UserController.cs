@@ -1,17 +1,13 @@
 ﻿using GMServer.Context;
 using GMServer.Exceptions;
 using GMServer.Extensions;
-using GMServer.MediatR;
-using GMServer.MediatR.Login;
 using GMServer.Models.RequestModels;
-using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace GMServer.Controllers
@@ -23,7 +19,7 @@ namespace GMServer.Controllers
         private readonly IMediator _mediator;
         private readonly AccountStatsService _stats;
 
-        public UserController(IMediator mediator,  AccountStatsService stats)
+        public UserController(IMediator mediator, AccountStatsService stats)
         {
             _mediator = mediator;
             _stats = stats;

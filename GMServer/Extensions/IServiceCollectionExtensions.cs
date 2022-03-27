@@ -1,7 +1,7 @@
 ﻿using GMServer.Authentication;
 using GMServer.Context;
 using GMServer.Exceptions;
-using GMServer.UserModels;
+using GMServer.Models.Settings;
 using GMServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -46,7 +46,7 @@ namespace GMServer
             services.AddSingleton(database);
         }
 
-        public static T AddConfigurationSingleton<T>(this IServiceCollection services, IConfiguration configuration, string section) where T: new()
+        public static T AddConfigurationSingleton<T>(this IServiceCollection services, IConfiguration configuration, string section) where T : new()
         {
             T model = new T();
 
@@ -87,7 +87,8 @@ namespace GMServer
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        context.Response.OnStarting(() => {
+                        context.Response.OnStarting(() =>
+                        {
 
                             // Our JWT handler may throw a custom exception which will 'hopefully' force the user to
                             // invalidate and delete all local game progress.

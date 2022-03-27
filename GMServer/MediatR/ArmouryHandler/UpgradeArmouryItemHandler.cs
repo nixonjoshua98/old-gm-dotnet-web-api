@@ -1,6 +1,6 @@
 ﻿using GMServer.Exceptions;
+using GMServer.Models.UserModels;
 using GMServer.Services;
-using GMServer.UserModels.UserModels;
 using MediatR;
 using System.Linq;
 using System.Threading;
@@ -51,7 +51,7 @@ namespace GMServer.MediatR.ArmouryHandlers
             return new UpgradeArmouryItemResponse(upgradedItem, upgradeCost);
         }
 
-        int CalculateUpgradeCost(UserArmouryItem item)
+        private int CalculateUpgradeCost(UserArmouryItem item)
         {
             return item.Level + 5;
         }

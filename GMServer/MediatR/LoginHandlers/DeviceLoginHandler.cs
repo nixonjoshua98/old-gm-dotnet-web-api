@@ -1,6 +1,6 @@
 ﻿using GMServer.Common;
 using GMServer.Exceptions;
-using GMServer.UserModels;
+using GMServer.Models;
 using GMServer.Services;
 using MediatR;
 using System.Threading;
@@ -10,7 +10,7 @@ namespace GMServer.MediatR.Login
 {
     public class DeviceLoginRequest : IRequest<DeviceLoginResponse>
     {
-        public string DeviceID { get; set; }   
+        public string DeviceID { get; set; }
     }
 
     public record DeviceLoginResponse(string UserID, string Token);

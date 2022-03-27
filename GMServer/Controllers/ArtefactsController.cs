@@ -61,7 +61,7 @@ namespace GMServer.Controllers
                 });
 
                 return Ok(resp);
-            } 
+            }
             catch (ServerException ex)
             {
                 return new ServerError(ex.Message, ex.StatusCode);

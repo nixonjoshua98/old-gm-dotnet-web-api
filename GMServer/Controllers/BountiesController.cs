@@ -1,5 +1,4 @@
-﻿using GMServer.Encryption;
-using GMServer.Exceptions;
+﻿using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.MediatR.BountyHandlers;
 using GMServer.Models.RequestModels;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace GMServer.Controllers
@@ -37,7 +35,7 @@ namespace GMServer.Controllers
                 });
 
                 return Ok(resp);
-            } 
+            }
             catch (Exception ex)
             {
                 Log.Error(ex, "ClaimBountyPoints");

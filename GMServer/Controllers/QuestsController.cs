@@ -1,7 +1,6 @@
 ﻿using GMServer.Context;
 using GMServer.Exceptions;
 using GMServer.Extensions;
-using GMServer.MediatR.ArmouryHandlers;
 using GMServer.MediatR.QuestHandlers;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
@@ -68,7 +67,7 @@ namespace GMServer.Controllers
             catch (ServerException ex)
             {
                 return new ServerError(ex.Message, ex.StatusCode);
-            }            
+            }
             catch (Exception ex)
             {
                 Log.Error(ex, "CompleteMercQuest");

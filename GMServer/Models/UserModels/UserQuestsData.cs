@@ -1,8 +1,8 @@
-﻿using GMServer.UserModels.DataFileModels;
+﻿using GMServer.Models.DataFileModels;
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.UserModels.UserModels
+namespace GMServer.Models.UserModels
 {
     public class UserQuests
     {

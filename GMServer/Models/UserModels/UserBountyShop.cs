@@ -1,7 +1,6 @@
 ﻿using GMServer.Common;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -9,12 +8,11 @@ namespace GMServer.Models.UserModels
 {
     public abstract class UserAbstractBountyShopItem
     {
-        [JsonRequired]
-        public string ID { get; set; } = Guid.NewGuid().ToString();
-        public int PurchaseCost { get; set; }
+        public string ID;
+        public int PurchaseCost;
     }
 
-    public class UserBountyShopCurrenyItem : UserAbstractBountyShopItem
+    public class UserBountyShopCurrencyItem : UserAbstractBountyShopItem
     {
         public CurrencyType CurrencyType;
         public int Quantity;
@@ -27,7 +25,7 @@ namespace GMServer.Models.UserModels
 
     public class BountyShopItems
     {
-        public List<UserBountyShopCurrenyItem> CurrencyItems { get; set; } = new();
+        public List<UserBountyShopCurrencyItem> CurrencyItems { get; set; } = new();
         public List<UserBountyShopArmouryItem> ArmouryItems { get; set; } = new();
     }
 

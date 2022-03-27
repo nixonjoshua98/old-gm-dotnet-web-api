@@ -1,6 +1,6 @@
-﻿using GMServer.Models.DataFileModels;
+﻿using GMServer.Common;
+using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
-using GMServer.UserModels.DataFileModels;
 using System;
 using System.Collections.Generic;
 
@@ -8,9 +8,9 @@ namespace GMServer.LootTable
 {
     public class BountyShopLootTable
     {
-        readonly RDSTable RootTable;
-        readonly BountyShopDataFile bountyshopDataFile;
-        readonly List<ArmouryItem> armouryDataFile;
+        private readonly RDSTable RootTable;
+        private readonly BountyShopDataFile bountyshopDataFile;
+        private readonly List<ArmouryItem> armouryDataFile;
 
         public BountyShopLootTable(BountyShopDataFile datafile, List<ArmouryItem> armouryIitems)
         {
@@ -23,27 +23,33 @@ namespace GMServer.LootTable
             AddArmouryItemsTable();
         }
 
-        public BountyShopItems GetItems(int count, int seed)
+        public BountyShopItems GetItems(int count, string seed)
         {
-            Random rnd = new(seed);
+            Random rnd = Utility.SeededRandom(seed);
 
             BountyShopItems shop = new();
 
-            foreach (var x in RootTable.GetResults(count, rnd))
+            var results = RootTable.GetResults(count, rnd);
+
+            for (int i = 0; i < results.Count; i++)
             {
-                if (x is RDSValue<BountyShopCurrencyItem> cItem)
+                var current = results[i];
+
+                if (current is RDSValue<BountyShopCurrencyItem> cItem)
                 {
                     shop.CurrencyItems.Add(new()
                     {
+                        ID = $"CI{i}{rnd.NextInt64()}",
                         Quantity = cItem.Value.Quantity,
                         CurrencyType = cItem.Value.CurrencyType,
                         PurchaseCost = cItem.Value.PurchaseCost,
                     });
                 }
-                else if (x is RDSValue<BountyShopArmouryItem> aItem)
+                else if (current is RDSValue<BountyShopArmouryItem> aItem)
                 {
                     shop.ArmouryItems.Add(new()
                     {
+                        ID = $"AI{i}{rnd.NextInt64()}",
                         ItemID = aItem.Value.ID,
                         PurchaseCost = aItem.Value.PurchaseCost
                     });
@@ -53,7 +59,7 @@ namespace GMServer.LootTable
             return shop;
         }
 
-        void AddArmouryItemsTable()
+        private void AddArmouryItemsTable()
         {
             RDSTable table = new()
             {
@@ -81,7 +87,7 @@ namespace GMServer.LootTable
             RootTable.AddEntry(table);
         }
 
-        void AddCurrencyItemsTable()
+        private void AddCurrencyItemsTable()
         {
             RDSTable currencyItemsTable = new()
             {

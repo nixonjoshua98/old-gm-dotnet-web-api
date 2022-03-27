@@ -1,11 +1,11 @@
 ﻿using GMServer.Exceptions;
+using GMServer.Models.UserModels;
 using GMServer.Services;
-using GMServer.UserModels.UserModels;
 using MediatR;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace GMServer.MediatR.BountyHandlers
 {
@@ -43,7 +43,7 @@ namespace GMServer.MediatR.BountyHandlers
             return new UpdateActiveBountiesResponse();
         }
 
-        bool IsBountiesUnlocked(UserBounties bounties, IEnumerable<int> bountyIds)
+        private bool IsBountiesUnlocked(UserBounties bounties, IEnumerable<int> bountyIds)
         {
             var unlockedBountyIds = bounties.UnlockedBounties.Select(x => x.BountyID).ToList();
 
