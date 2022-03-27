@@ -28,10 +28,7 @@ namespace GMServer.Controllers
         {
             try
             {
-                var loginResp = await _mediator.Send(new DeviceLoginRequest
-                {
-                    DeviceID = deviceId
-                });
+                var loginResp = await _mediator.Send(new DeviceLoginRequest { DeviceID = deviceId });
 
                 var dataResp = await _mediator.Send(new GetUserDataRequest
                 {

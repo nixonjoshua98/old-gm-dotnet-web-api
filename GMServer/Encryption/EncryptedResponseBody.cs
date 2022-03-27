@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
+﻿using GMServer.Common;
+using GMServer.Models.Settings;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,21 +13,32 @@ namespace GMServer.Encryption
     {
         public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
         {
-            var existingBody = context.HttpContext.Response.Body;
+            EncryptionSettings settings = context.HttpContext.RequestServices.GetService<EncryptionSettings>();
+
+            var response = context.HttpContext.Response;
+
+            var existingBody = response.Body;
 
             using (var ms = new MemoryStream())
             {
-                //context.HttpContext.Response.Body = ms;
+                response.Body = ms;
 
                 await next();
 
                 ms.Seek(0, SeekOrigin.Begin);
 
+                string responseBody = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+
                 context.HttpContext.Response.Body = existingBody;
 
-                //string newContent = "X";
+                string newContent = AES.Encrypt(responseBody, settings);
 
-                //await context.HttpContext.Response.WriteAsync(newContent);
+                response.Headers["Response-Encrypted"] = "true";
+
+                // (Required) Request will not send if the content length is not updated
+                response.Headers["Content-Length"] = newContent.Length.ToString();
+
+                await context.HttpContext.Response.WriteAsync(newContent);
             }
         }
     }

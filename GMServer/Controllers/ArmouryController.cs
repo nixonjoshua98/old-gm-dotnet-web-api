@@ -1,4 +1,5 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Encryption;
+using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.MediatR.ArmouryHandlers;
 using GMServer.Models.RequestModels;
@@ -23,6 +24,8 @@ namespace GMServer.Controllers
         }
 
         [HttpPut("Upgrade")]
+        [EncryptedResponseBody]
+        [EncryptedRequestBody]
         [Authorize]
         public async Task<IActionResult> UpgradeItem(UpgradeArmouryItemBody body)
         {

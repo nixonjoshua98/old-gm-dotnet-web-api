@@ -1,3 +1,4 @@
+using GMServer.Models.Settings;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -41,6 +42,8 @@ namespace GMServer
             {
                 opt.AddSerilog();
             });
+
+            services.Configure<EncryptionSettings>(Configuration, "Encryption");
 
             services.AddMediatR(typeof(Startup));
             services.AddMongo(Configuration);
