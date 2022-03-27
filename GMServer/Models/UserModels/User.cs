@@ -6,8 +6,8 @@ namespace GMServer.Models
     public class User
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
-        public string ID { get; set; }
+        public string ID;
 
-        public string DeviceID { get; set; }
+        public string DeviceID;
     }
 }

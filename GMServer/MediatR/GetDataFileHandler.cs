@@ -14,10 +14,10 @@ namespace GMServer.MediatR
 
     public class GetDataFileResponse
     {
-        public List<Artefact> Artefacts { get; set; }
-        public List<ArmouryItem> ArmouryItems { get; set; }
-        public BountiesDataFile Bounties { get; set; }
-        public MercsDataFile Mercs { get; set; }
+        public List<Artefact> Artefacts;
+        public List<ArmouryItem> ArmouryItems;
+        public BountiesDataFile Bounties;
+        public MercsDataFile Mercs;
     }
 
     public class GetDataFileHandler : IRequestHandler<GetDataFileRequest, GetDataFileResponse>

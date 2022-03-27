@@ -7,12 +7,12 @@ namespace GMServer.Models.UserModels
     public class UserArmouryItem
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
-        public int ItemID { get; set; }
+        public int ItemID;
 
-        public int Level { get; set; } = 0;
+        public int Level = 0;
 
-        public int Owned { get; set; }
+        public int Owned;
     }
 }

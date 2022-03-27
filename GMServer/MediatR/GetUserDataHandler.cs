@@ -11,8 +11,8 @@ namespace GMServer.MediatR
 {
     public class GetUserDataRequest : IRequest<GetUserDataResponse>
     {
-        public string UserID { get; set; }
-        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh { get; set; }
+        public string UserID;
+        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
     public class GetUserDataResponse

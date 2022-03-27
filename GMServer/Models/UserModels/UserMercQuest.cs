@@ -7,8 +7,8 @@ namespace GMServer.Models.UserModels
     public class UserMercQuest
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
-        public int QuestID { get; set; }
+        public int QuestID;
     }
 }

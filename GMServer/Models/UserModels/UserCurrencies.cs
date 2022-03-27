@@ -11,14 +11,14 @@ namespace GMServer.Models.UserModels
     public class UserCurrencies
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
-        public int Diamonds { get; set; } = 0;
+        public int Diamonds = 0;
 
-        public double PrestigePoints { get; set; } = 0;
+        public double PrestigePoints = 0;
 
-        public long BountyPoints { get; set; } = 0;
+        public long BountyPoints = 0;
 
-        public long ArmouryPoints { get; set; } = 0;
+        public long ArmouryPoints = 0;
     }
 }

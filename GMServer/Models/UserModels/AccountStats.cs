@@ -21,7 +21,7 @@ namespace GMServer.Models.UserModels
     public class DailyUserAccountStats : UserAccountStatsModelBase
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
         public DateTime DateTime = DateTime.UtcNow;
     }
@@ -30,6 +30,6 @@ namespace GMServer.Models.UserModels
     public class LifetimeUserAccountStats : UserAccountStatsModelBase
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
     }
 }

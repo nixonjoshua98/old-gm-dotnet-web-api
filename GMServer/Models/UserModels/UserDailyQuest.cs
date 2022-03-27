@@ -8,8 +8,8 @@ namespace GMServer.Models.UserModels
     public class UserDailyQuest
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
-        public int QuestID { get; set; }
-        public DateTime CompletedTime { get; set; }
+        public string UserID;
+        public int QuestID;
+        public DateTime CompletedTime;
     }
 }

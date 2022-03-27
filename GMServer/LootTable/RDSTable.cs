@@ -13,8 +13,8 @@ namespace GMServer.LootTable
     {
         private Random SeededRandom;
 
-        private List<IRDSObject> AllPossibleItems { get; set; } = new();
-        private List<IRDSObject> AvailableItems { get; set; } = null;
+        private List<IRDSObject> AllPossibleItems = new();
+        private List<IRDSObject> AvailableItems = null;
 
         /// <summary>
         /// Adds the given entry to contents collection.

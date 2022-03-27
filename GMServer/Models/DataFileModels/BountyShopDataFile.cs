@@ -8,37 +8,37 @@ namespace GMServer.Models.DataFileModels
     public class BountyShopCurrencyItem : LootItem
     {
         [JsonRequired]
-        public CurrencyType CurrencyType { get; set; }
+        public CurrencyType CurrencyType;
 
         [JsonRequired]
-        public int PurchaseCost { get; set; }
+        public int PurchaseCost;
 
         [JsonRequired]
-        public int Quantity { get; set; }
+        public int Quantity;
     }
 
     public class BountyShopArmouryItem : LootItem
     {
         [JsonProperty(PropertyName = "ItemID", Required = Required.Always)]
-        public int ID { get; set; }
+        public int ID;
 
         [JsonRequired]
-        public int PurchaseCost { get; set; }
+        public int PurchaseCost;
     }
 
     public class BountyShopCurrencyItemsDataFile : LootItem
     {
-        public List<BountyShopCurrencyItem> Items { get; set; }
+        public List<BountyShopCurrencyItem> Items;
     }
 
     public class BountyShopArmouryItemsDataFile : LootItem
     {
-        public int PurchaseCost { get; set; }
+        public int PurchaseCost;
     }
 
     public class BountyShopDataFile
     {
-        public BountyShopCurrencyItemsDataFile CurrencyItems { get; set; }
-        public BountyShopArmouryItemsDataFile ArmouryItems { get; set; }
+        public BountyShopCurrencyItemsDataFile CurrencyItems;
+        public BountyShopArmouryItemsDataFile ArmouryItems;
     }
 }

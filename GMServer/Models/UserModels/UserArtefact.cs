@@ -7,10 +7,10 @@ namespace GMServer.Models.UserModels
     public class UserArtefact
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
-        public int ArtefactID { get; set; }
+        public int ArtefactID;
 
-        public int Level { get; set; } = 0;
+        public int Level = 0;
     }
 }

@@ -10,7 +10,7 @@ namespace GMServer.MediatR.Login
 {
     public class DeviceLoginRequest : IRequest<DeviceLoginResponse>
     {
-        public string DeviceID { get; set; }
+        public string DeviceID;
     }
 
     public record DeviceLoginResponse(string UserID, string Token);

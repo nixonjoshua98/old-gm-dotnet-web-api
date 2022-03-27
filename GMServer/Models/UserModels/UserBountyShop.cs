@@ -20,30 +20,30 @@ namespace GMServer.Models.UserModels
 
     public class UserBountyShopArmouryItem : UserAbstractBountyShopItem
     {
-        public int ItemID { get; set; }
+        public int ItemID;
     }
 
     public class BountyShopItems
     {
-        public List<UserBountyShopCurrencyItem> CurrencyItems { get; set; } = new();
-        public List<UserBountyShopArmouryItem> ArmouryItems { get; set; } = new();
+        public List<UserBountyShopCurrencyItem> CurrencyItems = new();
+        public List<UserBountyShopArmouryItem> ArmouryItems = new();
     }
 
     [BsonIgnoreExtraElements]
     public class BountyShopPurchase
     {
         [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID { get; set; }
+        public string UserID;
 
-        public string ItemID { get; set; }
+        public string ItemID;
 
-        public DateTime PurchaseTime { get; set; }
+        public DateTime PurchaseTime;
     }
 
     public class UserBountyShop
     {
-        public BountyShopItems ShopItems { get; set; } = new();
+        public BountyShopItems ShopItems = new();
 
-        public List<BountyShopPurchase> Purchases { get; set; }
+        public List<BountyShopPurchase> Purchases;
     }
 }

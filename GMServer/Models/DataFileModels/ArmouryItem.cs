@@ -6,12 +6,12 @@ namespace GMServer.Models.DataFileModels
     public class ArmouryItem
     {
         [JsonProperty(PropertyName = "ItemID")]
-        public int ID { get; set; }
+        public int ID;
 
-        public BonusType BonusType { get; set; }
+        public BonusType BonusType;
 
-        public float BaseEffect { get; set; }
+        public float BaseEffect;
 
-        public float LevelEffect { get; set; }
+        public float LevelEffect;
     }
 }

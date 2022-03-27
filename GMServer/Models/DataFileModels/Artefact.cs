@@ -6,18 +6,18 @@ namespace GMServer.Models.DataFileModels
     public class Artefact
     {
         [JsonProperty(PropertyName = "ArtefactID")]
-        public int ID { get; set; }
+        public int ID;
 
-        public BonusType BonusType { get; set; }
+        public BonusType BonusType;
 
-        public int MaxLevel { get; set; } = 1_000;
+        public int MaxLevel = 1_000;
 
-        public float CostExpo { get; set; }
+        public float CostExpo;
 
-        public float CostCoeff { get; set; }
+        public float CostCoeff;
 
-        public float BaseEffect { get; set; }
+        public float BaseEffect;
 
-        public float LevelEffect { get; set; }
+        public float LevelEffect;
     }
 }

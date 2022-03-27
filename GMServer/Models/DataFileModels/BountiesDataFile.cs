@@ -4,15 +4,15 @@ namespace GMServer.Models.DataFileModels
 {
     public class Bounty
     {
-        public int BountyID { get; set; }
-        public int HourlyIncome { get; set; }
-        public int UnlockStage { get; set; }
+        public int BountyID;
+        public int HourlyIncome;
+        public int UnlockStage;
     }
 
     public class BountiesDataFile
     {
-        public float MaxUnclaimedHours { get; set; }
-        public int MaxActiveBounties { get; set; }
+        public float MaxUnclaimedHours;
+        public int MaxActiveBounties;
 
         public List<Bounty> Bounties;
     }
