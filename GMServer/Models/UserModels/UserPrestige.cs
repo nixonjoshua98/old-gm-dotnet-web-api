@@ -1,0 +1,16 @@
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
+
+namespace GMServer.Models.UserModels
+{
+    public class UserPrestige
+    {
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserID;
+
+        public int Stage;
+        public DateTime DateTime;
+        public double PrestigePointsGained;
+    }
+}

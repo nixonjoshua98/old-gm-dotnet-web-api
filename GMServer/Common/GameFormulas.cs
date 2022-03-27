@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GMServer.Common.Classes;
+using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
+using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace GMServer.Common
 {
@@ -18,6 +23,55 @@ namespace GMServer.Common
             }
 
             return Predicate(start + total) - Predicate(start);
+        }
+
+        public static List<BonusTypeValuePair> CreateArtefactBonusList(List<UserArtefact> userArtefacts, List<Artefact> artefacts)
+        {
+            List<BonusTypeValuePair> ls = new();
+
+            foreach (var userArtefact in userArtefacts)
+            {
+                var artefact = artefacts.FirstOrDefault(x => x.ID == userArtefact.ArtefactID);
+
+                if (artefact is null)
+                    continue;
+
+                double bonusValue = ArtefactBaseEffect(userArtefact, artefact);
+
+                ls.Add(new(artefact.BonusType, bonusValue));
+            }
+
+            return ls;
+        }
+
+        public static double ArtefactBaseEffect(UserArtefact userArtefact, Artefact artefact)
+        {
+            return artefact.BaseEffect + (artefact.LevelEffect * (userArtefact.Level - 1));
+        }
+
+        public static Dictionary<BonusType, double> CreateResolvedBonusDictionary(IEnumerable<BonusTypeValuePair> ls)
+        {
+            Dictionary<BonusType, double> result = new();
+
+            foreach (var pair in ls)
+            {
+                if (!result.TryGetValue(pair.BonusType, out double totalValue))
+                {
+                    result[pair.BonusType] = pair.Value;
+                }
+                else
+                {
+                    result[pair.BonusType] = pair.BonusType switch
+                    {
+                        BonusType.FLAT_CRIT_CHANCE => totalValue + pair.Value,
+                        BonusType.FLAT_TAP_DMG => totalValue + pair.Value,
+
+                        _ => totalValue * pair.Value
+                    };
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -27,6 +27,7 @@ namespace GMServer
             services.AddSingleton<AccountStatsService>();
             services.AddSingleton<BountiesService>();
             services.AddSingleton<QuestsService>();
+            services.AddSingleton<PrestigeService>();
             services.AddSingleton<CurrenciesService>();
             services.AddSingleton<BountyShopService>();
 
@@ -46,11 +47,9 @@ namespace GMServer
             services.AddSingleton(database);
         }
 
-        public static T AddConfigurationSingleton<T>(this IServiceCollection services, IConfiguration configuration, string section) where T : new()
+        public static T Configure<T>(this IServiceCollection services, IConfiguration configuration, string section)
         {
-            T model = new T();
-
-            configuration.Bind(section, model);
+            T model = configuration.GetSection(section).Get<T>();
 
             services.AddSingleton(typeof(T), model);
 
@@ -59,7 +58,7 @@ namespace GMServer
 
         public static void AddJWTAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            JWTBearerSettings settings = services.AddConfigurationSingleton<JWTBearerSettings>(configuration, "AuthenticationSettings");
+            JWTBearerSettings settings = services.Configure<JWTBearerSettings>(configuration, "AuthenticationSettings");
 
             services.AddAuthentication(opt =>
             {
