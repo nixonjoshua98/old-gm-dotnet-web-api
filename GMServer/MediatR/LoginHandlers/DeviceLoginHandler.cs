@@ -32,7 +32,9 @@ namespace GMServer.MediatR.Login
 
             if (user is null)
             {
-                throw new ServerException("Account not found", HTTPCodes.AccountNotFound);
+                user = new User() { DeviceID = request.DeviceID };
+
+                await _users.InsertUserAsync(user);
             }
 
             await _auth.InvalidateUserSessionsAsync(user);

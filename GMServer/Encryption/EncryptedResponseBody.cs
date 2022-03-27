@@ -29,7 +29,7 @@ namespace GMServer.Encryption
 
                 string responseBody = System.Text.Encoding.UTF8.GetString(ms.ToArray());
 
-                context.HttpContext.Response.Body = existingBody;
+                response.Body = existingBody;
 
                 string newContent = AES.Encrypt(responseBody, settings);
 
@@ -38,7 +38,7 @@ namespace GMServer.Encryption
                 // (Required) Request will not send if the content length is not updated
                 response.Headers["Content-Length"] = newContent.Length.ToString();
 
-                await context.HttpContext.Response.WriteAsync(newContent);
+                await response.WriteAsync(newContent);
             }
         }
     }

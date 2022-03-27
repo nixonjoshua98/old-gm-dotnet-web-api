@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GMServer", "GMServer\GMServer.csproj", "{DB4B9386-E0C3-4E11-BC7E-45C565E6E640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GMServer", "GMServer\GMServer.csproj", "{DB4B9386-E0C3-4E11-BC7E-45C565E6E640}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{036D6514-798A-4F70-B253-8BB9A6AF3BE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{DB4B9386-E0C3-4E11-BC7E-45C565E6E640}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4B9386-E0C3-4E11-BC7E-45C565E6E640}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB4B9386-E0C3-4E11-BC7E-45C565E6E640}.Release|Any CPU.Build.0 = Release|Any CPU
+		{036D6514-798A-4F70-B253-8BB9A6AF3BE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{036D6514-798A-4F70-B253-8BB9A6AF3BE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{036D6514-798A-4F70-B253-8BB9A6AF3BE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{036D6514-798A-4F70-B253-8BB9A6AF3BE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

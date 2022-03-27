@@ -14,9 +14,9 @@ namespace GMServer.Services
             _users = mongo.GetCollection<User>("Accounts");
         }
 
-        public User GetUser(string id)
+        public async Task InsertUserAsync(User user)
         {
-            return _users.Find(user => user.ID == id).FirstOrDefault();
+            await _users.InsertOneAsync(user);
         }
 
         public async Task<User> GetUserByDeviceIDAsync(string deviceID)
