@@ -2,7 +2,7 @@
 {
     public class JWTBearerSettings
     {
-        public string Key;
-        public string Audience;
+        public string Key { get; set; }
+        public string Audience { get; set; }
     }
 }

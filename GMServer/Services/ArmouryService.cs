@@ -27,14 +27,19 @@ namespace GMServer.Services
             return await _armoury.Find(x => x.UserID == userId).ToListAsync();
         }
 
-        public async Task<UserArmouryItem> IncrementItemAsync(string userId, int itemId, UserArmouryItem incr)
+        public async Task InsertArmouryItemAsync(UserArmouryItem item)
+        {
+            await _armoury.InsertOneAsync(item);
+        }
+
+        public async Task<UserArmouryItem> IncrementItemAsync(string userId, int itemId, UserArmouryItem incr, bool upsert = false)
         {
             var filter = Builders<UserArmouryItem>.Filter.Eq(x => x.UserID, userId) & Builders<UserArmouryItem>.Filter.Eq(x => x.ItemID, itemId);
             var update = Builders<UserArmouryItem>.Update
                 .Inc(x => x.Level, incr.Level)
                 .Inc(x => x.Owned, incr.Owned);
 
-            return await _armoury.FindOneAndUpdateAsync(filter, update, new() { ReturnDocument = ReturnDocument.After });
+            return await _armoury.FindOneAndUpdateAsync(filter, update, new() { IsUpsert = upsert,  ReturnDocument = ReturnDocument.After });
         }
 
         public List<ArmouryItem> GetDataFile()

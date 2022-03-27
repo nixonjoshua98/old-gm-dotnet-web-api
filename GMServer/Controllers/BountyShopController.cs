@@ -2,6 +2,7 @@
 using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.MediatR;
+using GMServer.MediatR.BountyShopHandler;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
 using MediatR;
@@ -32,7 +33,33 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new PurchaseBountyShopCurrencyItemRequest
+                var resp = await _mediator.Send(new PurchaseCurrencyItemRequest
+                {
+                    UserID = User.UserID(),
+                    ItemID = body.ItemID,
+                    DailyRefresh = context.DailyRefresh
+                });
+
+                return Ok(resp);
+            }
+            catch (ServerException ex)
+            {
+                return new ServerError(ex.Message, ex.StatusCode);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "PurchaseCurrency");
+                return new InternalServerError("Failed to purchase item");
+            }
+        }
+
+        [HttpPut("Purchase/ArmouryItem")]
+        [Authorize]
+        public async Task<IActionResult> PurchaseArmouryItem(PurchaseBountyShopItemBody body, [FromServices] RequestContext context)
+        {
+            try
+            {
+                var resp = await _mediator.Send(new PurchaseArmouryItemRequest
                 {
                     UserID = User.UserID(),
                     ItemID = body.ItemID,

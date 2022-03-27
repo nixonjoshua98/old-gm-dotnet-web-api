@@ -8,29 +8,29 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR
+namespace GMServer.MediatR.BountyShopHandler
 {
-    public class PurchaseBountyShopCurrencyItemRequest : IRequest<PurchaseBountyShopCurrencyItemResponse>
+    public class PurchaseCurrencyItemRequest : IRequest<PurchaseCurrencyItemResponse>
     {
         public string UserID;
         public string ItemID;
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
-    public record PurchaseBountyShopCurrencyItemResponse(UserCurrencies Currencies, long PurchaseCost);
+    public record PurchaseCurrencyItemResponse(UserCurrencies Currencies, long PurchaseCost);
 
-    public class PurchaseBountyShopCurrencyItemHandler : IRequestHandler<PurchaseBountyShopCurrencyItemRequest, PurchaseBountyShopCurrencyItemResponse>
+    public class PurchaseCurrencyItemHandler : IRequestHandler<PurchaseCurrencyItemRequest, PurchaseCurrencyItemResponse>
     {
         private readonly BountyShopService _bountyshop;
         private readonly CurrenciesService _currencies;
 
-        public PurchaseBountyShopCurrencyItemHandler(BountyShopService bountyshop, CurrenciesService currencies)
+        public PurchaseCurrencyItemHandler(BountyShopService bountyshop, CurrenciesService currencies)
         {
             _currencies = currencies;
             _bountyshop = bountyshop;
         }
 
-        public async Task<PurchaseBountyShopCurrencyItemResponse> Handle(PurchaseBountyShopCurrencyItemRequest request, CancellationToken cancellationToken)
+        public async Task<PurchaseCurrencyItemResponse> Handle(PurchaseCurrencyItemRequest request, CancellationToken cancellationToken)
         {
             var userShop = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh);
 
@@ -58,7 +58,7 @@ namespace GMServer.MediatR
 
             var updateUserCurrencies = await _currencies.IncrementAsync(request.UserID, incrModel);
 
-            return new PurchaseBountyShopCurrencyItemResponse(updateUserCurrencies, shopItem.PurchaseCost);
+            return new PurchaseCurrencyItemResponse(updateUserCurrencies, shopItem.PurchaseCost);
         }
 
         private UserCurrencies CreateUpdateModel(UserBountyShopCurrencyItem item)
