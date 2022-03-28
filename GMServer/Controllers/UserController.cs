@@ -1,9 +1,7 @@
-﻿using GMServer.Context;
-using GMServer.Exceptions;
+﻿using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -16,33 +14,12 @@ namespace GMServer.Controllers
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly IMediator _mediator;
         private readonly AccountStatsService _stats;
 
-        public UserController(IMediator mediator, AccountStatsService stats)
+        public UserController(AccountStatsService stats)
         {
-            _mediator = mediator;
             _stats = stats;
         }
-
-        [HttpGet("AccountStats")]
-        [Authorize]
-        public async Task<IActionResult> GetAccountStats([FromServices] RequestContext context)
-        {
-            try
-            {
-                var lifetimeStats = await _stats.GetUserLifetimeStatsAsync(User.UserID());
-                var dailyStats = await _stats.GetUserDailyStatsAsync(User.UserID(), context.DailyRefresh);
-
-                return Ok(new { LifetimeStats = lifetimeStats, DailyStats = dailyStats });
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "UpdateLifetimeStats");
-                return new InternalServerError("Failed to update stats");
-            }
-        }
-
 
         [HttpPut("LifetimeStats")]
         [Authorize]
@@ -50,7 +27,7 @@ namespace GMServer.Controllers
         {
             try
             {
-                var lifetimeStats = await _stats.UpdateUserLifetimeStatsAsync(User.UserID(), body.Changes);
+                var lifetimeStats = await _stats.UpdateLifetimeStatsWithLocalChangesAsync(User.UserID(), body.Changes);
 
                 return Ok(new { LifetimeStats = lifetimeStats });
             }

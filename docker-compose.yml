@@ -2,20 +2,17 @@ version: '3.4'
 
 services:
   gmserver:
-    container_name: GMServer
+    container_name: gmserver
     image: gmserver
     build:
       dockerfile: GMServer/Dockerfile
     ports:
-      - 2122:80
+      - 2000:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
   
   mongo:
-    container_name: MongoDB
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=user
-      - MONGO_INITDB_ROOT_PASSWORD=pass
+    container_name: mongo
     image: mongo:5.0
     ports:
-      - 27016:27017
+      - 27017:27017
