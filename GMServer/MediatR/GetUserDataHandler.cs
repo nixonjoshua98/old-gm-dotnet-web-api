@@ -24,7 +24,7 @@ namespace GMServer.MediatR
         public UserBounties Bounties;
         public UserQuests Quests;
         public UserBountyShop BountyShop;
-        public object UserStats; // Anonymous type - Unsure if I like it
+        public LifetimeUserAccountStats LifetimeStats;
     }
 
     public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, GetUserDataResponse>
@@ -79,11 +79,7 @@ namespace GMServer.MediatR
                     ShopItems = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh),
                     Purchases = await _bountyshop.GetDailyPurchasesAsync(request.UserID, request.DailyRefresh)
                 },
-                UserStats = new
-                {
-                    LifetimeStats = await _stats.GetUserLifetimeStatsAsync(request.UserID),
-                    DailyStats = await _stats.GetUserDailyStatsAsync(request.UserID, request.DailyRefresh)
-                }
+                LifetimeStats = await _stats.GetUserLifetimeStatsAsync(request.UserID)
             };
 
             return response;

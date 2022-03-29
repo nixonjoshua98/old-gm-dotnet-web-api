@@ -20,9 +20,6 @@ namespace GMServer.Models.UserModels
     [BsonIgnoreExtraElements]
     public class DailyUserAccountStats : UserAccountStatsModelBase
     {
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string UserID;
-
         public DateTime DateTime = DateTime.UtcNow;
     }
 

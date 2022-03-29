@@ -39,10 +39,5 @@ namespace GMServer.Services
 
             return await _lifetime.FindOneAndUpdateAsync(filter, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true });
         }
-
-        public Task<DailyUserAccountStats> GetUserDailyStatsAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
-        {
-            return Task.FromResult(new DailyUserAccountStats());
-        }
     }
 }

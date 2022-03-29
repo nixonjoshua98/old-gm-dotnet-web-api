@@ -25,13 +25,11 @@ namespace GMServer.MediatR.QuestHandlers
     {
         private readonly QuestsService _quests;
         private readonly CurrenciesService _currencies;
-        private readonly AccountStatsService _accountStats;
 
-        public CompleteDailyQuestHandler(QuestsService quests, CurrenciesService currencies, AccountStatsService accountStats)
+        public CompleteDailyQuestHandler(QuestsService quests, CurrenciesService currencies)
         {
             _quests = quests;
             _currencies = currencies;
-            _accountStats = accountStats;
         }
 
         public async Task<CompleteDailyQuestResponse> Handle(CompleteDailyQuestRequest request, CancellationToken cancellationToken)
@@ -49,9 +47,7 @@ namespace GMServer.MediatR.QuestHandlers
             else if (userQuest is not null)
                 throw new ServerException("Quest already completed", 400);
 
-            var dailyStats = await _accountStats.GetUserDailyStatsAsync(request.UserID, request.DailyRefresh);
-
-            if (!IsQuestCompleted(quest, request.LocalDailyStats, dailyStats))
+            if (!IsQuestCompleted(quest, request.LocalDailyStats))
                 throw new ServerException("Quest requirements not met", 400);
 
             await _quests.InsertDailyQuestProgressAsync(new()
@@ -66,11 +62,11 @@ namespace GMServer.MediatR.QuestHandlers
             return new CompleteDailyQuestResponse(quest.DiamondsRewarded);
         }
 
-        private bool IsQuestCompleted(DailyQuest quest, UserAccountStatsModelBase localStats, DailyUserAccountStats dailyStats)
+        private bool IsQuestCompleted(DailyQuest quest, UserAccountStatsModelBase localStats)
         {
             return quest.ActionType switch
             {
-                QuestActionType.Prestige => dailyStats.TotalPrestiges >= quest.LongValue,
+                QuestActionType.Prestige => localStats.TotalPrestiges >= quest.LongValue,
                 QuestActionType.EnemiesDefeated => localStats.TotalEnemiesDefeated >= quest.LongValue,
                 QuestActionType.BossesDefeated => localStats.TotalBossesDefeated >= quest.LongValue,
                 QuestActionType.Taps => localStats.TotalTaps >= quest.LongValue,
