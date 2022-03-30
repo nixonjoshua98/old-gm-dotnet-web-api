@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.Services
+namespace GMServer.Cache
 {
     internal class DataFileCachedObject
     {
@@ -14,16 +14,6 @@ namespace GMServer.Services
     public interface IDataFileCache
     {
         public T Load<T>(string fp);
-    }
-
-    public static class DataFiles
-    {
-        public const string Mercs = "DataFiles/Mercs.json";
-        public const string Artefacts = "DataFiles/Artefacts.json";
-        public const string Armoury = "DataFiles/Armoury.json";
-        public const string Bounties = "DataFiles/Bounties.json";
-        public const string BountyShop = "DataFiles/BountyShop.json";
-        public const string Quests = "DataFiles/Quests.json";
     }
 
 

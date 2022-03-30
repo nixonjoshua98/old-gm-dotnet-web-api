@@ -1,4 +1,5 @@
 ﻿using GMServer.Authentication;
+using GMServer.Cache;
 using GMServer.Context;
 using GMServer.Exceptions;
 using GMServer.Models.Settings;
