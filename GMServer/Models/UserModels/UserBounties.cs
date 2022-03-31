@@ -8,6 +8,7 @@ namespace GMServer.Models.UserModels
     public class UserBounty
     {
         public int BountyID;
+        public int NumDefeats = 0;
     }
 
     [BsonIgnoreExtraElements]

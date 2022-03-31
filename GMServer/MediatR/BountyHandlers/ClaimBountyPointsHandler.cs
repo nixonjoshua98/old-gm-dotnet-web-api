@@ -62,7 +62,7 @@ namespace GMServer.MediatR.BountyHandlers
                 }
             }
 
-            return Convert.ToInt64(cumPoints);
+            return (long)Math.Floor(cumPoints);
         }
     }
 }

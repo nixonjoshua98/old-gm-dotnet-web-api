@@ -24,8 +24,6 @@ namespace GMServer.Controllers
         }
 
         [HttpPut("Upgrade")]
-        [EncryptedResponseBody]
-        [EncryptedRequestBody]
         [Authorize]
         public async Task<IActionResult> UpgradeItem(UpgradeArmouryItemBody body)
         {
