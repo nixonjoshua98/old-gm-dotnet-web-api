@@ -1,7 +1,6 @@
 ﻿using GMServer.Context;
 using GMServer.Exceptions;
 using GMServer.Extensions;
-using GMServer.MediatR;
 using GMServer.MediatR.BountyShopHandler;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
@@ -62,7 +61,7 @@ namespace GMServer.Controllers
                 var resp = await _mediator.Send(new PurchaseArmouryItemRequest
                 {
                     UserID = User.UserID(),
-                    ItemID = body.ItemID,
+                    ShopItemID = body.ItemID,
                     DailyRefresh = context.DailyRefresh
                 });
 

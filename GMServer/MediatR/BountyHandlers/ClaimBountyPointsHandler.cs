@@ -3,7 +3,6 @@ using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,20 +45,15 @@ namespace GMServer.MediatR.BountyHandlers
         {
             var datafile = _bounties.GetDataFile();
 
-            List<UserBounty> activeBounties = bounties.UnlockedBounties.Where(x => bounties.ActiveBounties.Contains(x.BountyID)).ToList();
-
             double hoursSinceClaim = Math.Clamp((now - bounties.LastClaimTime).TotalHours, 0, datafile.MaxUnclaimedHours);
 
             double cumPoints = 0;
 
-            foreach (var userBounty in activeBounties)
+            foreach (var userBounty in bounties.UnlockedBounties)
             {
-                Bounty bounty = datafile.Bounties.FirstOrDefault(x => x.BountyID == userBounty.BountyID);
+                Bounty bounty = datafile.Bounties.First(x => x.BountyID == userBounty.BountyID);
 
-                if (bounty is not null)
-                {
-                    cumPoints += hoursSinceClaim * bounty.HourlyIncome;
-                }
+                cumPoints += hoursSinceClaim * bounty.HourlyIncome;
             }
 
             return (long)Math.Floor(cumPoints);

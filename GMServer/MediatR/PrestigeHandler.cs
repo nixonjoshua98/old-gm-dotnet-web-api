@@ -1,6 +1,7 @@
 ﻿using GMServer.Common;
 using GMServer.Exceptions;
 using GMServer.Extensions;
+using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
@@ -27,7 +28,7 @@ namespace GMServer.MediatR
         private readonly AccountStatsService _accountStats;
         private readonly ArtefactsService _artefacts;
         private readonly CurrenciesService _currencies;
-        private readonly PrestigeService _prestige;        
+        private readonly PrestigeService _prestige;
         private readonly BountiesService _bounties;
 
         public PrestigeHandler(ArtefactsService artefacts, CurrenciesService currencies, PrestigeService prestige, BountiesService bounties, AccountStatsService accountStats)
@@ -47,8 +48,15 @@ namespace GMServer.MediatR
             if (points is double.NaN || points <= 0)
                 throw new ServerException("Invalid prestige", 400);
 
+            // = Bounties = //
+            BountiesDataFile bountiesDatafile = _bounties.GetDataFile();
+            UserBounties userBounties = await _bounties.GetUserBountiesAsync(request.UserID);
+
+            // List of already unlocked bounties which we have defeated this prestige (may be empty)
+            List<int> defeatedBountyIds = GetBouniesDefeated(bountiesDatafile, request.PrestigeStage);
+
             // Bounties which have been unlocked (may be empty)
-            List<UserBounty> unlockedBounties = await GetNewUnlockedBountiesAsync(request.UserID, request.PrestigeStage);
+            List<UserBounty> unlockedBounties = GetNewUnlockedBountiesAsync(userBounties, bountiesDatafile, request.PrestigeStage);
 
             // Log the prestige before we start giving rewards
             await _prestige.InsertPrestigeAsync(new()
@@ -65,17 +73,31 @@ namespace GMServer.MediatR
             if (unlockedBounties.Count > 0)
                 await _bounties.InsertBountiesAsync(request.UserID, unlockedBounties);
 
+            if (defeatedBountyIds.Count > 0)
+                await _bounties.IncrementBountyDefeats(request.UserID, defeatedBountyIds);
+
             await _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = points });
 
             return new PrestigeResponse();
         }
 
-        async Task<List<UserBounty>> GetNewUnlockedBountiesAsync(string userId, int stage)
+        private List<int> GetBouniesDefeated(BountiesDataFile bountiesDataFile, int prestigeStage)
         {
-            var datafile = _bounties.GetDataFile();
+            List<int> ls = new();
 
-            var userBounties = await _bounties.GetUserBountiesAsync(userId);
+            foreach (var bounty in bountiesDataFile.Bounties)
+            {
+                if (bounty.UnlockStage < prestigeStage)
+                {
+                    ls.Add(bounty.BountyID);
+                }
+            }
 
+            return ls;
+        }
+
+        private List<UserBounty> GetNewUnlockedBountiesAsync(UserBounties userBounties, BountiesDataFile datafile, int stage)
+        {
             List<UserBounty> newBounties = new();
 
             foreach (var bounty in datafile.Bounties)
@@ -94,7 +116,7 @@ namespace GMServer.MediatR
             return newBounties;
         }
 
-        async Task<double> CalculatePrestigePointsAsync(string userId, int stage)
+        private async Task<double> CalculatePrestigePointsAsync(string userId, int stage)
         {
             var userArtefacts = await _artefacts.GetUserArtefactsAsync(userId);
 

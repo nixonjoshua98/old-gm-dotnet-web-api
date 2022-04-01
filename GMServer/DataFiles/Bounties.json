@@ -1,39 +1,45 @@
 {
   "MaxUnclaimedHours": 1,
-  "MaxActiveBounties": 4,
   "Bounties": [
     {
       "BountyId": 0,
+      "Name": "Bounty Zero",
       "HourlyIncome": 100,
       "UnlockStage": 1
     },
     {
       "BountyId": 1,
+      "Name": "Bounty One",
       "HourlyIncome": 115,
       "UnlockStage": 2
     },
     {
       "BountyId": 2,
+      "Name": "Bounty Two",
       "HourlyIncome": 125,
       "UnlockStage": 3
     },
     {
       "BountyId": 3,
+      "Name": "Bounty Three",
       "HourlyIncome": 135,
       "UnlockStage": 4
     },
     {
       "BountyId": 4,
+      "Name": "Bounty Four",
       "HourlyIncome": 150,
       "UnlockStage": 5
     },
     {
       "BountyId": 5,
+      "Name": "Bounty Five",
       "HourlyIncome": 160,
       "UnlockStage": 6
     },
     {
       "BountyId": 6,
+      "Name": "Bounty Six",
       "HourlyIncome": 175,
       "UnlockStage": 7
     }

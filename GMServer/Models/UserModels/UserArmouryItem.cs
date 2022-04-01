@@ -11,8 +11,8 @@ namespace GMServer.Models.UserModels
 
         public int ItemID;
 
-        public int Level = 1;
+        public int Level;
 
-        public int Owned = 0;
+        public int Owned;
     }
 }

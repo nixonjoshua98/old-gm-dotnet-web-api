@@ -1,5 +1,4 @@
-﻿using GMServer.Encryption;
-using GMServer.Exceptions;
+﻿using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.MediatR.ArmouryHandlers;
 using GMServer.Models.RequestModels;

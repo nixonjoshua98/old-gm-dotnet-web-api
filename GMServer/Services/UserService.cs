@@ -1,6 +1,5 @@
 ﻿using GMServer.Models;
 using MongoDB.Driver;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GMServer.Services

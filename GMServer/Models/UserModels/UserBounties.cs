@@ -17,7 +17,6 @@ namespace GMServer.Models.UserModels
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID;
         public DateTime LastClaimTime;
-        public List<int> ActiveBounties = new();
         public List<UserBounty> UnlockedBounties = new();
     }
 }
