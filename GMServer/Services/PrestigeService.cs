@@ -13,7 +13,7 @@ namespace GMServer.Services
             _prestigeLogs = mongo.GetCollection<UserPrestige>("UserPrestiges");
         }
 
-        public async Task InsertPrestigeAsync(UserPrestige prestige)
+        public async Task InsertPrestigeLogAsync(UserPrestige prestige)
         {
             await _prestigeLogs.InsertOneAsync(prestige);
         }

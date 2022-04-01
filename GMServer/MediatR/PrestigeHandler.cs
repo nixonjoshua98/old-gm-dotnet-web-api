@@ -59,7 +59,7 @@ namespace GMServer.MediatR
             List<UserBounty> unlockedBounties = GetNewUnlockedBountiesAsync(userBounties, bountiesDatafile, request.PrestigeStage);
 
             // Log the prestige before we start giving rewards
-            await _prestige.InsertPrestigeAsync(new()
+            await _prestige.InsertPrestigeLogAsync(new()
             {
                 DateTime = DateTime.UtcNow,
                 UserID = request.UserID,
@@ -67,13 +67,13 @@ namespace GMServer.MediatR
                 PrestigePointsGained = points,
             });
 
-            // Update the relevant stats
+            // Update the relevant lifetime stats
             await _accountStats.UpdateUserLifetimeStatsAsync(request.UserID, new() { HighestPrestigeStage = request.PrestigeStage, TotalPrestiges = 1 });
 
-            if (unlockedBounties.Count > 0)
+            if (unlockedBounties.Count > 0)  // Insert newly unlocked bounties
                 await _bounties.InsertBountiesAsync(request.UserID, unlockedBounties);
 
-            if (defeatedBountyIds.Count > 0)
+            if (defeatedBountyIds.Count > 0)  // Increment the 'NumDefeats' value used to calculate levels
                 await _bounties.IncrementBountyDefeats(request.UserID, defeatedBountyIds);
 
             await _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = points });

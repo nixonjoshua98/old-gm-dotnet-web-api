@@ -27,14 +27,6 @@ namespace GMServer.Services
             return _sessions.Find(doc => doc.Token == token).FirstOrDefault();
         }
 
-        public void InvalidateSession(string token)
-        {
-            var update = Builders<AuthenticatedSession>.Update
-                .Set(s => s.IsValid, false);
-
-            _sessions.UpdateMany(x => x.IsValid && x.Token == token, update);
-        }
-
         public async Task InvalidateUserSessionsAsync(User user)
         {
             var update = Builders<AuthenticatedSession>.Update
@@ -57,6 +49,7 @@ namespace GMServer.Services
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimNames.UserID, user.ID),
+                    new Claim(ClaimNames.Dummy, Random.Shared.NextInt64().ToString()), // Force the token to be unique 'every' time
                 }),
                 Audience = _settings.Audience,
                 Expires = DateTime.UtcNow.AddDays(1),
