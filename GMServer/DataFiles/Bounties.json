@@ -5,43 +5,205 @@
       "BountyId": 0,
       "Name": "Bounty Zero",
       "HourlyIncome": 100,
-      "UnlockStage": 1
+      "UnlockStage": 1,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+      ]
     },
     {
       "BountyId": 1,
       "Name": "Bounty One",
       "HourlyIncome": 115,
-      "UnlockStage": 2
+      "UnlockStage": 2,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+      ]
     },
     {
       "BountyId": 2,
       "Name": "Bounty Two",
       "HourlyIncome": 125,
-      "UnlockStage": 3
+      "UnlockStage": 3,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+      ]
     },
     {
       "BountyId": 3,
       "Name": "Bounty Three",
       "HourlyIncome": 135,
-      "UnlockStage": 4
+      "UnlockStage": 4,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+      ]
     },
     {
       "BountyId": 4,
       "Name": "Bounty Four",
       "HourlyIncome": 150,
-      "UnlockStage": 5
+      "UnlockStage": 5,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+      ]
     },
     {
       "BountyId": 5,
       "Name": "Bounty Five",
       "HourlyIncome": 160,
-      "UnlockStage": 6
+      "UnlockStage": 6,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+      ]
     },
     {
       "BountyId": 6,
       "Name": "Bounty Six",
       "HourlyIncome": 175,
-      "UnlockStage": 7
+      "UnlockStage": 7,
+      "BonusType": 600,
+      "Levels": [
+        {
+          "NumDefeatsRequired": 0,
+          "BonusValue": 1
+        },
+        {
+          "NumDefeatsRequired": 3,
+          "BonusValue": 1.5
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 10,
+          "BonusValue": 3
+        },
+        {
+          "NumDefeatsRequired": 25,
+          "BonusValue": 5
+        }
+
+      ]
     }
   ]
 }

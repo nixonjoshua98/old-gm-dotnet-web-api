@@ -40,12 +40,27 @@ namespace GMServer.Services
             await _bounties.BulkWriteAsync(requests);
         }
 
+        public async Task IncrementBountyLevel(string userId, int bountyId, int levels)
+        {
+            var filter = UserBountyFilter(userId, bountyId);
+            var update = Builders<UserBounties>.Update.Inc(x => x.UnlockedBounties[-1].Level, levels);
+
+            await _bounties.UpdateOneAsync(filter, update);
+        }
+
         public async Task<UserBounties> GetUserBountiesAsync(string userId)
         {
             var update = Builders<UserBounties>.Update
                 .SetOnInsert(s => s.LastClaimTime, DateTime.UtcNow);
 
             return await _bounties.FindOneAndUpdateAsync(x => x.UserID == userId, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true });
+        }
+
+        public async Task<UserBounty> GetUserBountyAsync(string userId, int bountyId)
+        {
+            var result = await GetUserBountiesAsync(userId);
+
+            return result.UnlockedBounties.FirstOrDefault(x => x.BountyID == bountyId);
         }
 
         /// <summary>
@@ -91,6 +106,12 @@ namespace GMServer.Services
             return Builders<UserBounties>.Filter.Eq(x => x.UserID, userId) &
                     Builders<UserBounties>.Filter.Not(
                         Builders<UserBounties>.Filter.ElemMatch(x => x.UnlockedBounties, x => x.BountyID == bountyId));
+        }
+
+        private FilterDefinition<UserBounties> UserBountyFilter(string userId, int bountyId)
+        {
+            return Builders<UserBounties>.Filter.Eq(x => x.UserID, userId) & 
+                    Builders<UserBounties>.Filter.ElemMatch(x => x.UnlockedBounties, x => x.BountyID == bountyId);
         }
     }
 }
