@@ -110,7 +110,7 @@ namespace GMServer.Services
 
         private FilterDefinition<UserBounties> UserBountyFilter(string userId, int bountyId)
         {
-            return Builders<UserBounties>.Filter.Eq(x => x.UserID, userId) & 
+            return Builders<UserBounties>.Filter.Eq(x => x.UserID, userId) &
                     Builders<UserBounties>.Filter.ElemMatch(x => x.UnlockedBounties, x => x.BountyID == bountyId);
         }
     }

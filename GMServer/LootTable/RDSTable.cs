@@ -13,7 +13,7 @@ namespace GMServer.LootTable
     {
         private Random SeededRandom;
 
-        private List<IRDSObject> AllPossibleItems = new();
+        private readonly List<IRDSObject> AllPossibleItems = new();
         private List<IRDSObject> AvailableItems = null;
 
         /// <summary>

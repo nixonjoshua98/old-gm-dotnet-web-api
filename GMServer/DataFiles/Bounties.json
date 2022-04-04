@@ -1,24 +1,25 @@
 {
-  "MaxUnclaimedHours": 1,
+  "MaxUnclaimedHours": 8,
   "Bounties": [
     {
       "BountyId": 0,
-      "Name": "Bounty Zero",
+      "Name": "Little Jimmy",
+      "Description": "The law of the jungle suggests the little guy is the weakest.",
       "HourlyIncome": 100,
       "UnlockStage": 1,
       "BonusType": 600,
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -39,15 +40,15 @@
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -68,15 +69,15 @@
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -97,15 +98,15 @@
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -126,15 +127,15 @@
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -155,15 +156,15 @@
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -184,15 +185,15 @@
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1
-        },
-        {
-          "NumDefeatsRequired": 3,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 5,
+          "NumDefeatsRequired": 3,
           "BonusValue": 2
+        },
+        {
+          "NumDefeatsRequired": 5,
+          "BonusValue": 2.5
         },
         {
           "NumDefeatsRequired": 10,
@@ -202,7 +203,6 @@
           "NumDefeatsRequired": 25,
           "BonusValue": 5
         }
-
       ]
     }
   ]

@@ -62,7 +62,7 @@ namespace GMServer.MediatR.BountyShopHandler
             return new PurchaseArmouryItemResponse(userCurrencies, armouryItem);
         }
 
-        async Task<UserArmouryItem> InsertArmouryItemAsync(PurchaseArmouryItemRequest request, UserBountyShopArmouryItem item)
+        private async Task<UserArmouryItem> InsertArmouryItemAsync(PurchaseArmouryItemRequest request, UserBountyShopArmouryItem item)
         {
             UserArmouryItem armouryItem = await _armoury.GetArmouryItemAsync(request.UserID, item.ItemID);
 

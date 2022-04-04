@@ -11,13 +11,12 @@ namespace GMServer.Exceptions
         {
             StatusCode = status;
         }
+
+        public ServerException(string message, HttpStatusCode status) : this(message, (int)status) { }
     }
 
-    public class ExpiredTokenException : ServerException
+    public class InvalidTokenException : ServerException
     {
-        public ExpiredTokenException() : base("Unauthorized", (int)HttpStatusCode.Unauthorized)
-        {
-
-        }
+        public InvalidTokenException() : base("Unauthorized", HttpStatusCode.Unauthorized) { }
     }
 }

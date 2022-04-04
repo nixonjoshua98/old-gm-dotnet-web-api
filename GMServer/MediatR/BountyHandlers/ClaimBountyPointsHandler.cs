@@ -47,16 +47,16 @@ namespace GMServer.MediatR.BountyHandlers
 
             double hoursSinceClaim = Math.Clamp((now - bounties.LastClaimTime).TotalHours, 0, datafile.MaxUnclaimedHours);
 
-            double cumPoints = 0;
+            double total = 0;
 
             foreach (var userBounty in bounties.UnlockedBounties)
             {
                 Bounty bounty = datafile.Bounties.First(x => x.BountyID == userBounty.BountyID);
 
-                cumPoints += hoursSinceClaim * bounty.HourlyIncome;
+                total += hoursSinceClaim * bounty.HourlyIncome;
             }
 
-            return (long)Math.Floor(cumPoints);
+            return (long)Math.Floor(total);
         }
     }
 }

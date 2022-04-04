@@ -37,7 +37,7 @@ namespace GMServer.Services
             foreach (UserArtefactUpgrade upgrade in upgrades)
             {
                 var query = new UpdateOneModel<UserArtefact>(
-                    Builders<UserArtefact>.Filter.Eq(x => x.UserID, userId) & Builders<UserArtefact>.Filter.Eq(x => x.ArtefactID, upgrade.ArtefactID),
+                    Builders<UserArtefact>.Filter.Where(x => x.UserID == userId && x.ArtefactID == upgrade.ArtefactID),
                     Builders<UserArtefact>.Update.Inc(x => x.Level, upgrade.Levels)
                     );
 

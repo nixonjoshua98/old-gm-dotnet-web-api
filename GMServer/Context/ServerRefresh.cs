@@ -13,7 +13,10 @@ namespace GMServer.Context
             Next = next;
         }
 
-        public bool IsBetween(DateTime dt) => Previous < dt && Next > dt;
+        public bool IsBetween(DateTime dt)
+        {
+            return Previous < dt && Next > dt;
+        }
     }
 
     public interface IDailyServerRefresh { }

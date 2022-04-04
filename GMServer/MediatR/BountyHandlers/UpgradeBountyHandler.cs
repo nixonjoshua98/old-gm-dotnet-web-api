@@ -46,7 +46,7 @@ namespace GMServer.MediatR.BountyHandlers
             return new UpgradeBountyResponse(userBounty);
         }
 
-        bool CanLevelUp(UserBounty userBounty, Bounty bounty)
+        private bool CanLevelUp(UserBounty userBounty, Bounty bounty)
         {
             var highestLevel = bounty.Levels.LastOrDefault(x => userBounty.NumDefeats >= x.NumDefeatsRequired);
 

@@ -17,6 +17,7 @@ namespace GMServer.Models.DataFileModels
         public int HourlyIncome;
         public BonusType BonusType;
         public int UnlockStage;
+        public string Description = "This enemy prefers to not share his food";
         public List<BountyLevel> Levels = new();
     }
 

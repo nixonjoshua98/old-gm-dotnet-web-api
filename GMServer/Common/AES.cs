@@ -7,7 +7,10 @@ namespace GMServer.Common
 {
     public static class AES
     {
-        private static byte[] GetKeyBytes(string key) => System.Text.Encoding.UTF8.GetBytes(key);
+        private static byte[] GetKeyBytes(string key)
+        {
+            return System.Text.Encoding.UTF8.GetBytes(key);
+        }
 
         public static string Encrypt(string plainText, EncryptionSettings settings)
         {
