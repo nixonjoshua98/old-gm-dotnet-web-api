@@ -1,54 +1,63 @@
 [
   {
     "ItemID": 0,
+    "Name": "Weapon of Items",
     "BonusType": 400,
     "BaseEffect": 1.25,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 1,
+    "Name": "ererrerrerer",
     "BonusType": 600,
     "BaseEffect": 1.2,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 2,
+    "Name": "5y5gh5rgg",
     "BonusType": 601,
     "BaseEffect": 1.25,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 3,
+    "Name": "43444444444444444",
     "BonusType": 602,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 4,
+    "Name": ".................",
     "BonusType": 603,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 5,
+    "Name": "xcxcxcxcxcxcxc",
     "BonusType": 700,
     "BaseEffect": 1.5,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 6,
+    "Name": "3333333333333333333333",
     "BonusType": 800,
     "BaseEffect": 1.2,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 7,
+    "Name": "465464",
     "BonusType": 801,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 8,
+    "Name": "8908908908",
     "BonusType": 802,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05

@@ -9,15 +9,29 @@ using System.Threading.Tasks;
 
 namespace GMServer.MediatR.BountyHandlers
 {
-    public class ClaimBountyPointRequest : IRequest<ClaimBountyPoinResponse>
+    public class ClaimBountyPointRequest : IRequest<ClaimBountyPointsResponse>
     {
         public string UserID;
         public DateTime DateTime;
     }
 
-    public record ClaimBountyPoinResponse(DateTime ClaimTime, long PointsClaimed, UserCurrencies Currencies);
+    public class ClaimBountyPointsResponse : BaseResponseWithError
+    {
+        public readonly DateTime ClaimTime;
+        public readonly long PointsClaimed;
+        public readonly UserCurrencies Currencies;
 
-    public class ClaimBountyPointsHandler : IRequestHandler<ClaimBountyPointRequest, ClaimBountyPoinResponse>
+        public ClaimBountyPointsResponse(string message, int code) : base(message, code) { }
+
+        public ClaimBountyPointsResponse(DateTime dt, long points, UserCurrencies currencies)
+        {
+            ClaimTime = dt;
+            PointsClaimed = points;
+            Currencies = currencies;
+        }
+    }
+
+    public class ClaimBountyPointsHandler : IRequestHandler<ClaimBountyPointRequest, ClaimBountyPointsResponse>
     {
         private readonly BountiesService _bounties;
         private readonly CurrenciesService _currencies;
@@ -28,11 +42,14 @@ namespace GMServer.MediatR.BountyHandlers
             _currencies = currencies;
         }
 
-        public async Task<ClaimBountyPoinResponse> Handle(ClaimBountyPointRequest request, CancellationToken cancellationToken)
+        public async Task<ClaimBountyPointsResponse> Handle(ClaimBountyPointRequest request, CancellationToken cancellationToken)
         {
             var userBounties = await _bounties.GetUserBountiesAsync(request.UserID);
 
             long points = CalculateClaimPoints(request.DateTime, userBounties);
+
+            if (points <= 0)
+                return new("Cannot claim zero points", 400);
 
             await _bounties.SetClaimTimeAsync(request.UserID, request.DateTime);
 

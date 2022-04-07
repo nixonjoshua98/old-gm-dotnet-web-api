@@ -8,6 +8,8 @@ namespace GMServer.Models.DataFileModels
         [JsonProperty(PropertyName = "ItemID")]
         public int ID;
 
+        public string Name = "Item Name";
+
         public BonusType BonusType;
 
         public float BaseEffect;

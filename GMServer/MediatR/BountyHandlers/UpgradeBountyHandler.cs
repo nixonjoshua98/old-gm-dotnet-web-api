@@ -1,5 +1,4 @@
-﻿using GMServer.Exceptions;
-using GMServer.Models.DataFileModels;
+﻿using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
@@ -15,7 +14,17 @@ namespace GMServer.MediatR.BountyHandlers
         public int BountyID;
     }
 
-    public record UpgradeBountyResponse(UserBounty Bounty);
+    public class UpgradeBountyResponse : BaseResponseWithError
+    {
+        public readonly UserBounty Bounty;
+
+        public UpgradeBountyResponse(string message, int code) : base(message, code) { }
+
+        public UpgradeBountyResponse(UserBounty bounty)
+        {
+            Bounty = bounty;
+        }
+    }
 
     public class UpgradeBountyHandler : IRequestHandler<UpgradeBountyRequest, UpgradeBountyResponse>
     {
@@ -33,11 +42,11 @@ namespace GMServer.MediatR.BountyHandlers
             UserBounty userBounty = await _bounties.GetUserBountyAsync(request.UserID, request.BountyID);
             Bounty bounty = datafile.Bounties.FirstOrDefault(x => x.BountyID == request.BountyID);
 
-            if (bounty is null || bounty is null)
-                throw new ServerException("Bounty not found", 400);
+            if (userBounty is null || bounty is null)
+                return new("Bounty not found", 400);
 
             else if (!CanLevelUp(userBounty, bounty))
-                throw new ServerException("Cannot level up bounty", 400);
+                return new("Cannot level up bounty", 400);
 
             await _bounties.IncrementBountyLevel(request.UserID, request.BountyID, 1);
 

@@ -25,7 +25,7 @@ namespace GMServer.Services
 
         public async Task InsertShopPurchaseAsync(BountyShopPurchase bountyShopPurchase)
         {
-            await _purchases.InsertOneAsync(bountyShopPurchase);
+            //await _purchases.InsertOneAsync(bountyShopPurchase);
         }
 
         public async Task<List<BountyShopPurchase>> GetDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)

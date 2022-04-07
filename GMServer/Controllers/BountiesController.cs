@@ -34,7 +34,7 @@ namespace GMServer.Controllers
                     DateTime = DateTime.UtcNow
                 });
 
-                return Ok(resp);
+                return this.ResponseOrError(resp);
             }
             catch (Exception ex)
             {
@@ -55,11 +55,7 @@ namespace GMServer.Controllers
                     BountyID = body.BountyID
                 });
 
-                return Ok(resp);
-            }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
+                return this.ResponseOrError(resp);
             }
             catch (Exception ex)
             {

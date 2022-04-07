@@ -36,7 +36,7 @@ namespace GMServer.Context
 
         private CurrentServerRefresh<T> RefreshPairFromDate(DateTime dt)
         {
-            DateTime refreshTime = new DateTime(dt.Year, dt.Month, dt.Day, Hour, Minute, Second);
+            DateTime refreshTime = new DateTime(dt.Year, dt.Month, dt.Day, Hour, Minute, Second, DateTimeKind.Utc);
 
             // Week Day (Mon, Tue etc.)
             if (WeekDay > -1)
