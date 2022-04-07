@@ -63,23 +63,5 @@
         /// Note to inheritors: This property has to be auto-set when an item is added to a table via the AddEntry method.
         /// </summary>
         public RDSTable Table { get; set; }
-
-        /// <summary>
-        /// Returns a <see cref="System.String"/> that represents this instance.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="System.String"/> that represents this instance.
-        /// </returns>
-        public string ToString(int indentationlevel)
-        {
-            string indent = "".PadRight(4 * indentationlevel, ' ');
-
-            string valstr = "(null)";
-            if (Value != null)
-                valstr = Value.ToString();
-            return string.Format(indent + "(RDSValue){0} \"{1}\",Prob:{2},UAE:{3}{4}{5}",
-                this.GetType().Name, valstr, Weight,
-                (Unique ? "1" : "0"), (Always ? "1" : "0"), (Enabled ? "1" : "0"));
-        }
     }
 }

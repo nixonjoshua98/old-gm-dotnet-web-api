@@ -17,11 +17,6 @@
       },
       "applicationUrl": "http://0.0.0.0:2122",
       "dotnetRunMessages": "true"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-      "publishAllPorts": true
     }
   }
 }
