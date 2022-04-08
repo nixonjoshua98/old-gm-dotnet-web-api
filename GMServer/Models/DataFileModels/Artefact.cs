@@ -8,6 +8,8 @@ namespace GMServer.Models.DataFileModels
         [JsonProperty(PropertyName = "ArtefactID")]
         public int ID;
 
+        public string Name = "Artefact Name";
+
         public BonusType BonusType;
 
         public int MaxLevel = 1_000;

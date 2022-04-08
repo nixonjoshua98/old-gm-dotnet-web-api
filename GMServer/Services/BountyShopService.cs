@@ -25,7 +25,7 @@ namespace GMServer.Services
 
         public async Task InsertShopPurchaseAsync(BountyShopPurchase bountyShopPurchase)
         {
-            //await _purchases.InsertOneAsync(bountyShopPurchase);
+            await _purchases.InsertOneAsync(bountyShopPurchase);
         }
 
         public async Task<List<BountyShopPurchase>> GetDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
@@ -50,7 +50,7 @@ namespace GMServer.Services
             BountyShopLootTable table = new(GetDataFile(), _armoury.GetDataFile());
 
             // Seed is on a per-user basis
-            return table.GetItems(5, $"{userId}-{refresh.Previous}");
+            return table.GetItems(16, $"{userId}-{refresh.Previous}");
         }
 
         public BountyShopDataFile GetDataFile()

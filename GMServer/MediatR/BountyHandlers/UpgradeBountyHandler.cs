@@ -52,7 +52,7 @@ namespace GMServer.MediatR.BountyHandlers
 
             userBounty.Level++; // Update the bounty (saves a database request)
 
-            return new UpgradeBountyResponse(userBounty);
+            return new(userBounty);
         }
 
         private bool CanLevelUp(UserBounty userBounty, Bounty bounty)
