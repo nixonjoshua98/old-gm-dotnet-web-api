@@ -3,7 +3,6 @@ using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.MediatR.BountyShopHandler;
 using GMServer.Models.RequestModels;
-using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,64 +17,88 @@ namespace GMServer.Controllers
     public class BountyShopController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly BountyShopService _bountyshop;
+        private readonly RequestContext _context;
 
-        public BountyShopController(IMediator mediator, BountyShopService bountyshop)
+        public BountyShopController(IMediator mediator, RequestContext context)
         {
-            _bountyshop = bountyshop;
             _mediator = mediator;
+            _context = context;
+        }
+
+        
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var resp = await GetUserBountyShop();
+
+                return Ok(resp);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "GetBountyShop");
+                return new InternalServerError(ex.Message);
+            }
         }
 
         [HttpPut("Purchase/Currency")]
         [Authorize]
-        public async Task<IActionResult> PurchaseCurrency(PurchaseBountyShopItemBody body, [FromServices] RequestContext context)
+        public async Task<IActionResult> PurchaseCurrency(PurchaseBountyShopItemBody body)
         {
             try
             {
+                var userShop = await GetUserBountyShop();
+
                 var resp = await _mediator.Send(new PurchaseCurrencyItemRequest
                 {
                     UserID = User.UserID(),
                     ItemID = body.ItemID,
-                    DailyRefresh = context.DailyRefresh
+                    ShopCurrencyItems = userShop.ShopItems.CurrencyItems,
+                    DailyRefresh = _context.DailyRefresh
                 });
 
                 return Ok(resp);
             }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
-            }
             catch (Exception ex)
             {
                 Log.Error(ex, "PurchaseCurrency");
-                return new InternalServerError("Failed to purchase item");
+                return new InternalServerError(ex.Message);
             }
         }
 
         [HttpPut("Purchase/ArmouryItem")]
         [Authorize]
-        public async Task<IActionResult> PurchaseArmouryItem(PurchaseBountyShopItemBody body, [FromServices] RequestContext context)
+        public async Task<IActionResult> PurchaseArmouryItem(PurchaseBountyShopItemBody body)
         {
             try
             {
+                var userShop = await GetUserBountyShop();
+
                 var resp = await _mediator.Send(new PurchaseArmouryItemRequest
                 {
                     UserID = User.UserID(),
                     ShopItemID = body.ItemID,
-                    DailyRefresh = context.DailyRefresh
+                    ShopArmouryItems = userShop.ShopItems.ArmouryItems,
+                    DailyRefresh = _context.DailyRefresh
                 });
 
                 return Ok(resp);
             }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
-            }
             catch (Exception ex)
             {
-                Log.Error(ex, "PurchaseCurrency");
-                return new InternalServerError("Failed to purchase item");
+                Log.Error(ex, "PurchaseArmouryItem");
+                return new InternalServerError(ex.Message);
             }
+        }
+
+        /// <summary>
+        /// General mediator request for the current user bounty shop (used in most requests)
+        /// </summary>
+        async Task<GetUserBountyShopResponse> GetUserBountyShop()
+        {
+            return await _mediator.Send(new GetUserBountyShopRequest { DailyRefresh = _context.DailyRefresh, UserID = User.UserID() });
         }
     }
 }

@@ -4,6 +4,7 @@ using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace GMServer.MediatR.BountyShopHandler
     {
         public string UserID;
         public string ShopItemID;
+        public List<UserBountyShopArmouryItem> ShopArmouryItems;
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
@@ -34,9 +36,7 @@ namespace GMServer.MediatR.BountyShopHandler
 
         public async Task<PurchaseArmouryItemResponse> Handle(PurchaseArmouryItemRequest request, CancellationToken cancellationToken)
         {
-            var userShop = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh);
-
-            var shopItem = userShop.ArmouryItems.First(x => x.ID == request.ShopItemID);
+            var shopItem = request.ShopArmouryItems.First(x => x.ID == request.ShopItemID);
 
             var itemPurchases = await _bountyshop.GetDailyItemPurchasesAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
 

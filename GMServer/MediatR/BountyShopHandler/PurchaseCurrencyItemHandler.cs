@@ -1,9 +1,11 @@
-﻿using GMServer.Context;
+﻿using GMServer.Common;
+using GMServer.Context;
 using GMServer.Exceptions;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ namespace GMServer.MediatR.BountyShopHandler
     {
         public string UserID;
         public string ItemID;
+        public List<UserBountyShopCurrencyItem> ShopCurrencyItems;
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
@@ -32,9 +35,7 @@ namespace GMServer.MediatR.BountyShopHandler
 
         public async Task<PurchaseCurrencyItemResponse> Handle(PurchaseCurrencyItemRequest request, CancellationToken cancellationToken)
         {
-            var userShop = _bountyshop.GetUserBountyShop(request.UserID, request.DailyRefresh);
-
-            var shopItem = userShop.CurrencyItems.First(x => x.ID == request.ItemID);
+            var shopItem = request.ShopCurrencyItems.First(x => x.ID == request.ItemID);
 
             var itemPurchases = await _bountyshop.GetDailyItemPurchasesAsync(request.UserID, request.ItemID, request.DailyRefresh);
 
@@ -49,7 +50,7 @@ namespace GMServer.MediatR.BountyShopHandler
             // Create the update model (includes the purchase cost decrement)
             var incrModel = CreateUpdateModel(shopItem);
 
-            await _bountyshop.InsertShopPurchaseAsync(new()
+            await _bountyshop.InsertShopPurchaseAsync(new BountyShopPurchase
             {
                 UserID = request.UserID,
                 ItemID = request.ItemID,
@@ -65,7 +66,7 @@ namespace GMServer.MediatR.BountyShopHandler
         {
             return item.CurrencyType switch
             {
-                Common.CurrencyType.ArmouryPoints => new() { ArmouryPoints = item.Quantity, BountyPoints = -item.PurchaseCost },
+                CurrencyType.ArmouryPoints => new() { ArmouryPoints = item.Quantity, BountyPoints = -item.PurchaseCost },
                 _ => throw new NotImplementedException(),
             };
         }
