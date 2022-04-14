@@ -12,17 +12,31 @@ namespace GMServer.Services
     public class BountyShopService
     {
         private readonly IDataFileCache _cache;
+
         private readonly IMongoCollection<BountyShopPurchase> _purchases;
+        private readonly IMongoCollection<UserBountyShopState> _states;
 
         public BountyShopService(IMongoDatabase mongo, IDataFileCache cache)
         {
             _cache = cache;
+
             _purchases = mongo.GetCollection<BountyShopPurchase>("BountyShopPurchases");
+            _states = mongo.GetCollection<UserBountyShopState>("BountyShopStates");
         }
 
-        public async Task InsertShopPurchaseAsync(BountyShopPurchase bountyShopPurchase)
+        public async Task InsertShopPurchaseAsync(BountyShopPurchase purchase)
         {
-            //await _purchases.InsertOneAsync(bountyShopPurchase);
+            //await _purchases.InsertOneAsync(purchase);
+        }
+
+        public async Task<UserBountyShopState> GetUserState(string userId)
+        {
+            return await _states.Find(x => x.UserID == userId).FirstOrDefaultAsync();
+        }
+
+        public async Task SetUserState(UserBountyShopState state)
+        {
+            await _states.ReplaceOneAsync(x => x.UserID == state.UserID, state, new ReplaceOptions() { IsUpsert = true });
         }
 
         public async Task<List<BountyShopPurchase>> GetDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)

@@ -1,17 +1,30 @@
 {
-  "CurrencyItems": {
-    "Weight": 1,
-    "Items": [
-      {
-        "CurrencyType": 200,
-        "Quantity": 500,
-        "PurchaseCost": 10,
-        "Unique": true
+  "ShopItemConfigs": [
+    {
+      "Level": 1,
+      "HourlyIncomeRequired": 0,
+
+      "CurrencyItems": {
+        "Weight": 1,
+        "Items": [
+          {
+            "CurrencyType": 200,
+            "Quantity": 500, // Armoury Points
+            "PurchaseCost": 10,
+            "Unique": true
+          }
+        ]
+      },
+      "ArmouryItems": {
+        "Weight": 1,
+        "ItemGrades": [
+          {
+            "ItemGrade": 10, // Common
+            "PurchaseCost": 100,
+            "Weight": 10
+          }
+        ]
       }
-    ]
-  },
-  "ArmouryItems": {
-    "Weight": 1,
-    "PurchaseCost": 100
-  }
+    }
+  ]
 }

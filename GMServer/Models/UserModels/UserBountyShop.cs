@@ -8,11 +8,19 @@ namespace GMServer.Models.UserModels
 {
     public abstract class UserAbstractBountyShopItem
     {
-        /// <summary>
-        /// ID of the shop item (NOT the item which will be given upon purchase)
-        /// </summary>
         public string ID;
         public int PurchaseCost;
+    }
+
+    [BsonIgnoreExtraElements]
+    public class UserBountyShopState
+    {
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserID;
+
+        public DateTime LastUpdated;
+        public string Seed;
+        public int Level;
     }
 
     public class UserBountyShopCurrencyItem : UserAbstractBountyShopItem

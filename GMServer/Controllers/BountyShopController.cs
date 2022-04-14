@@ -25,7 +25,7 @@ namespace GMServer.Controllers
             _context = context;
         }
 
-        
+
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Get()

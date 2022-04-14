@@ -7,6 +7,7 @@ using GMServer.Services;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,24 +28,42 @@ namespace GMServer.MediatR.BountyShopHandler
 
     public class GetUserBountyShopHandler : IRequestHandler<GetUserBountyShopRequest, GetUserBountyShopResponse>
     {
+        private readonly BountiesService _bounties;
         private readonly BountyShopService _bountyshop;
         private readonly ArmouryService _armoury;
 
-        public GetUserBountyShopHandler(BountyShopService bountyshop, ArmouryService armoury)
+        public GetUserBountyShopHandler(BountyShopService bountyshop, ArmouryService armoury, BountiesService bounties)
         {
+            _bounties = bounties;
             _armoury = armoury;
             _bountyshop = bountyshop;
         }
 
         public async Task<GetUserBountyShopResponse> Handle(GetUserBountyShopRequest request, CancellationToken cancellationToken)
         {
-            RDSTable root = new();
+            // Fetch the state. Purpose of the state is to prevent shop re-generations mid refresh if the user levels up etc
+            UserBountyShopState shopState = await _bountyshop.GetUserState(request.UserID);
 
-            root.AddEntry(CreateArmouryItemsLootTable());
-            root.AddEntry(AddCurrencyItemsTable());
+            // Check if the stored state is out dated
+            bool requiresStateUpdate = shopState is null || !request.DailyRefresh.IsBetween(shopState.LastUpdated);
 
-            BountyShopItems items = GetItems(root, 4, $"{request.UserID}-1{request.DailyRefresh.Previous}");
+            // Null the state if it requires updating to prevent accidently using it
+            shopState = requiresStateUpdate ? null : shopState;
 
+            // Fetch the config from the state or re-calculated
+            BountyShopLootTableConfig shopLevelConfig = await GetShopTableConfig(request.UserID, shopState);
+
+            // Get the seed used to fetch the deterministic items (from state or re-calculated)
+            string seed = GetShopSeed(request.UserID, request.DailyRefresh, shopState);
+
+            // Generate the shop items
+            BountyShopItems items = GetItems(shopLevelConfig, 4, seed);
+
+            // Update the state so that the next generation (if valid) will net the same results
+            if (requiresStateUpdate)
+                await UpdateUserShopState(request.UserID, shopLevelConfig.Level, seed);
+
+            // Fetch the user daily purchases
             var shopPurchases = await _bountyshop.GetDailyPurchasesAsync(request.UserID, request.DailyRefresh);
 
             return new GetUserBountyShopResponse
@@ -55,13 +74,56 @@ namespace GMServer.MediatR.BountyShopHandler
             };
         }
 
-        public BountyShopItems GetItems(RDSTable lootTable, int count, string seed)
+        private string GetShopSeed(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh, UserBountyShopState state)
         {
+            if (state is not null)
+                return state.Seed;
+
+            return $"{userId} | {refresh.Previous}";
+        }
+
+        private async Task UpdateUserShopState(string userId, int level, string seed)
+        {
+            UserBountyShopState state = new()
+            {
+                UserID = userId,
+                Seed = seed,
+                LastUpdated = DateTime.UtcNow,
+                Level = level
+            };
+
+            await _bountyshop.SetUserState(state);
+
+        }
+
+        private async Task<BountyShopLootTableConfig> GetShopTableConfig(string userId, UserBountyShopState state)
+        {
+            var shopDataFile = _bountyshop.GetDataFile();
+
+            if (state is not null)
+            {
+                return shopDataFile.GetLevelConfig(state.Level);
+            }
+
+            var bountyDataFile = _bounties.GetDataFile();
+
+            var userBounties = await _bounties.GetUserBountiesAsync(userId);
+
+            // Calculate the total maximum hourly income
+            long hourlyIncome = bountyDataFile.Bounties.Where(bounty => userBounties.UnlockedBounties.Where(x => x.BountyID == bounty.BountyID).Count() >= 1).Sum(x => x.HourlyIncome);
+
+            return shopDataFile.GetConfig(hourlyIncome);
+        }
+
+        private BountyShopItems GetItems(BountyShopLootTableConfig config, int count, string seed)
+        {
+            RDSTable table = CreateShopLootTable(config);
+
             Random rnd = Utility.SeededRandom(seed);
 
             BountyShopItems shop = new();
 
-            var results = lootTable.GetResults(count, rnd);
+            var results = table.GetResults(count, rnd);
 
             for (int i = 0; i < results.Count; i++)
             {
@@ -71,7 +133,7 @@ namespace GMServer.MediatR.BountyShopHandler
                 {
                     shop.CurrencyItems.Add(new()
                     {
-                        ID = $"CI{rnd.NextInt64()}",
+                        ID = $"CI-{i}",
                         Quantity = cItem.Value.Quantity,
                         CurrencyType = cItem.Value.CurrencyType,
                         PurchaseCost = cItem.Value.PurchaseCost,
@@ -81,7 +143,7 @@ namespace GMServer.MediatR.BountyShopHandler
                 {
                     shop.ArmouryItems.Add(new()
                     {
-                        ID = $"AI{rnd.NextInt64()}",
+                        ID = $"AI-{i}",
                         ItemID = aItem.Value.ID,
                         PurchaseCost = aItem.Value.PurchaseCost
                     });
@@ -91,18 +153,26 @@ namespace GMServer.MediatR.BountyShopHandler
             return shop;
         }
 
-        RDSTable AddCurrencyItemsTable()
+        private RDSTable CreateShopLootTable(BountyShopLootTableConfig config)
         {
-            BountyShopDataFile shopDataFile = _bountyshop.GetDataFile();
+            RDSTable root = new();
 
+            root.AddEntry(CreateArmouryItemsLootTable(config));
+            root.AddEntry(CreateCurrencyItemsTable(config));
+
+            return root;
+        }
+
+        private RDSTable CreateCurrencyItemsTable(BountyShopLootTableConfig config)
+        {
             RDSTable table = new()
             {
-                Always = shopDataFile.CurrencyItems.Always,
-                Unique = shopDataFile.CurrencyItems.Unique,
-                Weight = shopDataFile.CurrencyItems.Weight,
+                Always = config.CurrencyItems.Always,
+                Unique = config.CurrencyItems.Unique,
+                Weight = config.CurrencyItems.Weight,
             };
 
-            foreach (BountyShopCurrencyItem item in shopDataFile.CurrencyItems.Items)
+            foreach (BountyShopCurrencyItem item in config.CurrencyItems.Items)
             {
                 RDSValue<BountyShopCurrencyItem> itemValue = new(item)
                 {
@@ -117,32 +187,46 @@ namespace GMServer.MediatR.BountyShopHandler
             return table;
         }
 
-        RDSTable CreateArmouryItemsLootTable()
+        private RDSTable CreateArmouryItemsLootTable(BountyShopLootTableConfig config)
         {
-            BountyShopDataFile shopDataFile = _bountyshop.GetDataFile();
             List<ArmouryItem> armouryItems = _armoury.GetDataFile();
 
             RDSTable table = new()
             {
-                Always = shopDataFile.ArmouryItems.Always,
-                Unique = shopDataFile.ArmouryItems.Unique,
-                Weight = shopDataFile.ArmouryItems.Weight,
+                Always = config.ArmouryItems.Always,
+                Unique = config.ArmouryItems.Unique,
+                Weight = config.ArmouryItems.Weight,
             };
 
-            foreach (ArmouryItem item in armouryItems)
+            // Find all unique item grades which are available
+            IEnumerable<ItemGrade> itemGrades = config.ArmouryItems.ItemGrades.Select(x => x.ItemGrade).Distinct();
+
+            foreach (ItemGrade itemGrade in itemGrades)
             {
-                BountyShopArmouryItem bsItem = new()
+                // Get the loot table setup for the grade item
+                BountyShopArmouryItemGradeLootItem gradeItemConfig = config.ArmouryItems.ItemGrades.Find(x => x.ItemGrade == itemGrade);
+
+                // Find all the armoury items which belong to that grade
+                IEnumerable<ArmouryItem> gradeArmouryItems = armouryItems.Where(x => x.Grade == itemGrade).ToList();
+
+                foreach (ArmouryItem item in gradeArmouryItems)
                 {
-                    ID = item.ID,
-                    PurchaseCost = shopDataFile.ArmouryItems.PurchaseCost
-                };
+                    BountyShopArmouryItem value = new()
+                    {
+                        ID = item.ID,
+                        PurchaseCost = gradeItemConfig.PurchaseCost
+                    };
 
-                RDSValue<BountyShopArmouryItem> rdsItem = new(bsItem)
-                {
+                    // Create the table value for the armoury item
+                    RDSValue<BountyShopArmouryItem> tableValue = new(value)
+                    {
+                        Weight = gradeItemConfig.Weight,
+                        Always = gradeItemConfig.Always,
+                        Unique = gradeItemConfig.Unique,
+                    };
 
-                };
-
-                table.AddEntry(rdsItem);
+                    table.AddEntry(tableValue);
+                }
             }
 
             return table;
