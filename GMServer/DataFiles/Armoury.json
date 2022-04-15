@@ -8,14 +8,15 @@
   },
   {
     "ItemID": 1,
-    "Name": "ererrerrerer",
+    "Name": "Scrap Club",
     "BonusType": 600,
     "BaseEffect": 1.2,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 2,
-    "Name": "5y5gh5rgg",
+    "Name": "Blunderbuss",
+    "Grade": 20,
     "BonusType": 601,
     "BaseEffect": 1.25,
     "LevelEffect": 0.05
@@ -29,35 +30,35 @@
   },
   {
     "ItemID": 4,
-    "Name": ".................",
+    "Name": "Rare Item",
     "BonusType": 603,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 5,
-    "Name": "xcxcxcxcxcxcxc",
+    "Name": "Rusty Sword",
     "BonusType": 700,
     "BaseEffect": 1.5,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 6,
-    "Name": "3333333333333333333333",
+    "Name": "Lightning Striker",
     "BonusType": 800,
     "BaseEffect": 1.2,
-    "LevelEffect": 0.05
+    "LevelEffect": 0.075
   },
   {
     "ItemID": 7,
-    "Name": "465464",
+    "Name": "Bow",
     "BonusType": 801,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05
   },
   {
     "ItemID": 8,
-    "Name": "8908908908",
+    "Name": "...",
     "BonusType": 802,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05

@@ -57,7 +57,7 @@ namespace GMServer.MediatR.BountyShopHandler
             string seed = GetShopSeed(request.UserID, request.DailyRefresh, shopState);
 
             // Generate the shop items
-            BountyShopItems items = GetItems(shopLevelConfig, 4, seed);
+            BountyShopItems items = GetItems(shopLevelConfig, 5, seed);
 
             // Update the state so that the next generation (if valid) will net the same results
             if (requiresStateUpdate)
@@ -207,7 +207,18 @@ namespace GMServer.MediatR.BountyShopHandler
                 BountyShopArmouryItemGradeLootItem gradeItemConfig = config.ArmouryItems.ItemGrades.Find(x => x.ItemGrade == itemGrade);
 
                 // Find all the armoury items which belong to that grade
-                IEnumerable<ArmouryItem> gradeArmouryItems = armouryItems.Where(x => x.Grade == itemGrade).ToList();
+                List<ArmouryItem> gradeArmouryItems = armouryItems.Where(x => x.Grade == itemGrade).ToList();
+
+                if (gradeArmouryItems.Count == 0)
+                    continue;
+
+                // Create the sub-table for the item grade
+                RDSTable itemGradeTable = new()
+                {
+                    Weight = gradeItemConfig.Weight,
+                    Always = gradeItemConfig.Always,
+                    Unique = gradeItemConfig.Unique,
+                };
 
                 foreach (ArmouryItem item in gradeArmouryItems)
                 {
@@ -218,15 +229,12 @@ namespace GMServer.MediatR.BountyShopHandler
                     };
 
                     // Create the table value for the armoury item
-                    RDSValue<BountyShopArmouryItem> tableValue = new(value)
-                    {
-                        Weight = gradeItemConfig.Weight,
-                        Always = gradeItemConfig.Always,
-                        Unique = gradeItemConfig.Unique,
-                    };
+                    RDSValue<BountyShopArmouryItem> tableValue = new(value);
 
-                    table.AddEntry(tableValue);
+                    itemGradeTable.AddEntry(tableValue);
                 }
+
+                table.AddEntry(itemGradeTable);
             }
 
             return table;

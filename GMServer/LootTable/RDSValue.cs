@@ -9,7 +9,7 @@
     /// <typeparam name="T">The type of the value</typeparam>
     public class RDSValue<T> : IRDSValue<T>
     {
-        public RDSValue(T value) : this(value, 1, false, false, true)
+        public RDSValue(T value) : this(value, 1, false, false)
         {
 
         }
@@ -22,13 +22,12 @@
         /// <param name="unique">if set to <c>true</c> [unique].</param>
         /// <param name="always">if set to <c>true</c> [always].</param>
         /// <param name="enabled">if set to <c>true</c> [enabled].</param>
-        public RDSValue(T value, double weight, bool unique, bool always, bool enabled)
+        public RDSValue(T value, double weight, bool unique, bool always)
         {
             Value = value;
             Weight = weight;
             Unique = unique;
             Always = always;
-            Enabled = enabled;
             Table = null;
         }
 
@@ -50,14 +49,6 @@
         /// (Probability is ignored when this flag is set to true)
         /// </summary>
         public bool Always { get; set; }
-        /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="IRDSObject"/> is enabled.
-        /// Only enabled entries can be part of the result of a RDSTable.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if enabled; otherwise, <c>false</c>.
-        /// </value>
-        public bool Enabled { get; set; }
         /// <summary>
         /// Gets or sets the table this Object belongs to.
         /// Note to inheritors: This property has to be auto-set when an item is added to a table via the AddEntry method.

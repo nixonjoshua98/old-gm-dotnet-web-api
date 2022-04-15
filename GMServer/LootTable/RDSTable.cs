@@ -57,11 +57,15 @@ namespace GMServer.LootTable
 
             SeededRandom = rnd;
 
+            // We only want to add the items which are always added once, so we use this null check
+            // to confirm if this is the first time this instance method has been called in case this is a nested table
             if (AvailableItems is null)
+            {
                 AvailableItems = AllPossibleItems.ToList();
 
-            foreach (IRDSObject o in AvailableItems.Where(e => e.Always && e.Enabled))
-                AddToResult(ref results, o);
+                foreach (IRDSObject o in AvailableItems.Where(e => e.Always).ToList())
+                    AddToResult(ref results, o);
+            }
 
             while (count > results.Count)
             {
@@ -93,7 +97,7 @@ namespace GMServer.LootTable
         public double Weight { get; set; } = 1;
         public bool Unique { get; set; } = false;
         public bool Always { get; set; } = false;
-        public bool Enabled { get; set; } = true;
+
         public RDSTable Table { get; set; }
     }
 }

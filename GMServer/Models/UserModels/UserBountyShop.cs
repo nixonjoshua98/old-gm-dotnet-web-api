@@ -50,11 +50,4 @@ namespace GMServer.Models.UserModels
 
         public DateTime PurchaseTime;
     }
-
-    public class UserBountyShop
-    {
-        public BountyShopItems ShopItems = new();
-
-        public List<BountyShopPurchase> Purchases;
-    }
 }

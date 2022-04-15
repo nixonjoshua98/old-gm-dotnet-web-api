@@ -25,15 +25,6 @@ namespace GMServer.LootTable
         bool Always { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="IRDSObject"/> is enabled.
-        /// Only enabled entries can be part of the result of a RDSTable.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if enabled; otherwise, <c>false</c>.
-        /// </value>
-        bool Enabled { get; set; }
-
-        /// <summary>
         /// Gets or sets the table this Object belongs to.
         /// Note to inheritors: This property has to be auto-set when an item is added to a table via the AddEntry method.
         /// </summary>

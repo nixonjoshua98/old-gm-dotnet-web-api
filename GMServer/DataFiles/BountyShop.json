@@ -5,7 +5,6 @@
       "HourlyIncomeRequired": 0,
 
       "CurrencyItems": {
-        "Weight": 1,
         "Items": [
           {
             "CurrencyType": 200,
@@ -16,12 +15,17 @@
         ]
       },
       "ArmouryItems": {
-        "Weight": 1,
         "ItemGrades": [
           {
             "ItemGrade": 10, // Common
             "PurchaseCost": 100,
-            "Weight": 10
+            "Weight": 100
+          },
+          {
+            "ItemGrade": 20, // Rare
+            "Always": true,
+            "Weight": 25,
+            "PurchaseCost": 150
           }
         ]
       }
