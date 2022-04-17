@@ -29,20 +29,12 @@ namespace GMServer.Controllers
         {
             try
             {
-                await _mediator.Send(new PrestigeRequest { UserID = User.UserID(), PrestigeStage = body.PrestigeStage });
+                var resp = await _mediator.Send(new PrestigeRequest { UserID = User.UserID(), PrestigeStage = body.PrestigeStage });
 
-                var userData = await _mediator.Send(new GetUserDataRequest { UserID = User.UserID(), DailyRefresh = context.DailyRefresh });
-                var datafiles = await _mediator.Send(new GetDataFileRequest());
+                resp.UserData = await _mediator.Send(new GetUserDataRequest { UserID = User.UserID(), DailyRefresh = context.DailyRefresh });
+                resp.DataFiles = await _mediator.Send(new GetDataFileRequest());
 
-                return Ok(new
-                {
-                    DataFiles = datafiles,
-                    UserData = userData
-                });
-            }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
+                return this.ResponseOrError(resp);
             }
 
             catch (Exception ex)

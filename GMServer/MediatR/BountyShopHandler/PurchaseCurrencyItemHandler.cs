@@ -1,6 +1,5 @@
 ﻿using GMServer.Common;
 using GMServer.Context;
-using GMServer.Exceptions;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
@@ -20,7 +19,21 @@ namespace GMServer.MediatR.BountyShopHandler
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
-    public record PurchaseCurrencyItemResponse(UserCurrencies Currencies, long PurchaseCost);
+    public class PurchaseCurrencyItemResponse : AbstractResponseWithError
+    {
+        public UserCurrencies Currencies;
+        public long PurchaseCost;
+
+        public PurchaseCurrencyItemResponse(string message, int code) : base(message, code)
+        {
+        }
+
+        public PurchaseCurrencyItemResponse(UserCurrencies currencies, long purchaseCost)
+        {
+            Currencies = currencies;
+            PurchaseCost = purchaseCost;
+        }
+    }
 
     public class PurchaseCurrencyItemHandler : IRequestHandler<PurchaseCurrencyItemRequest, PurchaseCurrencyItemResponse>
     {
@@ -40,12 +53,12 @@ namespace GMServer.MediatR.BountyShopHandler
             var itemPurchases = await _bountyshop.GetDailyItemPurchasesAsync(request.UserID, request.ItemID, request.DailyRefresh);
 
             if (itemPurchases.Count >= 1)
-                throw new ServerException("Item already purchased", 400);
+                return new("Item already purchased", 400);
 
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             if (shopItem.PurchaseCost > userCurrencies.BountyPoints)
-                throw new ServerException("Cannot afford purchase", 400);
+                return new("Cannot afford purchase", 400);
 
             // Create the update model (includes the purchase cost decrement)
             var incrModel = CreateUpdateModel(shopItem);

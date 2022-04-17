@@ -1,5 +1,6 @@
 ﻿using GMServer.Context;
 using GMServer.Exceptions;
+using GMServer.Extensions;
 using GMServer.MediatR;
 using GMServer.MediatR.Login;
 using MediatR;
@@ -17,6 +18,7 @@ namespace GMServer.Controllers
     {
         private readonly IMediator _mediator;
         private readonly RequestContext _context;
+
         public LoginController(IMediator mediator, RequestContext context)
         {
             _context = context;
@@ -28,24 +30,15 @@ namespace GMServer.Controllers
         {
             try
             {
-                var loginResp = await _mediator.Send(new DeviceLoginRequest { DeviceID = deviceId });
+                var resp = await _mediator.Send(new DeviceLoginRequest { DeviceID = deviceId });
 
-                var dataResp = await _mediator.Send(new GetUserDataRequest
+                resp.UserData = await _mediator.Send(new GetUserDataRequest
                 {
-                    UserID = loginResp.UserID,
+                    UserID = resp.UserID,
                     DailyRefresh = _context.DailyRefresh
                 });
 
-                return Ok(new
-                {
-                    UserData = dataResp,
-                    loginResp.Token
-                });
-            }
-            catch (ServerException ex)
-            {
-                Log.Information(ex.Message);
-                return new ServerError(ex.Message, ex.StatusCode);
+                return this.ResponseOrError(resp);
             }
             catch (Exception ex)
             {

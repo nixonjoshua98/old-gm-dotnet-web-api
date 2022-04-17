@@ -2,7 +2,7 @@
 
 namespace GMServer.MediatR
 {
-    public abstract class BaseResponseWithError
+    public abstract class AbstractResponseWithError
     {
         [JsonIgnore]
         public bool Success = true;
@@ -13,12 +13,12 @@ namespace GMServer.MediatR
         [JsonIgnore]
         public string Message = string.Empty;
 
-        public BaseResponseWithError()
+        public AbstractResponseWithError()
         {
 
         }
 
-        public BaseResponseWithError(string message, int code)
+        public AbstractResponseWithError(string message, int code)
         {
             Success = false;
             StatusCode = code;

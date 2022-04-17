@@ -6,7 +6,7 @@ namespace GMServer.Extensions
 {
     public static class ControllerBaseExtensions
     {
-        public static IActionResult ResponseOrError<T>(this ControllerBase controller, T response) where T : BaseResponseWithError
+        public static IActionResult ResponseOrError<T>(this ControllerBase controller, T response) where T : AbstractResponseWithError
         {
             if (response.Success)
                 return new OkObjectResult(response);

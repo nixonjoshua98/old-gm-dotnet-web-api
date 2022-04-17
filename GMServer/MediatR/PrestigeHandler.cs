@@ -1,5 +1,4 @@
 ﻿using GMServer.Common;
-using GMServer.Exceptions;
 using GMServer.Extensions;
 using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
@@ -18,9 +17,20 @@ namespace GMServer.MediatR
         public int PrestigeStage;
     }
 
-    public class PrestigeResponse
+    public class PrestigeResponse : AbstractResponseWithError
     {
+        public GetDataFileResponse DataFiles;
+        public GetUserDataResponse UserData;
 
+        public PrestigeResponse()
+        {
+
+        }
+
+        public PrestigeResponse(string message, int code) : base(message, code)
+        {
+
+        }
     }
 
     public class PrestigeHandler : IRequestHandler<PrestigeRequest, PrestigeResponse>
@@ -46,7 +56,7 @@ namespace GMServer.MediatR
             double points = await CalculatePrestigePointsAsync(request.UserID, request.PrestigeStage);
 
             if (points is double.NaN || points <= 0)
-                throw new ServerException("Invalid prestige", 400);
+                return new("Invalid prestige", 400);
 
             // = Bounties = //
             BountiesDataFile bountiesDatafile = _bounties.GetDataFile();

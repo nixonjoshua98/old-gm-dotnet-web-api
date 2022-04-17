@@ -3,7 +3,7 @@ using System.Net;
 
 namespace GMServer.Exceptions
 {
-    public class ServerException : Exception
+    public abstract class ServerException : Exception
     {
         public int StatusCode;
 
@@ -11,12 +11,10 @@ namespace GMServer.Exceptions
         {
             StatusCode = status;
         }
-
-        public ServerException(string message, HttpStatusCode status) : this(message, (int)status) { }
     }
 
     public class InvalidTokenException : ServerException
     {
-        public InvalidTokenException() : base("Unauthorized", HttpStatusCode.Unauthorized) { }
+        public InvalidTokenException() : base("Unauthorized", (int)HttpStatusCode.Unauthorized) { }
     }
 }

@@ -14,7 +14,7 @@ namespace GMServer.MediatR.BountyHandlers
         public int BountyID;
     }
 
-    public class UpgradeBountyResponse : BaseResponseWithError
+    public class UpgradeBountyResponse : AbstractResponseWithError
     {
         public readonly UserBounty Bounty;
 

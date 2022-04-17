@@ -1,6 +1,5 @@
 ﻿using GMServer.Common;
 using GMServer.Context;
-using GMServer.Exceptions;
 using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
@@ -19,7 +18,19 @@ namespace GMServer.MediatR.QuestHandlers
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
-    public record CompleteDailyQuestResponse(int DiamondsRewarded);
+    public class CompleteDailyQuestResponse : AbstractResponseWithError
+    {
+        public int DiamondsRewarded;
+
+        public CompleteDailyQuestResponse(int diamondsRewarded)
+        {
+            DiamondsRewarded = diamondsRewarded;
+        }
+
+        public CompleteDailyQuestResponse(string message, int code) : base(message, code)
+        {
+        }
+    }
 
     public class CompleteDailyQuestHandler : IRequestHandler<CompleteDailyQuestRequest, CompleteDailyQuestResponse>
     {
@@ -42,13 +53,13 @@ namespace GMServer.MediatR.QuestHandlers
             var userQuest = await _quests.GetDailyQuestProgressAsync(request.UserID, request.QuestID, request.DailyRefresh);
 
             if (quest is null)
-                throw new ServerException("Quest not found", 400);
+                return new("Quest not found", 400);
 
             else if (userQuest is not null)
-                throw new ServerException("Quest already completed", 400);
+                return new("Quest already completed", 400);
 
             if (!IsQuestCompleted(quest, request.LocalDailyStats))
-                throw new ServerException("Quest requirements not met", 400);
+                return new("Quest requirements not met", 400);
 
             await _quests.InsertDailyQuestProgressAsync(new()
             {

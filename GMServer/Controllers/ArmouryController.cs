@@ -34,13 +34,8 @@ namespace GMServer.Controllers
                     ItemID = body.ItemID
                 });
 
-                return Ok(resp);
+                return this.ResponseOrError(resp);
             }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
-            }
-
             catch (Exception ex)
             {
                 Log.Error(ex, "UpgradeArmouryItem");

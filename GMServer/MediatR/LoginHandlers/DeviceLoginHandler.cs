@@ -11,7 +11,17 @@ namespace GMServer.MediatR.Login
         public string DeviceID;
     }
 
-    public record DeviceLoginResponse(string UserID, string Token);
+    public class DeviceLoginResponse : AbstractLoginResponse
+    {
+        public string UserID;
+        public string Token;
+
+        public DeviceLoginResponse(string userID, string token)
+        {
+            UserID = userID;
+            Token = token;
+        }
+    }
 
     public class DeviceLoginHandler : IRequestHandler<DeviceLoginRequest, DeviceLoginResponse>
     {

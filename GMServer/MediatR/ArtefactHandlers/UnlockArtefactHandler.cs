@@ -1,5 +1,4 @@
-﻿using GMServer.Exceptions;
-using GMServer.Models.DataFileModels;
+﻿using GMServer.Models.DataFileModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
@@ -16,7 +15,22 @@ namespace GMServer.MediatR.ArtefactHandler
         public string UserID;
     }
 
-    public record UnlockArtefactResponse(UserArtefact Artefact, double UnlockCost);
+    public class UnlockArtefactResponse : AbstractResponseWithError
+    {
+        public UserArtefact Artefact;
+        public double UnlockCost;
+
+        public UnlockArtefactResponse(string message, int code) : base(message, code)
+        {
+
+        }
+
+        public UnlockArtefactResponse(UserArtefact artefact, double unlockCost)
+        {
+            Artefact = artefact;
+            UnlockCost = unlockCost;
+        }
+    }
 
     public class UnlockArtefactHandler : IRequestHandler<UnlockArtefactRequest, UnlockArtefactResponse>
     {
@@ -36,14 +50,14 @@ namespace GMServer.MediatR.ArtefactHandler
             var unlockedArtefacts = await _artefacts.GetUserArtefactsAsync(request.UserID);
 
             if (unlockedArtefacts.Count >= datafile.Count)
-                throw new ServerException("All artefacts unlocked", 400);
+                return new("All artefacts unlocked", 400);
 
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             double unlockCost = CalculateUnlockCost(unlockedArtefacts);
 
             if (unlockCost > userCurrencies.PrestigePoints)
-                throw new ServerException("Cannot afford artefact unlock", 400);
+                return new("Cannot afford artefact unlock", 400);
 
             UserArtefact newArtefact = GetNewArtefact(request.UserID, unlockedArtefacts, datafile);
 

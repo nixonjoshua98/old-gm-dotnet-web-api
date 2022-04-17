@@ -1,5 +1,4 @@
-﻿using GMServer.Exceptions;
-using GMServer.Models.UserModels;
+﻿using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
 using System.Linq;
@@ -14,7 +13,21 @@ namespace GMServer.MediatR.ArmouryHandlers
         public int ItemID;
     }
 
-    public record UpgradeArmouryItemResponse(UserArmouryItem Item, int UpgradeCost);
+    public class UpgradeArmouryItemResponse : AbstractResponseWithError
+    {
+        public UserArmouryItem Item;
+        public int UpgradeCost;
+
+        public UpgradeArmouryItemResponse(string message, int code) : base(message, code)
+        {
+        }
+
+        public UpgradeArmouryItemResponse(UserArmouryItem item, int upgradeCost)
+        {
+            Item = item;
+            UpgradeCost = upgradeCost;
+        }
+    }
 
     public class UpgradeArmouryItemHandler : IRequestHandler<UpgradeArmouryItemRequest, UpgradeArmouryItemResponse>
     {
@@ -35,14 +48,14 @@ namespace GMServer.MediatR.ArmouryHandlers
             var itemData = datafile.FirstOrDefault(x => x.ID == request.ItemID);
 
             if (userItem is null || itemData is null)
-                throw new ServerException("Item is not valid", 400);
+                return new("Item is not valid", 400);
 
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             var upgradeCost = CalculateUpgradeCost(userItem);
 
             if (upgradeCost > userCurrencies.ArmouryPoints)
-                throw new ServerException("Cannot afford upgrade", 400);
+                return new("Cannot afford upgrade", 400);
 
             await _currencies.IncrementAsync(request.UserID, new() { ArmouryPoints = -upgradeCost });
 

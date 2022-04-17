@@ -62,11 +62,7 @@ namespace GMServer.Controllers
                     HighestStageReached = body.HighestStageReached
                 });
 
-                return Ok(resp);
-            }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
+                return this.ResponseOrError(resp);
             }
             catch (Exception ex)
             {
@@ -89,11 +85,7 @@ namespace GMServer.Controllers
                     DailyRefresh = context.DailyRefresh
                 });
 
-                return Ok(resp);
-            }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
+                return this.ResponseOrError(resp);
             }
             catch (Exception ex)
             {

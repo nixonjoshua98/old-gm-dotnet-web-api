@@ -15,7 +15,7 @@ namespace GMServer.MediatR.BountyHandlers
         public DateTime DateTime;
     }
 
-    public class ClaimBountyPointsResponse : BaseResponseWithError
+    public class ClaimBountyPointsResponse : AbstractResponseWithError
     {
         public readonly DateTime ClaimTime;
         public readonly long PointsClaimed;

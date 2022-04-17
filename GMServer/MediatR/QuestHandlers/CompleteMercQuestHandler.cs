@@ -1,5 +1,4 @@
-﻿using GMServer.Exceptions;
-using GMServer.Services;
+﻿using GMServer.Services;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +12,19 @@ namespace GMServer.MediatR.QuestHandlers
         public int HighestStageReached;
     }
 
-    public record CompleteMercQuestResponse(int UnlockedMerc);
+    public class CompleteMercQuestResponse : AbstractResponseWithError
+    {
+        public int UnlockedMerc;
+
+        public CompleteMercQuestResponse(int merc)
+        {
+            UnlockedMerc = merc;
+        }
+
+        public CompleteMercQuestResponse(string message, int code) : base(message, code)
+        {
+        }
+    }
 
     public class CompleteMercQuestHandler : IRequestHandler<CompleteMercQuestRequest, CompleteMercQuestResponse>
     {
@@ -32,15 +43,15 @@ namespace GMServer.MediatR.QuestHandlers
             var questProgress = await _quests.GetMercQuestProgressAsync(request.UserID, request.QuestID);
 
             if (questProgress is not null)
-                throw new ServerException("Quest already completed", 400);
+                return new("Quest already completed", 400);
 
             else if (quest.RequiredStage > request.HighestStageReached)
-                throw new ServerException("Requirements not met", 400);
+                return new("Requirements not met", 400);
 
             var userMerc = await _mercs.GetMerc(request.UserID, quest.RewardMercID);
 
             if (userMerc is not null)
-                throw new ServerException("Merc reward already unlocked", 400);
+                return new("Merc reward already unlocked", 400);
 
             await _quests.InsertMercQuestProgressAsync(new()
             {

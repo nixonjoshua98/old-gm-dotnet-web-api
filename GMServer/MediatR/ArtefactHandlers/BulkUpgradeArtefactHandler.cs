@@ -1,5 +1,4 @@
 ﻿using GMServer.Common;
-using GMServer.Exceptions;
 using GMServer.Models.DataFileModels;
 using GMServer.Models.RequestModels;
 using GMServer.Models.UserModels;
@@ -19,7 +18,24 @@ namespace GMServer.MediatR.ArtefactHandler
         public List<UserArtefactUpgrade> Artefacts;
     }
 
-    public record BulkUpgradeArtefactResponse(List<UserArtefact> Artefacts, double UpgradeCost, double RemainingPrestigePoints);
+    public class BulkUpgradeArtefactResponse : AbstractResponseWithError
+    {
+        public List<UserArtefact> Artefacts;
+        public double UpgradeCost;
+        public double RemainingPrestigePoints;
+
+        public BulkUpgradeArtefactResponse(List<UserArtefact> artefacts, double upgradeCost, double remainingPrestigePoints)
+        {
+            Artefacts = artefacts;
+            UpgradeCost = upgradeCost;
+            RemainingPrestigePoints = remainingPrestigePoints;
+        }
+
+        public BulkUpgradeArtefactResponse(string message, int code) : base(message, code)
+        {
+
+        }
+    }
 
     public class BulkUpgradeArtefactHandler : IRequestHandler<BulkUpgradeArtefactRequest, BulkUpgradeArtefactResponse>
     {
@@ -39,16 +55,16 @@ namespace GMServer.MediatR.ArtefactHandler
             var datafile = _artefacts.GetDataFile();
 
             if (request.Artefacts.Count == 0)
-                throw new ServerException("No artefacts provided", 400);
+                return new("No artefacts provided", 400);
 
             else if (!AllUniqueArtefacts(request.Artefacts))
-                throw new ServerException("Duplicate artefacts found", 400);
+                return new("Duplicate artefacts found", 400);
 
             else if (!UserOwnsAllArtefacts(userArtefacts, request.Artefacts))
-                throw new ServerException("Invalid artefact found", 400);
+                return new("Invalid artefact found", 400);
 
             else if (!UpgradeLevelsValid(userArtefacts, datafile, request.Artefacts))
-                throw new ServerException("Some artefact upgrade requests are not valid", 400);
+                return new("Some artefact upgrade requests are not valid", 400);
 
             // Calculate total upgrade cost for all upgrades
             double totalUpgradeCost = CalculateTotalUpgradeCost(userArtefacts, datafile, request.Artefacts);
@@ -56,7 +72,7 @@ namespace GMServer.MediatR.ArtefactHandler
             UserCurrencies currencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             if (totalUpgradeCost <= 0 || totalUpgradeCost > currencies.PrestigePoints)
-                throw new ServerException("Cannot afford upgrade", 400);
+                return new("Cannot afford upgrade", 400);
 
             // Decrement the upgrade cost and get the new values
             var userCurrencies = await _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = -totalUpgradeCost });

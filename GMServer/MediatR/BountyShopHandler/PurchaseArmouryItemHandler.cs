@@ -1,5 +1,4 @@
 ﻿using GMServer.Context;
-using GMServer.Exceptions;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
@@ -19,7 +18,21 @@ namespace GMServer.MediatR.BountyShopHandler
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
-    public record PurchaseArmouryItemResponse(UserCurrencies Currencies, UserArmouryItem ArmouryItem);
+    public class PurchaseArmouryItemResponse : AbstractResponseWithError
+    {
+        public UserCurrencies Currencies;
+        public UserArmouryItem ArmouryItem;
+
+        public PurchaseArmouryItemResponse(UserCurrencies currencies, UserArmouryItem armouryItem)
+        {
+            Currencies = currencies;
+            ArmouryItem = armouryItem;
+        }
+
+        public PurchaseArmouryItemResponse(string message, int code) : base(message, code)
+        {
+        }
+    }
 
     public class PurchaseArmouryItemHandler : IRequestHandler<PurchaseArmouryItemRequest, PurchaseArmouryItemResponse>
     {
@@ -41,12 +54,12 @@ namespace GMServer.MediatR.BountyShopHandler
             var itemPurchases = await _bountyshop.GetDailyItemPurchasesAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
 
             if (itemPurchases.Count >= 1)
-                throw new ServerException("Item already purchased", 400);
+                return new("Item already purchased", 400);
 
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             if (shopItem.PurchaseCost > userCurrencies.BountyPoints)
-                throw new ServerException("Cannot afford purchase", 400);
+                return new("Cannot afford purchase", 400);
 
             userCurrencies = await _currencies.IncrementAsync(request.UserID, new() { BountyPoints = -shopItem.PurchaseCost });
 

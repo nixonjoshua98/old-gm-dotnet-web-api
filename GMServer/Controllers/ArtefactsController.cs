@@ -35,13 +35,8 @@ namespace GMServer.Controllers
                     Artefacts = body.Artefacts
                 });
 
-                return Ok(resp);
+                return this.ResponseOrError(resp);
             }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
-            }
-
             catch (Exception ex)
             {
                 Log.Error(ex, "BulkUpgradeArtefact");
@@ -60,13 +55,8 @@ namespace GMServer.Controllers
                     UserID = User.UserID(),
                 });
 
-                return Ok(resp);
+                return this.ResponseOrError(resp);
             }
-            catch (ServerException ex)
-            {
-                return new ServerError(ex.Message, ex.StatusCode);
-            }
-
             catch (Exception ex)
             {
                 Log.Error(ex, "UnlockArtefact");
