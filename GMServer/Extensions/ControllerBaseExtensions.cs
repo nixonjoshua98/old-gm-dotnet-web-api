@@ -9,7 +9,7 @@ namespace GMServer.Extensions
         public static IActionResult ResponseOrError<T>(this ControllerBase controller, T response) where T : AbstractResponseWithError
         {
             if (response.Success)
-                return new OkObjectResult(response);
+                return controller.Ok(response);
 
             return new ServerError(response.Message, response.StatusCode);
         }

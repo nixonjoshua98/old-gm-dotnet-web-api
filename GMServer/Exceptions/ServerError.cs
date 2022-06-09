@@ -21,6 +21,11 @@ namespace GMServer.Exceptions
 
     public class InternalServerError : ServerError
     {
+        public InternalServerError() : this("Internal Server Error")
+        {
+
+        }
+
         public InternalServerError(string value) : base(value, StatusCodes.Status500InternalServerError)
         {
 

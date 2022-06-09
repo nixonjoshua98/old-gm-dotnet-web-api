@@ -28,9 +28,9 @@ namespace GMServer.MediatR.BountyHandlers
 
     public class UpgradeBountyHandler : IRequestHandler<UpgradeBountyRequest, UpgradeBountyResponse>
     {
-        private readonly BountiesService _bounties;
+        private readonly IBountiesService _bounties;
 
-        public UpgradeBountyHandler(BountiesService bounties)
+        public UpgradeBountyHandler(IBountiesService bounties)
         {
             _bounties = bounties;
         }
@@ -48,7 +48,7 @@ namespace GMServer.MediatR.BountyHandlers
             else if (!CanLevelUp(userBounty, bounty))
                 return new("Cannot level up bounty", 400);
 
-            await _bounties.IncrementBountyLevel(request.UserID, request.BountyID, 1);
+            await _bounties.IncrementBountyLevelAsync(request.UserID, request.BountyID, 1);
 
             userBounty.Level++; // Update the bounty (saves a database request)
 

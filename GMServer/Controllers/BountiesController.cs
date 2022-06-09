@@ -43,6 +43,28 @@ namespace GMServer.Controllers
             }
         }
 
+        [HttpPut("Toggle")]
+        [Authorize]
+        public async Task<IActionResult> ToggleActiveBounty(SetActiveBountyBody body)
+        {
+            try
+            {
+                var resp = await _mediator.Send(new ToggleActiveBountyRequest
+                {
+                    UserID = User.UserID(),
+                    IsActive = body.IsActive,
+                    BountyID = body.BountyID
+                });
+
+                return this.ResponseOrError(resp);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "ToggleActiveBounty");
+                return new InternalServerError();
+            }
+        }
+
         [HttpPut("Upgrade")]
         [Authorize]
         public async Task<IActionResult> UpgradeBounty(UpgradeBountyBody body)

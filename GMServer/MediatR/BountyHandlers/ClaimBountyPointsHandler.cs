@@ -33,10 +33,10 @@ namespace GMServer.MediatR.BountyHandlers
 
     public class ClaimBountyPointsHandler : IRequestHandler<ClaimBountyPointRequest, ClaimBountyPointsResponse>
     {
-        private readonly BountiesService _bounties;
+        private readonly IBountiesService _bounties;
         private readonly CurrenciesService _currencies;
 
-        public ClaimBountyPointsHandler(CurrenciesService currencies, BountiesService bounties)
+        public ClaimBountyPointsHandler(CurrenciesService currencies, IBountiesService bounties)
         {
             _bounties = bounties;
             _currencies = currencies;

@@ -48,8 +48,7 @@ namespace GMServer.Services
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimNames.UserID, user.ID),
-                    new Claim(ClaimNames.Dummy, Random.Shared.NextInt64().ToString()), // Force the token to be unique 'every' time
+                    new Claim(ClaimNames.UserID, user.ID)
                 }),
                 Audience = _settings.Audience,
                 Expires = DateTime.UtcNow.AddDays(1),

@@ -28,11 +28,11 @@ namespace GMServer.MediatR.BountyShopHandler
 
     public class GetUserBountyShopHandler : IRequestHandler<GetUserBountyShopRequest, GetUserBountyShopResponse>
     {
-        private readonly BountiesService _bounties;
+        private readonly IBountiesService _bounties;
         private readonly BountyShopService _bountyshop;
         private readonly ArmouryService _armoury;
 
-        public GetUserBountyShopHandler(BountyShopService bountyshop, ArmouryService armoury, BountiesService bounties)
+        public GetUserBountyShopHandler(BountyShopService bountyshop, ArmouryService armoury, IBountiesService bounties)
         {
             _bounties = bounties;
             _armoury = armoury;

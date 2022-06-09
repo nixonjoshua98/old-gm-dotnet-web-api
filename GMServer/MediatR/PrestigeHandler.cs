@@ -39,9 +39,9 @@ namespace GMServer.MediatR
         private readonly ArtefactsService _artefacts;
         private readonly CurrenciesService _currencies;
         private readonly PrestigeService _prestige;
-        private readonly BountiesService _bounties;
+        private readonly IBountiesService _bounties;
 
-        public PrestigeHandler(ArtefactsService artefacts, CurrenciesService currencies, PrestigeService prestige, BountiesService bounties, AccountStatsService accountStats)
+        public PrestigeHandler(ArtefactsService artefacts, CurrenciesService currencies, PrestigeService prestige, IBountiesService bounties, AccountStatsService accountStats)
         {
             _accountStats = accountStats;
             _artefacts = artefacts;
@@ -84,7 +84,7 @@ namespace GMServer.MediatR
                 await _bounties.InsertBountiesAsync(request.UserID, unlockedBounties);
 
             if (defeatedBountyIds.Count > 0)  // Increment the 'NumDefeats' value used to calculate levels
-                await _bounties.IncrementBountyDefeats(request.UserID, defeatedBountyIds);
+                await _bounties.IncrementBountyDefeatsAsync(request.UserID, defeatedBountyIds);
 
             await _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = points });
 

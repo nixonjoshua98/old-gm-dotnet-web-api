@@ -59,7 +59,7 @@ namespace GMServer.Controllers
                     DailyRefresh = _context.DailyRefresh
                 });
 
-                return Ok(resp);
+                return this.ResponseOrError(resp);
             }
             catch (Exception ex)
             {

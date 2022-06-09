@@ -2,7 +2,6 @@
 {
     public static class ClaimNames
     {
-        public const string UserID = "USER_ID";
-        public const string Dummy = "DUMMY";
+        public const string UserID = "USER-ID";
     }
 }

@@ -34,14 +34,14 @@ namespace GMServer.MediatR
         private readonly CurrenciesService _currencies;
         private readonly MercService _mercs;
         private readonly AccountStatsService _stats;
-        private readonly BountiesService _bounties;
+        private readonly IBountiesService _bounties;
 
         public GetUserDataHandler(
             ArtefactsService artefacts,
             ArmouryService armoury,
             CurrenciesService currencies,
             MercService mercs,
-            BountiesService bounties,
+            IBountiesService bounties,
             QuestsService quests,
             AccountStatsService stats)
         {

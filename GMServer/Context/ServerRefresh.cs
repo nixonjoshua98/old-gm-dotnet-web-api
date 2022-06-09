@@ -4,8 +4,8 @@ namespace GMServer.Context
 {
     public class CurrentServerRefresh<T>
     {
-        public DateTime Previous;
-        public DateTime Next;
+        public DateTime Previous { get; set; }
+        public DateTime Next { get; set; }
 
         public CurrentServerRefresh(DateTime prev, DateTime next)
         {
@@ -13,10 +13,7 @@ namespace GMServer.Context
             Next = next;
         }
 
-        public bool IsBetween(DateTime dt)
-        {
-            return Previous < dt && Next > dt;
-        }
+        public bool IsBetween(DateTime dt) => Previous < dt && Next > dt;
     }
 
     public interface IDailyServerRefresh { }
@@ -30,7 +27,7 @@ namespace GMServer.Context
 
         public int Hour;
         public int Minute;
-        public int Second = 0;
+        public int Second;
 
         public CurrentServerRefresh<T> Current => RefreshPairFromDate(DateTime.UtcNow);
 
@@ -38,37 +35,45 @@ namespace GMServer.Context
         {
             DateTime refreshTime = new DateTime(dt.Year, dt.Month, dt.Day, Hour, Minute, Second, DateTimeKind.Utc);
 
-            // Week Day (Mon, Tue etc.)
             if (WeekDay > -1)
+                return WeeklyInterval(refreshTime);
+
+            else if (MonthDate > -1)
+                return MonhlyInterval(refreshTime);
+
+            return GeneralInterval(refreshTime, dt);
+        }
+
+        private CurrentServerRefresh<T> WeeklyInterval(DateTime refreshTime)
+        {
+            while (refreshTime.DayOfWeek != (DayOfWeek)WeekDay)
+                refreshTime -= TimeSpan.FromDays(1);
+
+            return new(refreshTime, refreshTime + TimeSpan.FromDays(7));
+        }
+
+        private CurrentServerRefresh<T> MonhlyInterval(DateTime refreshTime)
+        {
+            while (refreshTime.Day != MonthDate)
+                refreshTime -= TimeSpan.FromDays(1);
+
+            DateTime nextRefresh = new(refreshTime.Year, refreshTime.Month + 1, refreshTime.Day, refreshTime.Hour, refreshTime.Minute, refreshTime.Second);
+
+            return new(refreshTime, nextRefresh);
+        }
+
+        private CurrentServerRefresh<T> GeneralInterval(DateTime refreshTime, DateTime now)
+        {
+            if (refreshTime > now)
             {
-                while (refreshTime.DayOfWeek != (DayOfWeek)WeekDay)
-                    refreshTime -= TimeSpan.FromDays(1);
-
-                return new(refreshTime, refreshTime + TimeSpan.FromDays(7));
-            }
-
-            // Month date
-            if (MonthDate > -1)
-            {
-                while (refreshTime.Day != MonthDate)
-                    refreshTime -= TimeSpan.FromDays(1);
-
-                DateTime nextRefresh = new(refreshTime.Year, refreshTime.Month + 1, refreshTime.Day, refreshTime.Hour, refreshTime.Minute, refreshTime.Second);
-
-                return new(refreshTime, nextRefresh);
-            }
-
-            // General Interval (1 hour, 3 days etc)
-            if (refreshTime > dt)
-            {
-                while (refreshTime > dt)
+                while (refreshTime > now)
                     refreshTime -= Interval;
 
                 return new(refreshTime, refreshTime + Interval);
             }
             else
             {
-                while (dt > refreshTime)
+                while (now > refreshTime)
                     refreshTime += Interval;
 
                 return new(refreshTime - Interval, refreshTime);

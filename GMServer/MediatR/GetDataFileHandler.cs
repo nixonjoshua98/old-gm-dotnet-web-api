@@ -25,9 +25,9 @@ namespace GMServer.MediatR
         private readonly ArtefactsService _artefacts;
         private readonly ArmouryService _armoury;
         private readonly MercService _mercs;
-        private readonly BountiesService _bounties;
+        private readonly IBountiesService _bounties;
 
-        public GetDataFileHandler(ArtefactsService artefacts, ArmouryService armoury, BountiesService bounties, MercService mercs)
+        public GetDataFileHandler(ArtefactsService artefacts, ArmouryService armoury, IBountiesService bounties, MercService mercs)
         {
             _artefacts = artefacts;
             _armoury = armoury;

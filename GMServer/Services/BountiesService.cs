@@ -10,7 +10,20 @@ using System.Threading.Tasks;
 
 namespace GMServer.Services
 {
-    public class BountiesService
+    public interface IBountiesService
+    {
+        Task AddActiveBountyAsync(string userId, int bountyId);
+        BountiesDataFile GetDataFile();
+        Task<UserBounties> GetUserBountiesAsync(string userId);
+        Task<UserBounty?> GetUserBountyAsync(string userId, int bountyId);
+        Task IncrementBountyDefeatsAsync(string userId, List<int> bountyIds);
+        Task IncrementBountyLevelAsync(string userId, int bountyId, int levels);
+        Task InsertBountiesAsync(string userId, List<UserBounty> bounties);
+        Task RemoveActiveBountyAsync(string userId, int bountyId);
+        Task SetClaimTimeAsync(string userId, DateTime claimTime);
+    }
+
+    public class BountiesService : IBountiesService
     {
         private readonly IDataFileCache _cache;
         private readonly IMongoCollection<UserBounties> _bounties;
@@ -21,7 +34,7 @@ namespace GMServer.Services
             _bounties = mongo.GetCollection<UserBounties>("Bounties");
         }
 
-        public async Task IncrementBountyDefeats(string userId, List<int> bountyIds)
+        public async Task IncrementBountyDefeatsAsync(string userId, List<int> bountyIds)
         {
             var requests = new List<UpdateOneModel<UserBounties>>();
 
@@ -40,7 +53,21 @@ namespace GMServer.Services
             await _bounties.BulkWriteAsync(requests);
         }
 
-        public async Task IncrementBountyLevel(string userId, int bountyId, int levels)
+        public async Task RemoveActiveBountyAsync(string userId, int bountyId)
+        {
+            var update = Builders<UserBounties>.Update.Pull(x => x.ActiveBounties, bountyId);
+
+            await _bounties.UpdateOneAsync(x => x.UserID == userId, update);
+        }
+
+        public async Task AddActiveBountyAsync(string userId, int bountyId)
+        {
+            var update = Builders<UserBounties>.Update.AddToSet(x => x.ActiveBounties, bountyId);
+
+            await _bounties.UpdateOneAsync(x => x.UserID == userId, update, new() { IsUpsert = true });
+        }
+
+        public async Task IncrementBountyLevelAsync(string userId, int bountyId, int levels)
         {
             var filter = UserBountyFilter(userId, bountyId);
             var update = Builders<UserBounties>.Update.Inc(x => x.UnlockedBounties[-1].Level, levels);
@@ -56,7 +83,7 @@ namespace GMServer.Services
             return await _bounties.FindOneAndUpdateAsync(x => x.UserID == userId, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true });
         }
 
-        public async Task<UserBounty> GetUserBountyAsync(string userId, int bountyId)
+        public async Task<UserBounty?> GetUserBountyAsync(string userId, int bountyId)
         {
             var result = await GetUserBountiesAsync(userId);
 
@@ -99,7 +126,7 @@ namespace GMServer.Services
         }
 
         /// <summary>
-        /// Filter for matching against a bounty which has not yet been unlocked by the user
+        /// Filter for matching against a user document where the user does not have the provided bounty unlocked
         /// </summary>
         private FilterDefinition<UserBounties> UserBountyNotUnlockedFilter(string userId, int bountyId)
         {

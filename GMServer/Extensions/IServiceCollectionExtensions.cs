@@ -26,7 +26,7 @@ namespace GMServer
             services.AddSingleton<MercService>();
             services.AddSingleton<ArmouryService>();
             services.AddSingleton<AccountStatsService>();
-            services.AddSingleton<BountiesService>();
+            services.AddSingleton<IBountiesService, BountiesService>();
             services.AddSingleton<QuestsService>();
             services.AddSingleton<PrestigeService>();
             services.AddSingleton<CurrenciesService>();
