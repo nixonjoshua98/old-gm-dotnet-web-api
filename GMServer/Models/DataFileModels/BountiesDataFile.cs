@@ -24,6 +24,7 @@ namespace GMServer.Models.DataFileModels
     public class BountiesDataFile
     {
         public float MaxUnclaimedHours;
+        public int MaxActiveBounties = 4;
 
         public List<Bounty> Bounties;
     }

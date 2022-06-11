@@ -3,7 +3,7 @@ using System.Net;
 
 namespace GMServer.Exceptions
 {
-    public abstract class ServerException : Exception
+    public class ServerException : Exception
     {
         public int StatusCode;
 

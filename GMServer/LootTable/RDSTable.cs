@@ -14,7 +14,7 @@ namespace GMServer.LootTable
         private Random SeededRandom;
 
         private readonly List<IRDSObject> AllPossibleItems = new();
-        private List<IRDSObject> AvailableItems = null;
+        private List<IRDSObject> AvailableItems;
 
         /// <summary>
         /// Adds the given entry to contents collection.
@@ -63,15 +63,12 @@ namespace GMServer.LootTable
             {
                 AvailableItems = AllPossibleItems.ToList();
 
-                foreach (IRDSObject o in AvailableItems.Where(e => e.Always).ToList())
+                foreach (IRDSObject o in AvailableItems.Where(e => e.Always))
                     AddToResult(ref results, o);
             }
 
-            while (count > results.Count)
+            while (count > results.Count && AvailableItems.Count > 0)
             {
-                if (AvailableItems.Count == 0)
-                    break;
-
                 AddItemToResult(rnd, ref results);
             }
 
@@ -97,7 +94,6 @@ namespace GMServer.LootTable
         public double Weight { get; set; } = 1;
         public bool Unique { get; set; } = false;
         public bool Always { get; set; } = false;
-
         public RDSTable Table { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace GMServer.MediatR.BountyShopHandler
     {
         public string UserID;
         public string ItemID;
-        public List<UserBountyShopCurrencyItem> ShopCurrencyItems;
+        public List<UserBSCurrencyItem> ShopCurrencyItems;
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
@@ -24,15 +24,9 @@ namespace GMServer.MediatR.BountyShopHandler
         public UserCurrencies Currencies;
         public long PurchaseCost;
 
-        public PurchaseCurrencyItemResponse(string message, int code) : base(message, code)
-        {
-        }
+        public PurchaseCurrencyItemResponse() { }
 
-        public PurchaseCurrencyItemResponse(UserCurrencies currencies, long purchaseCost)
-        {
-            Currencies = currencies;
-            PurchaseCost = purchaseCost;
-        }
+        public PurchaseCurrencyItemResponse(string message, int code) : base(message, code) { }
     }
 
     public class PurchaseCurrencyItemHandler : IRequestHandler<PurchaseCurrencyItemRequest, PurchaseCurrencyItemResponse>
@@ -50,11 +44,13 @@ namespace GMServer.MediatR.BountyShopHandler
         {
             var shopItem = request.ShopCurrencyItems.First(x => x.ID == request.ItemID);
 
-            var itemPurchases = await _bountyshop.GetDailyItemPurchasesAsync(request.UserID, request.ItemID, request.DailyRefresh);
+            // Verify the item is in stock
+            var purchasedItem = await _bountyshop.GetPurchasedItemAsync(request.UserID, request.ItemID, request.DailyRefresh);
 
-            if (itemPurchases.Count >= 1)
+            if (purchasedItem is not null)
                 return new("Item already purchased", 400);
 
+            // Verify that the user can afford the purchase
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             if (shopItem.PurchaseCost > userCurrencies.BountyPoints)
@@ -63,19 +59,26 @@ namespace GMServer.MediatR.BountyShopHandler
             // Create the update model (includes the purchase cost decrement)
             var incrModel = CreateUpdateModel(shopItem);
 
-            await _bountyshop.InsertShopPurchaseAsync(new BountyShopPurchase
-            {
-                UserID = request.UserID,
-                ItemID = request.ItemID,
-                PurchaseTime = DateTime.UtcNow
-            });
+            // Add the purchase log to the database
+            await InsertShopPurchase(request.UserID, request.ItemID);
 
+            // Add/remove the currencies
             var updateUserCurrencies = await _currencies.IncrementAsync(request.UserID, incrModel);
 
-            return new PurchaseCurrencyItemResponse(updateUserCurrencies, shopItem.PurchaseCost);
+            return new() { Currencies = updateUserCurrencies, PurchaseCost = shopItem.PurchaseCost };
         }
 
-        private UserCurrencies CreateUpdateModel(UserBountyShopCurrencyItem item)
+        async Task InsertShopPurchase(string userId, string itemId)
+        {
+            await _bountyshop.InsertShopPurchaseAsync(new()
+            {
+                UserID = userId,
+                ItemID = itemId,
+                PurchaseTime = DateTime.UtcNow
+            });
+        }
+
+        private UserCurrencies CreateUpdateModel(UserBSCurrencyItem item)
         {
             return item.CurrencyType switch
             {

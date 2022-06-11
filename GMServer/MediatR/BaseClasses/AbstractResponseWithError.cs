@@ -1,17 +1,15 @@
-﻿using Newtonsoft.Json;
+﻿using GMServer.Exceptions;
+using Newtonsoft.Json;
 
 namespace GMServer.MediatR
 {
     public abstract class AbstractResponseWithError
     {
         [JsonIgnore]
-        public bool Success = true;
+        public bool Success { get => Error is null; }
 
         [JsonIgnore]
-        public int StatusCode = 200;
-
-        [JsonIgnore]
-        public string Message = string.Empty;
+        public ServerError Error;
 
         public AbstractResponseWithError()
         {
@@ -20,9 +18,7 @@ namespace GMServer.MediatR
 
         public AbstractResponseWithError(string message, int code)
         {
-            Success = false;
-            StatusCode = code;
-            Message = message;
+            Error = new(message, code);
         }
     }
 }

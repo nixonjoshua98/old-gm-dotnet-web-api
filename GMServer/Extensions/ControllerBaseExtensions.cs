@@ -1,17 +1,16 @@
-﻿using GMServer.Exceptions;
-using GMServer.MediatR;
+﻿using GMServer.MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GMServer.Extensions
 {
     public static class ControllerBaseExtensions
     {
-        public static IActionResult ResponseOrError<T>(this ControllerBase controller, T response) where T : AbstractResponseWithError
+        public static IActionResult ResponseOrError<T>(this ControllerBase controller, T resp) where T : AbstractResponseWithError
         {
-            if (response.Success)
-                return controller.Ok(response);
+            if (resp.Success)
+                return controller.Ok(resp);
 
-            return new ServerError(response.Message, response.StatusCode);
+            return resp.Error;
         }
     }
 }

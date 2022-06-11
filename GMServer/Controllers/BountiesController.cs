@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
 using System.Threading.Tasks;
+using GMServer.Encryption;
 
 namespace GMServer.Controllers
 {
@@ -28,10 +29,9 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new ClaimBountyPointRequest()
+                var resp = await _mediator.Send(new ClaimBountyPointRequest
                 {
-                    UserID = User.UserID(),
-                    DateTime = DateTime.UtcNow
+                    UserID = User.UserID()
                 });
 
                 return this.ResponseOrError(resp);
@@ -43,8 +43,9 @@ namespace GMServer.Controllers
             }
         }
 
-        [HttpPut("Toggle")]
         [Authorize]
+        [EncryptedRequestBody]
+        [HttpPut("Toggle")]
         public async Task<IActionResult> ToggleActiveBounty(SetActiveBountyBody body)
         {
             try

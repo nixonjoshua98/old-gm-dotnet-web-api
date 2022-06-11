@@ -7,8 +7,9 @@
       "CurrencyItems": {
         "Items": [
           {
+            // Armoury Points
             "CurrencyType": 200,
-            "Quantity": 500, // Armoury Points
+            "Quantity": 500,
             "PurchaseCost": 10,
             "Unique": true
           }
@@ -17,12 +18,14 @@
       "ArmouryItems": {
         "ItemGrades": [
           {
-            "ItemGrade": 10, // Common
+            // Common Armoury Items
+            "ItemGrade": 10,
             "PurchaseCost": 100,
             "Weight": 100
           },
           {
-            "ItemGrade": 20, // Rare
+            // Rare Armoury Items
+            "ItemGrade": 20,
             "Always": true,
             "Weight": 25,
             "PurchaseCost": 150

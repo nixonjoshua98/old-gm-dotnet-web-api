@@ -12,23 +12,17 @@ namespace GMServer.MediatR.BountyHandlers
     public class ClaimBountyPointRequest : IRequest<ClaimBountyPointsResponse>
     {
         public string UserID;
-        public DateTime DateTime;
     }
 
     public class ClaimBountyPointsResponse : AbstractResponseWithError
     {
-        public readonly DateTime ClaimTime;
-        public readonly long PointsClaimed;
-        public readonly UserCurrencies Currencies;
+        public DateTime ClaimTime;
+        public long PointsClaimed;
+        public UserCurrencies Currencies;
 
+        public ClaimBountyPointsResponse() { }
         public ClaimBountyPointsResponse(string message, int code) : base(message, code) { }
-
-        public ClaimBountyPointsResponse(DateTime dt, long points, UserCurrencies currencies)
-        {
-            ClaimTime = dt;
-            PointsClaimed = points;
-            Currencies = currencies;
-        }
+        public static ClaimBountyPointsResponse AsError(string m, int code) => new(m, code);
     }
 
     public class ClaimBountyPointsHandler : IRequestHandler<ClaimBountyPointRequest, ClaimBountyPointsResponse>
@@ -44,18 +38,20 @@ namespace GMServer.MediatR.BountyHandlers
 
         public async Task<ClaimBountyPointsResponse> Handle(ClaimBountyPointRequest request, CancellationToken cancellationToken)
         {
+            DateTime dt = DateTime.UtcNow;
+
             var userBounties = await _bounties.GetUserBountiesAsync(request.UserID);
 
-            long points = CalculateClaimPoints(request.DateTime, userBounties);
+            long points = CalculateClaimPoints(dt, userBounties);
 
-            if (points <= 0)
-                return new("Cannot claim zero points", 400);
+            if (points <= 0) // User cannot claim a zero balance
+                return ClaimBountyPointsResponse.AsError("Cannot claim zero points", 400);
 
-            await _bounties.SetClaimTimeAsync(request.UserID, request.DateTime);
+            await _bounties.SetClaimTimeAsync(request.UserID, dt);
 
             UserCurrencies updatedCurrencies = await _currencies.IncrementAsync(request.UserID, new() { BountyPoints = points });
 
-            return new(request.DateTime, points, updatedCurrencies);
+            return new() { ClaimTime = dt, PointsClaimed = points, Currencies = updatedCurrencies };
         }
 
         private long CalculateClaimPoints(DateTime now, UserBounties bounties)
@@ -66,9 +62,9 @@ namespace GMServer.MediatR.BountyHandlers
 
             double total = 0;
 
-            foreach (var userBounty in bounties.UnlockedBounties)
+            foreach (int bountyId in bounties.ActiveBounties)
             {
-                Bounty bounty = datafile.Bounties.First(x => x.BountyID == userBounty.BountyID);
+                Bounty bounty = datafile.Bounties.First(x => x.BountyID == bountyId);
 
                 total += hoursSinceClaim * bounty.HourlyIncome;
             }

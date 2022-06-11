@@ -1,12 +1,14 @@
 ﻿using GMServer.Common;
+using GMServer.Models.DataFileModels;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace GMServer.Models.UserModels
 {
-    public abstract class UserAbstractBountyShopItem
+    public abstract class AbstractUserBountyShopItem
     {
         public string ID;
         public int PurchaseCost;
@@ -23,21 +25,45 @@ namespace GMServer.Models.UserModels
         public int Level;
     }
 
-    public class UserBountyShopCurrencyItem : UserAbstractBountyShopItem
+    public class UserBSCurrencyItem : AbstractUserBountyShopItem
     {
         public CurrencyType CurrencyType;
         public int Quantity;
+
+        public static UserBSCurrencyItem FromShopItem(int idx, BSCurrencyItem item)
+        {
+            return new()
+            {
+                ID = $"CI-{idx}",
+                Quantity = item.Quantity,
+                CurrencyType = item.CurrencyType,
+                PurchaseCost = item.PurchaseCost,
+            };
+        }
     }
 
-    public class UserBountyShopArmouryItem : UserAbstractBountyShopItem
+    public class UserBSArmouryItem : AbstractUserBountyShopItem
     {
         public int ItemID;
+
+        public static UserBSArmouryItem FromShopItem(int idx, BSArmouryItem item)
+        {
+            return new()
+            {
+                ID = $"AI-{idx}",
+                ItemID = item.ID,
+                PurchaseCost = item.PurchaseCost
+            };
+        }
     }
 
-    public class BountyShopItems
+    public class UserBountyShop
     {
-        public List<UserBountyShopCurrencyItem> CurrencyItems = new();
-        public List<UserBountyShopArmouryItem> ArmouryItems = new();
+        [JsonIgnore]
+        public string Seed { get; set; }
+
+        public List<UserBSCurrencyItem> CurrencyItems = new();
+        public List<UserBSArmouryItem> ArmouryItems = new();
     }
 
     [BsonIgnoreExtraElements]

@@ -14,7 +14,7 @@ namespace GMServer.MediatR.BountyShopHandler
     {
         public string UserID;
         public string ShopItemID;
-        public List<UserBountyShopArmouryItem> ShopArmouryItems;
+        public List<UserBSArmouryItem> ShopArmouryItems;
         public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
     }
 
@@ -23,22 +23,16 @@ namespace GMServer.MediatR.BountyShopHandler
         public UserCurrencies Currencies;
         public UserArmouryItem ArmouryItem;
 
-        public PurchaseArmouryItemResponse(UserCurrencies currencies, UserArmouryItem armouryItem)
-        {
-            Currencies = currencies;
-            ArmouryItem = armouryItem;
-        }
-
-        public PurchaseArmouryItemResponse(string message, int code) : base(message, code)
-        {
-        }
+        public PurchaseArmouryItemResponse() {}
+        public PurchaseArmouryItemResponse(string message, int code) : base(message, code) { }
+        public static PurchaseArmouryItemResponse AsError(string m, int code) => new(m, code);
     }
 
     public class PurchaseArmouryItemHandler : IRequestHandler<PurchaseArmouryItemRequest, PurchaseArmouryItemResponse>
     {
-        private readonly BountyShopService _bountyshop;
-        private readonly CurrenciesService _currencies;
-        private readonly ArmouryService _armoury;
+        private BountyShopService _bountyshop;
+        private CurrenciesService _currencies;
+        private ArmouryService _armoury;
 
         public PurchaseArmouryItemHandler(BountyShopService bountyshop, CurrenciesService currencies, ArmouryService armoury)
         {
@@ -51,10 +45,10 @@ namespace GMServer.MediatR.BountyShopHandler
         {
             var shopItem = request.ShopArmouryItems.First(x => x.ID == request.ShopItemID);
 
-            var itemPurchases = await _bountyshop.GetDailyItemPurchasesAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
+            var purchasedItem = await _bountyshop.GetPurchasedItemAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
 
-            if (itemPurchases.Count >= 1)
-                return new("Item already purchased", 400);
+            if (purchasedItem is not null) // Item has already been purchased
+                return PurchaseArmouryItemResponse.AsError("Item already purchased", 400);
 
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
@@ -63,19 +57,24 @@ namespace GMServer.MediatR.BountyShopHandler
 
             userCurrencies = await _currencies.IncrementAsync(request.UserID, new() { BountyPoints = -shopItem.PurchaseCost });
 
-            await _bountyshop.InsertShopPurchaseAsync(new()
-            {
-                UserID = request.UserID,
-                ItemID = request.ShopItemID,
-                PurchaseTime = DateTime.UtcNow
-            });
+            await InsertShopPurchase(request.UserID, request.ShopItemID);
 
             var armouryItem = await InsertArmouryItemAsync(request, shopItem);
 
-            return new PurchaseArmouryItemResponse(userCurrencies, armouryItem);
+            return new PurchaseArmouryItemResponse { ArmouryItem = armouryItem, Currencies = userCurrencies };
         }
 
-        private async Task<UserArmouryItem> InsertArmouryItemAsync(PurchaseArmouryItemRequest request, UserBountyShopArmouryItem item)
+        async Task InsertShopPurchase(string userId, string itemId)
+        {
+            await _bountyshop.InsertShopPurchaseAsync(new()
+            {
+                UserID = userId,
+                ItemID = itemId,
+                PurchaseTime = DateTime.UtcNow
+            });
+        }
+
+        private async Task<UserArmouryItem> InsertArmouryItemAsync(PurchaseArmouryItemRequest request, UserBSArmouryItem item)
         {
             UserArmouryItem armouryItem = await _armoury.GetArmouryItemAsync(request.UserID, item.ItemID);
 

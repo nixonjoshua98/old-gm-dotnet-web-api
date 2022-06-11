@@ -3,77 +3,60 @@ using GMServer.LootTable;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace GMServer.Models.DataFileModels
 {
     public class BountyShopDataFile
     {
-        public List<BountyShopLootTableConfig> ShopItemConfigs;
+        public List<BountyShopConfig> ShopItemConfigs;
 
-        public BountyShopLootTableConfig GetConfig(long hourlyIncome)
+        public BountyShopConfig GetConfig(long hourlyIncome)
         {
-            return ShopItemConfigs.Where(x => hourlyIncome >= x.HourlyIncomeRequired).Last();
+            return ShopItemConfigs.OrderBy(x => x.HourlyIncomeRequired).Where(x => hourlyIncome >= x.HourlyIncomeRequired).Last();
         }
 
-        public BountyShopLootTableConfig GetLevelConfig(int level)
+        public BountyShopConfig GetLevelConfig(int level)
         {
             return ShopItemConfigs.Where(x => level == x.Level).Last();
         }
-
-        [OnDeserialized]
-        private void OnSerialized(StreamingContext context)
-        {
-            ShopItemConfigs.Sort((x, y) => x.HourlyIncomeRequired.CompareTo(y.HourlyIncomeRequired));
-        }
     }
 
-    public class BountyShopLootTableConfig
+    public class BountyShopConfig
     {
         public int Level;
         public long HourlyIncomeRequired;
 
-        public BountyShopCurrencyItems CurrencyItems;
-        public BountyShopArmouryItems ArmouryItems;
+        public BSCurrencyItems CurrencyItems;
+        public BSArmouryItems ArmouryItems;
     }
 
-
-    // Currency Items
-
-    public class BountyShopCurrencyItem : LootItem
+    public class BSCurrencyItem : LootItem
     {
-        [JsonRequired]
         public CurrencyType CurrencyType;
-
-        [JsonRequired]
         public int PurchaseCost;
-
-        [JsonRequired]
         public int Quantity;
     }
 
-    public class BountyShopCurrencyItems : LootItem
+    public class BSCurrencyItems : LootItem
     {
-        public List<BountyShopCurrencyItem> Items;
+        public List<BSCurrencyItem> Items;
     }
 
-    // Armoury Items
-
-    public class BountyShopArmouryItems : LootItem
+    public class BSArmouryItems : LootItem
     {
-        public List<BountyShopArmouryItemGradeLootItem> ItemGrades;
+        public List<BSArmouryItemGradeConfig> ItemGrades;
     }
 
-    public class BountyShopArmouryItem : LootItem
+    public class BSArmouryItem : LootItem
     {
-        [JsonProperty(PropertyName = "ItemID", Required = Required.Always)]
+        [JsonProperty(PropertyName = "ItemID")]
         public int ID;
 
         [JsonRequired]
         public int PurchaseCost;
     }
 
-    public class BountyShopArmouryItemGradeLootItem : LootItem
+    public class BSArmouryItemGradeConfig : LootItem
     {
         [JsonRequired]
         public ItemGrade ItemGrade;

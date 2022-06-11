@@ -44,7 +44,12 @@ namespace GMServer.MediatR.BountyHandlers
                 return new();
             }
 
+            var datafile = _bounties.GetDataFile();
+
             UserBounties bounties = await _bounties.GetUserBountiesAsync(request.UserID);
+
+            if (bounties.ActiveBounties.Count >= datafile.MaxActiveBounties)
+                return new("Maximum active bounties reached", 400);
 
             // Bounty is either already active or not unlocked yet - We should return an error
             if (bounties.IsBountyActive(request.BountyID) || !bounties.IsBountyUnlocked(request.BountyID))

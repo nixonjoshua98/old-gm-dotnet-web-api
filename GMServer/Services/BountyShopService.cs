@@ -26,7 +26,7 @@ namespace GMServer.Services
 
         public async Task InsertShopPurchaseAsync(BountyShopPurchase purchase)
         {
-            //await _purchases.InsertOneAsync(purchase);
+            await _purchases.InsertOneAsync(purchase);
         }
 
         public async Task<UserBountyShopState> GetUserState(string userId)
@@ -47,13 +47,13 @@ namespace GMServer.Services
                 x.PurchaseTime < refresh.Next).ToListAsync();
         }
 
-        public async Task<List<BountyShopPurchase>> GetDailyItemPurchasesAsync(string userId, string itemId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        public async Task<BountyShopPurchase> GetPurchasedItemAsync(string userId, string itemId, CurrentServerRefresh<IDailyServerRefresh> refresh)
         {
             return await _purchases.Find(x =>
                 x.UserID == userId &&
                 x.ItemID == itemId &&
                 x.PurchaseTime > refresh.Previous &&
-                x.PurchaseTime < refresh.Next).ToListAsync();
+                x.PurchaseTime < refresh.Next).FirstOrDefaultAsync();
         }
 
         public BountyShopDataFile GetDataFile()

@@ -78,7 +78,7 @@ namespace GMServer
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(settings.Key)),
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = false,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidateAudience = true,
                     ValidAudience = settings.Audience
                 };

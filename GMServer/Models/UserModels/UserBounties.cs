@@ -19,10 +19,10 @@ namespace GMServer.Models.UserModels
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID;
         public DateTime LastClaimTime;
-        public HashSet<int> ActiveBounties = new();
+        public List<int> ActiveBounties = new();
         public List<UserBounty> UnlockedBounties = new();
 
-        public bool IsBountyActive(int id) => ActiveBounties.Contains(id);
+        public bool IsBountyActive(int id) => ActiveBounties.Any(x => x == id);
         public bool IsBountyUnlocked(int id) => UnlockedBounties.Any(x => x.BountyID == id);
     }
 }
