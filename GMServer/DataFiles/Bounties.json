@@ -7,7 +7,7 @@
       "Description": "The law of the jungle suggests the little guy is the weakest.",
       "HourlyIncome": 100,
       "UnlockStage": 1,
-      "BonusType": 600,
+      "BonusType": 800,
       "Levels": [
         {
           "NumDefeatsRequired": 0,
@@ -65,7 +65,7 @@
       "Name": "Bounty Two",
       "HourlyIncome": 125,
       "UnlockStage": 3,
-      "BonusType": 600,
+      "BonusType": 601,
       "Levels": [
         {
           "NumDefeatsRequired": 0,
@@ -94,27 +94,27 @@
       "Name": "Bounty Three",
       "HourlyIncome": 135,
       "UnlockStage": 4,
-      "BonusType": 600,
+      "BonusType": 300,
       "Levels": [
         {
           "NumDefeatsRequired": 0,
-          "BonusValue": 1.5
+          "BonusValue": 0.005
         },
         {
           "NumDefeatsRequired": 3,
-          "BonusValue": 2
+          "BonusValue": 0.0075
         },
         {
-          "NumDefeatsRequired": 5,
-          "BonusValue": 2.5
-        },
-        {
-          "NumDefeatsRequired": 10,
-          "BonusValue": 3
+          "NumDefeatsRequired": 15,
+          "BonusValue": 0.01
         },
         {
           "NumDefeatsRequired": 25,
-          "BonusValue": 5
+          "BonusValue": 0.015
+        },
+        {
+          "NumDefeatsRequired": 40,
+          "BonusValue": 0.02
         }
       ]
     },

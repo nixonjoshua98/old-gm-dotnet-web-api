@@ -24,7 +24,7 @@ namespace GMServer.Models.DataFileModels
         public int ID;
         public string Name;
         public float BaseDamage;
-        public int SpawnEnergyRequired;
+        public float RechargeRate;
         public List<MercPassiveBonus> Passives;
     }
 

@@ -32,7 +32,7 @@
       "Name": "Stone Golem",
       "MercID": 0,
       "BaseDamage": 10,
-      "SpawnEnergyRequired": 25,
+      "RechargeRate": 2.5,
       "Passives": [
         {
           "PassiveID": 0,
@@ -60,7 +60,7 @@
       "Name": "Fallen Angel",
       "MercID": 1,
       "BaseDamage": 15,
-      "SpawnEnergyRequired": 50,
+      "RechargeRate": 5.0,
       "Passives": [
         {
           "PassiveID": 0,
@@ -88,7 +88,7 @@
       "Name": "Demon Knight",
       "MercID": 2,
       "BaseDamage": 20,
-      "SpawnEnergyRequired": 60,
+      "RechargeRate": 6.0,
       "Passives": [
         {
           "PassiveID": 0,
@@ -113,10 +113,10 @@
       ]
     },
     {
-      "Name": "Skeleton Knight Apprentice",
+      "Name": "Skeleton Knight",
       "MercID": 3,
       "BaseDamage": 25,
-      "SpawnEnergyRequired": 65,
+      "RechargeRate": 6.5,
       "Passives": [
         {
           "PassiveID": 0,

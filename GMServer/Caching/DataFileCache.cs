@@ -13,7 +13,7 @@ namespace GMServer.Cache
 
     public interface IDataFileCache
     {
-        public T Load<T>(string fp);
+        public T Load<T>(string fp) where T : class;
     }
 
 
@@ -27,7 +27,7 @@ namespace GMServer.Cache
             _cache = new Dictionary<string, DataFileCachedObject>();
         }
 
-        public T Load<T>(string fp)
+        public T Load<T>(string fp) where T : class
         {
             return JsonConvert.DeserializeObject<T>(LoadOrCache(fp));
         }
