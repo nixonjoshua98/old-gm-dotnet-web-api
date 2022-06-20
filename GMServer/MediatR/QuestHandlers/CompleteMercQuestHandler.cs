@@ -29,9 +29,9 @@ namespace GMServer.MediatR.QuestHandlers
     public class CompleteMercQuestHandler : IRequestHandler<CompleteMercQuestRequest, CompleteMercQuestResponse>
     {
         private readonly QuestsService _quests;
-        private readonly MercService _mercs;
+        private readonly UnitService _mercs;
 
-        public CompleteMercQuestHandler(MercService mercs, QuestsService quests)
+        public CompleteMercQuestHandler(UnitService mercs, QuestsService quests)
         {
             _quests = quests;
             _mercs = mercs;

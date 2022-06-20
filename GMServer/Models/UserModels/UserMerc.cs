@@ -8,6 +8,10 @@ namespace GMServer.Models.UserModels
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID;
+
         public int MercID;
+
+        public long CurrentXP;
+        public long TotalXP;
     }
 }

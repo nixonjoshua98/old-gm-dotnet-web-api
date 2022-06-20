@@ -12,5 +12,13 @@ namespace GMServer.Models.UserModels
         public int Stage;
         public DateTime DateTime;
         public double PrestigePointsGained;
+
+        public UserPrestige (string user, int stage, DateTime date, double points)
+        {
+            UserID = user;
+            Stage = stage;
+            DateTime = date;
+            PrestigePointsGained = points;
+        }
     }
 }

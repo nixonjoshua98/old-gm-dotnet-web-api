@@ -23,7 +23,7 @@ namespace GMServer
             services.AddSingleton<UserService>();
             services.AddSingleton<IDataFileCache, DataFileCache>();
             services.AddSingleton<ArtefactsService>();
-            services.AddSingleton<MercService>();
+            services.AddSingleton<UnitService>();
             services.AddSingleton<ArmouryService>();
             services.AddSingleton<AccountStatsService>();
             services.AddSingleton<IBountiesService, BountiesService>();
@@ -41,11 +41,12 @@ namespace GMServer
 
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
         {
-            var client = new MongoClient(configuration["MongoSettings:ConnectionString"]);
+            IMongoClient client = new MongoClient(configuration["MongoSettings:ConnectionString"]);
 
             IMongoDatabase database = client.GetDatabase(configuration["MongoSettings:DatabaseName"]);
 
             services.AddSingleton(database);
+            services.AddSingleton(client);
         }
 
         public static T Configure<T>(this IServiceCollection services, IConfiguration configuration, string section)

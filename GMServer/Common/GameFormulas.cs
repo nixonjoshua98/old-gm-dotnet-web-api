@@ -25,21 +25,26 @@ namespace GMServer.Common
             return Predicate(start + total) - Predicate(start);
         }
 
+        public static long MercXPEarned(int numEnemyDefeats)
+        {
+            return numEnemyDefeats * 10;
+        }
+
         public static List<BonusTypeValuePair> CreateArtefactBonusList(List<UserArtefact> userArtefacts, List<Artefact> artefacts)
         {
             List<BonusTypeValuePair> ls = new();
 
-            foreach (var userArtefact in userArtefacts)
+            artefacts.ForEach(art =>
             {
-                var artefact = artefacts.FirstOrDefault(x => x.ID == userArtefact.ArtefactID);
+                var state = userArtefacts.FirstOrDefault(x => x.ArtefactID == art.ID);
 
-                if (artefact is null)
-                    continue;
+                if (state is not null)
+                {
+                    double bonusValue = ArtefactBaseEffect(state, art);
 
-                double bonusValue = ArtefactBaseEffect(userArtefact, artefact);
-
-                ls.Add(new(artefact.BonusType, bonusValue));
-            }
+                    ls.Add(new(art.BonusType, bonusValue));
+                }
+            });
 
             return ls;
         }
@@ -47,6 +52,11 @@ namespace GMServer.Common
         public static double ArtefactBaseEffect(UserArtefact userArtefact, Artefact artefact)
         {
             return artefact.BaseEffect + (artefact.LevelEffect * (userArtefact.Level - 1));
+        }
+
+        public static double BasePrestigePoints(int stage)
+        {
+            return Math.Pow(Math.Ceiling((stage - 65) / 10.0f), 2.2);
         }
 
         public static Dictionary<BonusType, double> CreateResolvedBonusDictionary(IEnumerable<BonusTypeValuePair> ls)

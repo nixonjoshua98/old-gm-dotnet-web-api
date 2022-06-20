@@ -8,15 +8,33 @@ using System.Threading.Tasks;
 
 namespace GMServer.Services
 {
-    public class MercService
+    public class UnitService
     {
         private readonly IDataFileCache _cache;
         private readonly IMongoCollection<UserMerc> _mercs;
 
-        public MercService(IDataFileCache cache, IMongoDatabase mongo)
+        public UnitService(IDataFileCache cache, IMongoDatabase mongo)
         {
             _cache = cache;
             _mercs = mongo.GetCollection<UserMerc>("UnlockedMercs");
+        }
+
+        public async Task UpdateUnitXP(string userId, Dictionary<int, long> values)
+        {
+            var requests = new List<UpdateOneModel<UserMerc>>();
+
+            foreach (var pair in values)
+            {
+                var filter = Builders<UserMerc>.Filter.Where(x => x.UserID == userId && x.MercID == pair.Key);
+
+                var update = Builders<UserMerc>.Update
+                    .Inc(x => x.CurrentXP, pair.Value)
+                    .Inc(x => x.TotalXP, pair.Value);
+
+                requests.Add(new(filter, update));
+            }
+
+            await _mercs.BulkWriteAsync(requests);
         }
 
         public async Task InsertMercAsync(UserMerc merc)
