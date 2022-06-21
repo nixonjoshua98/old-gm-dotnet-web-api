@@ -8,7 +8,7 @@ namespace GMServer.Models.RequestModels
         public int Stage;
     }
 
-    public class LocalUserUnitState
+    public class LocalUserMercState
     {
         public int ID;
         public int EnemiesDefeatedSincePrestige;
@@ -18,8 +18,7 @@ namespace GMServer.Models.RequestModels
     {
         public GameState GameState;
 
-        [JsonProperty(PropertyName = "MercStates")]
-        public List<LocalUserUnitState> UnitStates;
+        public List<LocalUserMercState> MercStates;
     }
 
     public class PrestigeBody

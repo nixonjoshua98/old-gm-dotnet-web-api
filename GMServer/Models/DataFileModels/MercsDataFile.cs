@@ -8,7 +8,9 @@ namespace GMServer.Models.DataFileModels
     {
         [JsonProperty(PropertyName = "PassiveID")]
         public int ID;
+
         public BonusType BonusType;
+
         public float BonusValue;
     }
 

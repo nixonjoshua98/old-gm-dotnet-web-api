@@ -15,7 +15,7 @@ namespace GMServer.Services
         Task AddActiveBountyAsync(string userId, int bountyId);
         BountiesDataFile GetDataFile();
         Task<UserBounties> GetUserBountiesAsync(string userId);
-        Task<UserBounty?> GetUserBountyAsync(string userId, int bountyId);
+        Task<UserBounty> GetUserBountyAsync(string userId, int bountyId);
         Task IncrementBountyDefeatsAsync(string userId, List<int> bountyIds);
         Task IncrementBountyLevelAsync(string userId, int bountyId, int levels);
         Task InsertBountiesAsync(string userId, List<UserBounty> bounties);
@@ -83,7 +83,7 @@ namespace GMServer.Services
             return await _bounties.FindOneAndUpdateAsync(x => x.UserID == userId, update, new() { ReturnDocument = ReturnDocument.After, IsUpsert = true });
         }
 
-        public async Task<UserBounty?> GetUserBountyAsync(string userId, int bountyId)
+        public async Task<UserBounty> GetUserBountyAsync(string userId, int bountyId)
         {
             var result = await GetUserBountiesAsync(userId);
 

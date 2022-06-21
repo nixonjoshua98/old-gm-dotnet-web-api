@@ -11,6 +11,12 @@ namespace GMServer.Models.UserModels
         public int BountyID;
         public int Level;
         public int NumDefeats;
+
+        public UserBounty() { }
+        public UserBounty(int id)
+        {
+            BountyID = id;
+        }
     }
 
     [BsonIgnoreExtraElements]

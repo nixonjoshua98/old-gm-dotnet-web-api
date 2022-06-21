@@ -1,17 +1,17 @@
-﻿using GMServer.Common;
+﻿using GMServer.Calculations;
+using GMServer.Common;
 using GMServer.Extensions;
 using GMServer.Models.DataFileModels;
+using GMServer.Models.RequestModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using Serilog;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using GMServer.Models.RequestModels;
-using MongoDB.Driver;
 
 namespace GMServer.MediatR
 {
@@ -41,10 +41,12 @@ namespace GMServer.MediatR
     {
         private readonly AccountStatsService _accountStats;
         private readonly ArtefactsService _artefacts;
-        private readonly UnitService _units;
+        private readonly MercsService _mercs;
         private readonly CurrenciesService _currencies;
         private readonly PrestigeService _prestige;
         private readonly IBountiesService _bounties;
+
+        IMongoTransactionContext _trans;
 
         public PrestigeHandler(
             ArtefactsService artefacts,
@@ -52,61 +54,66 @@ namespace GMServer.MediatR
             PrestigeService prestige,
             IBountiesService bounties,
             AccountStatsService accountStats,
-            UnitService units)
+            MercsService mercs,
+            IMongoTransactionContext mongo)
         {
             _accountStats = accountStats;
             _artefacts = artefacts;
             _currencies = currencies;
             _prestige = prestige;
             _bounties = bounties;
-            _units = units;
+            _mercs = mercs;
+            _trans = mongo;
         }
 
         public async Task<PrestigeResponse> Handle(PrestigeRequest request, CancellationToken cancellationToken)
         {
+            return await _trans.RunInTransaction((session) => HandleRequest(request));
+        }
+
+        public async Task<PrestigeResponse> HandleRequest(PrestigeRequest request)
+        {
             /* Pull values from request */
-            int prestigeStage = request.LocalState.GameState.Stage;
+            int prestigeStage   = request.LocalState.GameState.Stage;
+            var mercStates      = request.LocalState.MercStates;
 
-            var userArtefacts = await _artefacts.GetUserArtefactsAsync(request.UserID);
+            /* Load user values */
+            var userArtefactsTask   = _artefacts.GetUserArtefactsAsync(request.UserID);
+            var userMercsTask       = _mercs.GetUserMercsAsync(request.UserID);
+            var userBountiesTask    = _bounties.GetUserBountiesAsync(request.UserID);
 
-            // Prestige points earned
-            double points = CalculatePrestigePoints(userArtefacts, prestigeStage);
+            await Task.WhenAll(userArtefactsTask, userMercsTask, userBountiesTask);
 
-            if (points is double.NaN || points <= 0)
-                return new("Invalid prestige", 400);
+            /* Task results */
+            var userArtefacts   = userArtefactsTask.Result;
+            var userMercs       = userMercsTask.Result;
+            var userBounties    = userBountiesTask.Result;
 
-            // Calculate merc xp gained
-            var unitXPGained = GetUnitsXPEarned(request.LocalState.UnitStates);
+            /* Calculate rewards */
+            var points              = CalculatePrestigePoints(userArtefacts, prestigeStage);                // Prestige points earned
+            var mercUpdateModels    = MercCalculations.GetMercUpdateModels(mercStates, userMercs);          // Calculate merc changes
+            var defeatedBountyIds   = GetBouniesDefeated(prestigeStage);                                    // Already unlocked bounties which we have defeated this prestige
+            var unlockedBounties    = GetNewUnlockedBounties(request.UserID, prestigeStage, userBounties);  // Bounties which have been unlocked
 
-            // List of already unlocked bounties which we have defeated this prestige (may be empty)
-            List<int> defeatedBountyIds = GetBouniesDefeated(prestigeStage);
-
-            // Bounties which have been unlocked (may be empty)
-            List<UserBounty> unlockedBounties = await GetNewUnlockedBountiesAsync(request.UserID, prestigeStage);
-
-            // Increment earned currencies
-            await _currencies.IncrementAsync(request.UserID, new()
+            /* Reward database updates */
+            List<Task> updateTasks = new()
             {
-                PrestigePoints = points
-            });
+                _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = points }),
+                _accountStats.UpdateUserLifetimeStatsAsync(request.UserID, new() { HighestPrestigeStage = prestigeStage, TotalPrestiges = 1 })
+            };
 
-            // Update relevant account stats
-            await _accountStats.UpdateUserLifetimeStatsAsync(request.UserID, new()
-            {
-                HighestPrestigeStage = prestigeStage,
-                TotalPrestiges = 1
-            });
+            updateTasks.Add(_prestige.InsertPrestigeLogAsync(new(request.UserID, prestigeStage, DateTime.UtcNow, points)));
 
-            await _prestige.InsertPrestigeLogAsync(new (request.UserID, prestigeStage, DateTime.UtcNow, points));
-
-            if (unitXPGained.Count > 0) // Update Unit XP
-                await _units.UpdateUnitXP(request.UserID, unitXPGained);
+            if (mercUpdateModels.Count > 0) // Update merc levels etc.
+                updateTasks.Add(_mercs.UpdateMercs(request.UserID, mercUpdateModels));
 
             if (unlockedBounties.Count > 0)  // Insert newly unlocked bounties
-                await _bounties.InsertBountiesAsync(request.UserID, unlockedBounties);
+                updateTasks.Add(_bounties.InsertBountiesAsync(request.UserID, unlockedBounties));
 
             if (defeatedBountyIds.Count > 0)  // Increment the 'NumDefeats' value used to calculate levels
-                await _bounties.IncrementBountyDefeatsAsync(request.UserID, defeatedBountyIds);
+                updateTasks.Add(_bounties.IncrementBountyDefeatsAsync(request.UserID, defeatedBountyIds));
+
+            await Task.WhenAll(updateTasks);
             
             return new PrestigeResponse();
         }
@@ -116,49 +123,24 @@ namespace GMServer.MediatR
             return _bounties.GetDataFile().Bounties.Where(b => prestigeStage > b.UnlockStage).Select(x => x.BountyID).ToList();
         }
 
-        private async Task<List<UserBounty>> GetNewUnlockedBountiesAsync(string userId, int stage)
+        private List<UserBounty> GetNewUnlockedBounties(string userId, int stage, UserBounties userBounties)
         {
-            UserBounties userBounties = await _bounties.GetUserBountiesAsync(userId);
-
             BountiesDataFile datafile = _bounties.GetDataFile();
 
-            List<UserBounty> newBounties = new();
-
-            foreach (var bounty in datafile.Bounties)
-            {
-                bool alreadyUnlocked = userBounties.UnlockedBounties.Exists(x => x.BountyID == bounty.BountyID);
-
-                if (alreadyUnlocked || bounty.UnlockStage > stage)
-                    continue;
-
-                newBounties.Add(new()
-                {
-                    BountyID = bounty.BountyID
-                });
-            }
-
-            return newBounties;
+            return  datafile.Bounties
+                .Where(b => !userBounties.UnlockedBounties.Exists(x => x.BountyID == b.BountyID))   // Not already unlocked
+                .Where(b => stage > b.UnlockStage)                                                  // Stage was completed
+                .Select(b => new UserBounty(b.BountyID))
+                .ToList();
         }
 
         private double CalculatePrestigePoints(List<UserArtefact> bounties, int stage)
         {
-            double baseValue    = GameFormulas.BasePrestigePoints(stage);
+            double baseValue    = GameFormulas.PrestigePointsBase(stage);
             var artefactBonuses = GameFormulas.CreateArtefactBonusList(bounties, _artefacts.GetDataFile());
             var resolvedBonuses = GameFormulas.CreateResolvedBonusDictionary(artefactBonuses);
 
             return baseValue * resolvedBonuses.Get(BonusType.MULTIPLY_PRESTIGE_BONUS, 1);
-        }
-
-        private Dictionary<int, long> GetUnitsXPEarned(List<LocalUserUnitState> units)
-        {
-            var result = new Dictionary<int, long>();
-
-            foreach (var unit in units)
-            {
-                result[unit.ID] = GameFormulas.MercXPEarned(unit.EnemiesDefeatedSincePrestige);
-            }
-
-            return result;
         }
     }
 }

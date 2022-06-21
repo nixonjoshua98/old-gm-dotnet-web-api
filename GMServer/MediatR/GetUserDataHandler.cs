@@ -32,7 +32,7 @@ namespace GMServer.MediatR
         private readonly ArmouryService _armoury;
         private readonly QuestsService _quests;
         private readonly CurrenciesService _currencies;
-        private readonly UnitService _mercs;
+        private readonly MercsService _mercs;
         private readonly AccountStatsService _stats;
         private readonly IBountiesService _bounties;
 
@@ -40,7 +40,7 @@ namespace GMServer.MediatR
             ArtefactsService artefacts,
             ArmouryService armoury,
             CurrenciesService currencies,
-            UnitService mercs,
+            MercsService mercs,
             IBountiesService bounties,
             QuestsService quests,
             AccountStatsService stats)

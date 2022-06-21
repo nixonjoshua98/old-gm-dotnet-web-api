@@ -1,5 +1,7 @@
-﻿using MongoDB.Bson;
+﻿using GMServer.Common;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using System.Collections.Generic;
 
 namespace GMServer.Models.UserModels
 {
@@ -11,7 +13,17 @@ namespace GMServer.Models.UserModels
 
         public int MercID;
 
-        public long CurrentXP;
-        public long TotalXP;
+        public int UpgradePoints;
+
+        public int ExpertiseLevel;
+        public long ExpertiseExp;
+
+        public List<MercUpgradeState> Upgrades = new();
+    }
+
+    public class MercUpgradeState
+    {
+        public MercUpgradeID ID;
+        public int Level;
     }
 }
