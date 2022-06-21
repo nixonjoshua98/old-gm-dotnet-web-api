@@ -1,5 +1,4 @@
 {
-  "MaxSquadSize": 5,
   "Passives": [
     {
       "PassiveID": 0,
@@ -27,6 +26,7 @@
       "BonusValue": 1.2
     }
   ],
+
   "Mercs": [
     {
       "Name": "Stone Golem",

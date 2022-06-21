@@ -6,14 +6,20 @@ namespace GMServer.Cache
 {
     internal class DataFileCachedObject
     {
-        public string File;
         public DateTime LoadedAt;
-        public string Text;
+        public object Object;
+
+        public DataFileCachedObject(object obj)
+        {
+            Object = obj;
+            LoadedAt = DateTime.UtcNow;
+        }
     }
 
     public interface IDataFileCache
     {
         public T Load<T>(string fp) where T : class;
+        public T Load<T>(string fp, Action<T> action) where T : class;
     }
 
 
@@ -29,33 +35,30 @@ namespace GMServer.Cache
 
         public T Load<T>(string fp) where T : class
         {
-            return JsonConvert.DeserializeObject<T>(LoadOrCache(fp));
+            return LoadOrCache<T>(fp);
         }
 
-        private string LoadOrCache(string fp)
+        public T Load<T>(string fp, Action<T> action) where T : class
         {
-            if (!_cache.TryGetValue(fp, out DataFileCachedObject cachedObject))
-            {
-                cachedObject = new() { File = fp, LoadedAt = DateTime.UtcNow, Text = LoadFile(fp) };
+            T obj = Load<T>(fp);
 
-                _cache.Add(fp, cachedObject);
+            action.Invoke(obj);
+
+            return obj;
+        }
+
+        private T LoadOrCache<T>(string fp) where T : class
+        {
+            if (!_cache.TryGetValue(fp, out var cachedObject) || IsOutdated(cachedObject))
+            {
+                string txt = System.IO.File.ReadAllText(fp);
+
+                T obj = JsonConvert.DeserializeObject<T>(txt);
+
+                cachedObject = _cache[fp] = new(obj);
             }
 
-            if (IsOutdated(cachedObject))
-                ReloadCachedItem(ref cachedObject);
-
-            return cachedObject.Text;
-        }
-
-        private void ReloadCachedItem(ref DataFileCachedObject cachedObject)
-        {
-            cachedObject.LoadedAt = DateTime.UtcNow;
-            cachedObject.Text = LoadFile(cachedObject.File);
-        }
-
-        private string LoadFile(string fp)
-        {
-            return System.IO.File.ReadAllText(fp);
+            return (T)cachedObject.Object;
         }
 
         private bool IsOutdated(DataFileCachedObject cachedObject)

@@ -1,5 +1,4 @@
-﻿using GMServer.Calculations;
-using GMServer.Common;
+﻿using GMServer.Common;
 using GMServer.Extensions;
 using GMServer.Models.DataFileModels;
 using GMServer.Models.RequestModels;
@@ -41,7 +40,6 @@ namespace GMServer.MediatR
     {
         private readonly AccountStatsService _accountStats;
         private readonly ArtefactsService _artefacts;
-        private readonly MercsService _mercs;
         private readonly CurrenciesService _currencies;
         private readonly PrestigeService _prestige;
         private readonly IBountiesService _bounties;
@@ -54,7 +52,6 @@ namespace GMServer.MediatR
             PrestigeService prestige,
             IBountiesService bounties,
             AccountStatsService accountStats,
-            MercsService mercs,
             IMongoTransactionContext mongo)
         {
             _accountStats = accountStats;
@@ -62,7 +59,6 @@ namespace GMServer.MediatR
             _currencies = currencies;
             _prestige = prestige;
             _bounties = bounties;
-            _mercs = mercs;
             _trans = mongo;
         }
 
@@ -75,23 +71,19 @@ namespace GMServer.MediatR
         {
             /* Pull values from request */
             int prestigeStage   = request.LocalState.GameState.Stage;
-            var mercStates      = request.LocalState.MercStates;
 
             /* Load user values */
             var userArtefactsTask   = _artefacts.GetUserArtefactsAsync(request.UserID);
-            var userMercsTask       = _mercs.GetUserMercsAsync(request.UserID);
             var userBountiesTask    = _bounties.GetUserBountiesAsync(request.UserID);
 
-            await Task.WhenAll(userArtefactsTask, userMercsTask, userBountiesTask);
+            await Task.WhenAll(userArtefactsTask, userBountiesTask);
 
             /* Task results */
             var userArtefacts   = userArtefactsTask.Result;
-            var userMercs       = userMercsTask.Result;
             var userBounties    = userBountiesTask.Result;
 
             /* Calculate rewards */
             var points              = CalculatePrestigePoints(userArtefacts, prestigeStage);                // Prestige points earned
-            var mercUpdateModels    = MercCalculations.GetMercUpdateModels(mercStates, userMercs);          // Calculate merc changes
             var defeatedBountyIds   = GetBouniesDefeated(prestigeStage);                                    // Already unlocked bounties which we have defeated this prestige
             var unlockedBounties    = GetNewUnlockedBounties(request.UserID, prestigeStage, userBounties);  // Bounties which have been unlocked
 
@@ -103,9 +95,6 @@ namespace GMServer.MediatR
             };
 
             updateTasks.Add(_prestige.InsertPrestigeLogAsync(new(request.UserID, prestigeStage, DateTime.UtcNow, points)));
-
-            if (mercUpdateModels.Count > 0) // Update merc levels etc.
-                updateTasks.Add(_mercs.UpdateMercs(request.UserID, mercUpdateModels));
 
             if (unlockedBounties.Count > 0)  // Insert newly unlocked bounties
                 updateTasks.Add(_bounties.InsertBountiesAsync(request.UserID, unlockedBounties));

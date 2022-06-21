@@ -32,7 +32,6 @@ namespace GMServer.Models.DataFileModels
 
     public class MercsDataFile
     {
-        public int MaxSquadSize;
         public List<Merc> Mercs;
         public List<PassiveBonus> Passives;
     }

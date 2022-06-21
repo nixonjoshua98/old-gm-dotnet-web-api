@@ -14,3 +14,6 @@ dotnet_diagnostic.CS8604.severity = suggestion
 
 # CS8603: Possible null reference return.
 dotnet_diagnostic.CS8603.severity = suggestion
+
+# CS8601: Possible null reference assignment.
+dotnet_diagnostic.CS8601.severity = suggestion
