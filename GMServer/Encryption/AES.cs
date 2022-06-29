@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace GMServer.Common
+namespace GMServer.Encryption
 {
     public static class AES
     {

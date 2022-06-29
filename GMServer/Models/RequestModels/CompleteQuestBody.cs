@@ -7,4 +7,9 @@ namespace GMServer.Models.RequestModels
         public int QuestID;
         public DailyUserAccountStats LocalDailyStats;
     }
+
+    public class CompleteMercQuestBody
+    {
+        public int QuestID;
+    }
 }

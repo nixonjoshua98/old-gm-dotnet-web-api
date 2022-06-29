@@ -39,20 +39,20 @@ namespace GMServer.Services
             await _states.ReplaceOneAsync(x => x.UserID == state.UserID, state, new ReplaceOptions() { IsUpsert = true });
         }
 
-        public async Task<List<BountyShopPurchase>> GetDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        public async Task<List<BountyShopPurchase>> GetDailyPurchasesAsync(string userId, CurrentServerRefresh<IDailyRefresh> refresh)
         {
             return await _purchases.Find(x =>
                 x.UserID == userId &&
-                x.PurchaseTime > refresh.Previous &&
+                x.PurchaseTime >= refresh.Previous &&
                 x.PurchaseTime < refresh.Next).ToListAsync();
         }
 
-        public async Task<BountyShopPurchase> GetPurchasedItemAsync(string userId, string itemId, CurrentServerRefresh<IDailyServerRefresh> refresh)
+        public async Task<BountyShopPurchase> GetPurchasedItemAsync(string userId, string itemId, CurrentServerRefresh<IDailyRefresh> refresh)
         {
             return await _purchases.Find(x =>
                 x.UserID == userId &&
                 x.ItemID == itemId &&
-                x.PurchaseTime > refresh.Previous &&
+                x.PurchaseTime >= refresh.Previous &&
                 x.PurchaseTime < refresh.Next).FirstOrDefaultAsync();
         }
 

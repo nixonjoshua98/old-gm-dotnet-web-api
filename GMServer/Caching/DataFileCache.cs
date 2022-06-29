@@ -14,6 +14,14 @@ namespace GMServer.Cache
             Object = obj;
             LoadedAt = DateTime.UtcNow;
         }
+
+        public bool IsOutdated(long interval)
+        {
+            long nowTimestamp       = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
+            long lastLoadTimestamp  = new DateTimeOffset(LoadedAt).ToUnixTimeSeconds();
+
+            return (nowTimestamp / interval) != (lastLoadTimestamp / interval);
+        }
     }
 
     public interface IDataFileCache
@@ -25,13 +33,9 @@ namespace GMServer.Cache
 
     public class DataFileCache : IDataFileCache
     {
-        private readonly Dictionary<string, DataFileCachedObject> _cache;
-        private readonly long CacheInterval = 60 * 15;
+        private readonly Dictionary<string, DataFileCachedObject> _cache = new();
 
-        public DataFileCache()
-        {
-            _cache = new Dictionary<string, DataFileCachedObject>();
-        }
+        private readonly long CacheInterval = 60 * 15;
 
         public T Load<T>(string fp) where T : class
         {
@@ -49,7 +53,7 @@ namespace GMServer.Cache
 
         private T LoadOrCache<T>(string fp) where T : class
         {
-            if (!_cache.TryGetValue(fp, out var cachedObject) || IsOutdated(cachedObject))
+            if (!_cache.TryGetValue(fp, out var cachedObject) || cachedObject.IsOutdated(CacheInterval))
             {
                 string txt = System.IO.File.ReadAllText(fp);
 
@@ -59,14 +63,6 @@ namespace GMServer.Cache
             }
 
             return (T)cachedObject.Object;
-        }
-
-        private bool IsOutdated(DataFileCachedObject cachedObject)
-        {
-            long nowTimestamp = new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds();
-            long lastLoadTimestamp = new DateTimeOffset(cachedObject.LoadedAt).ToUnixTimeSeconds();
-
-            return (nowTimestamp / CacheInterval) != (lastLoadTimestamp / CacheInterval);
         }
     }
 }

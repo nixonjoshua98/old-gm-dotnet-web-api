@@ -15,7 +15,7 @@ namespace GMServer.MediatR.BountyShopHandler
         public string UserID;
         public string ShopItemID;
         public List<UserBSArmouryItem> ShopArmouryItems;
-        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
+        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
     }
 
     public class PurchaseArmouryItemResponse : AbstractResponseWithError

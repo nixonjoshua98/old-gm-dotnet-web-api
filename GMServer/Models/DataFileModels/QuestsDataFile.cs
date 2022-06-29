@@ -4,20 +4,23 @@ using System.Collections.Generic;
 
 namespace GMServer.Models.DataFileModels
 {
-    public class MercQuest
+    public abstract class AbstractQuest
     {
         [JsonProperty(PropertyName = "QuestID")]
         public int ID;
-        public int RequiredStage;
+
+        public QuestActionType ActionType;
+
+        public long LongValue;
+    }
+
+    public class MercQuest : AbstractQuest
+    {
         public int RewardMercID;
     }
 
-    public class DailyQuest
+    public class DailyQuest : AbstractQuest
     {
-        [JsonProperty(PropertyName = "QuestID")]
-        public int ID;
-        public QuestActionType ActionType;
-        public long LongValue = -1;
         public int DiamondsRewarded;
     }
 

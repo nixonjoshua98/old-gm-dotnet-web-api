@@ -58,8 +58,7 @@ namespace GMServer.Controllers
                 var resp = await _mediator.Send(new CompleteMercQuestRequest
                 {
                     UserID = User.UserID(),
-                    QuestID = body.QuestID,
-                    HighestStageReached = body.HighestStageReached
+                    QuestID = body.QuestID
                 });
 
                 return this.ResponseOrError(resp);

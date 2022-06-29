@@ -5,6 +5,7 @@ using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace GMServer.MediatR.QuestHandlers
         public string UserID;
         public int QuestID;
         public DailyUserAccountStats LocalDailyStats;
-        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
+        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
     }
 
     public class CompleteDailyQuestResponse : AbstractResponseWithError
@@ -45,35 +46,29 @@ namespace GMServer.MediatR.QuestHandlers
 
         public async Task<CompleteDailyQuestResponse> Handle(CompleteDailyQuestRequest request, CancellationToken cancellationToken)
         {
-            // Last minute check to remove any old data from previous refresh intervals
             if (!request.DailyRefresh.IsBetween(request.LocalDailyStats.DateTime))
-                request.LocalDailyStats = new() { DateTime = DateTime.UtcNow };
+                return new("Local data is outdated", 400);
 
-            var quest = _quests.GetDailyQuest(request.QuestID);
+            /* Fetch datafile */
+            var datafile    = _quests.GetDataFile();
+            var quest       = datafile.DailyQuests.First(x => x.ID == request.QuestID);
+
+            /* Fetch user data */
             var userQuest = await _quests.GetDailyQuestProgressAsync(request.UserID, request.QuestID, request.DailyRefresh);
 
-            if (quest is null)
-                return new("Quest not found", 400);
-
-            else if (userQuest is not null)
+            if (userQuest is not null)
                 return new("Quest already completed", 400);
 
             if (!IsQuestCompleted(quest, request.LocalDailyStats))
                 return new("Quest requirements not met", 400);
 
-            await _quests.InsertDailyQuestProgressAsync(new()
-            {
-                UserID = request.UserID,
-                QuestID = request.QuestID,
-                CompletedTime = DateTime.UtcNow
-            });
-
+            await _quests.InsertQuestProgress(new UserDailyQuest(request.UserID, request.QuestID) { CompletedTime = DateTime.UtcNow });
             await _currencies.IncrementAsync(request.UserID, new() { Diamonds = quest.DiamondsRewarded });
 
             return new CompleteDailyQuestResponse(quest.DiamondsRewarded);
         }
 
-        private bool IsQuestCompleted(DailyQuest quest, UserAccountStatsModelBase localStats)
+        private bool IsQuestCompleted(DailyQuest quest, UserAccountStats localStats)
         {
             return quest.ActionType switch
             {
@@ -81,7 +76,7 @@ namespace GMServer.MediatR.QuestHandlers
                 QuestActionType.EnemiesDefeated => localStats.TotalEnemiesDefeated >= quest.LongValue,
                 QuestActionType.BossesDefeated => localStats.TotalBossesDefeated >= quest.LongValue,
                 QuestActionType.Taps => localStats.TotalTaps >= quest.LongValue,
-                _ => throw new NotImplementedException("Quest type not found")
+                _ => throw new NotImplementedException()
             };
         }
     }

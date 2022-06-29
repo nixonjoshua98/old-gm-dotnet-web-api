@@ -8,7 +8,7 @@ namespace GMServer.Models.UserModels
      * NB, When adding a new statistic we will need to update the service update methods to include it
      */
 
-    public class UserAccountStatsModelBase
+    public class UserAccountStats
     {
         public int TotalPrestiges = 0;
         public int HighestPrestigeStage = 0;
@@ -18,13 +18,13 @@ namespace GMServer.Models.UserModels
     }
 
     [BsonIgnoreExtraElements]
-    public class DailyUserAccountStats : UserAccountStatsModelBase
+    public class DailyUserAccountStats : UserAccountStats
     {
         public DateTime DateTime = DateTime.UtcNow;
     }
 
     [BsonIgnoreExtraElements]
-    public class LifetimeUserAccountStats : UserAccountStatsModelBase
+    public class LifetimeUserAccountStats : UserAccountStats
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID;

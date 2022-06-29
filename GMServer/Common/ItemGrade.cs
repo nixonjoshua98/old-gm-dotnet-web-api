@@ -4,6 +4,7 @@
     {
         None = 0,
         Common = 10,
-        Rare = 20
+        Uncommon = 20,
+        Rare = 30
     }
 }

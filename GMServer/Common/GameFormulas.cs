@@ -9,17 +9,7 @@ namespace GMServer.Common
 {
     public static class GameFormulas
     {
-        public static long MercXPEarned(int numEnemyDefeats)
-        {
-            return numEnemyDefeats * 10;
-        }
-
-        public static long MercXPToNextExperiseLevel(int level)
-        {
-            return (long)(250 * Math.Pow(1.05, level));
-        }
-
-        public static double ArtefactBaseEffect(UserArtefact userArtefact, Artefact artefact)
+        public static double ArtefactEffectBase(UserArtefact userArtefact, Artefact artefact)
         {
             return artefact.BaseEffect + (artefact.LevelEffect * (userArtefact.Level - 1));
         }
@@ -27,26 +17,8 @@ namespace GMServer.Common
         public static double PrestigePointsBase(int stage)
         {
             double value = Math.Pow(Math.Ceiling((stage - 65) / 10.0f), 2.2);
+
             return double.IsNaN(value) || double.IsNegative(value) ? 0 : value;
-        }
-
-        public static List<BonusTypeValuePair> CreateArtefactBonusList(List<UserArtefact> userArtefacts, List<Artefact> artefacts)
-        {
-            List<BonusTypeValuePair> ls = new();
-
-            artefacts.ForEach(art =>
-            {
-                var state = userArtefacts.FirstOrDefault(x => x.ArtefactID == art.ID);
-
-                if (state is not null)
-                {
-                    double bonusValue = ArtefactBaseEffect(state, art);
-
-                    ls.Add(new(art.BonusType, bonusValue));
-                }
-            });
-
-            return ls;
         }
 
         public static double SumNonIntegerPowerSeq(int start, int total, float exponent)

@@ -16,7 +16,7 @@ namespace GMServer.Context
         public bool IsBetween(DateTime dt) => Previous < dt && Next > dt;
     }
 
-    public interface IDailyServerRefresh { }
+    public interface IDailyRefresh { }
 
     public class ServerRefresh<T>
     {

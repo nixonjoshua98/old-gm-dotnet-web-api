@@ -1,6 +1,4 @@
-﻿using GMServer.Common;
-using GMServer.Extensions;
-using GMServer.Models.DataFileModels;
+﻿using GMServer.Models.DataFileModels;
 using GMServer.Models.RequestModels;
 using GMServer.Models.UserModels;
 using GMServer.Services;
@@ -52,14 +50,14 @@ namespace GMServer.MediatR
             PrestigeService prestige,
             IBountiesService bounties,
             AccountStatsService accountStats,
-            IMongoTransactionContext mongo)
+            IMongoTransactionContext trans)
         {
             _accountStats = accountStats;
             _artefacts = artefacts;
             _currencies = currencies;
             _prestige = prestige;
             _bounties = bounties;
-            _trans = mongo;
+            _trans = trans;
         }
 
         public async Task<PrestigeResponse> Handle(PrestigeRequest request, CancellationToken cancellationToken)
@@ -67,25 +65,34 @@ namespace GMServer.MediatR
             return await _trans.RunInTransaction((session) => HandleRequest(request));
         }
 
-        public async Task<PrestigeResponse> HandleRequest(PrestigeRequest request)
+        async Task<(List<UserArtefact>, UserBounties)> LoadDataFromMongo(string uid)
         {
-            /* Pull values from request */
-            int prestigeStage   = request.LocalState.GameState.Stage;
-
             /* Load user values */
-            var userArtefactsTask   = _artefacts.GetUserArtefactsAsync(request.UserID);
-            var userBountiesTask    = _bounties.GetUserBountiesAsync(request.UserID);
+            var userArtefactsTask = _artefacts.GetUserArtefactsAsync(uid);
+            var userBountiesTask = _bounties.GetUserBountiesAsync(uid);
 
             await Task.WhenAll(userArtefactsTask, userBountiesTask);
 
             /* Task results */
-            var userArtefacts   = userArtefactsTask.Result;
-            var userBounties    = userBountiesTask.Result;
+            var userArtefacts = userArtefactsTask.Result;
+            var userBounties = userBountiesTask.Result;
+
+            return (userArtefacts, userBounties);
+        }
+
+        async Task<PrestigeResponse> HandleRequest(PrestigeRequest request)
+        {
+            /* Pull values from request */
+            int prestigeStage = request.LocalState.GameState.Stage;
+
+            (var userArtefacts, var userBounties) = await LoadDataFromMongo(request.UserID);
+
+            ResolvedBonuses bonuses = ResolvedBonuses.Create(userArtefacts, _artefacts.GetDataFile());
 
             /* Calculate rewards */
-            var points              = CalculatePrestigePoints(userArtefacts, prestigeStage);                // Prestige points earned
-            var defeatedBountyIds   = GetBouniesDefeated(prestigeStage);                                    // Already unlocked bounties which we have defeated this prestige
-            var unlockedBounties    = GetNewUnlockedBounties(request.UserID, prestigeStage, userBounties);  // Bounties which have been unlocked
+            var points              = bonuses.PrestigePointsAtStage(prestigeStage);         // Prestige points earned
+            var defeatedBountyIds   = GetBouniesDefeated(prestigeStage);                    // Already unlocked bounties which we have defeated this prestige
+            var unlockedBounties    = GetNewUnlockedBounties(prestigeStage, userBounties);  // Bounties which have been unlocked
 
             /* Reward database updates */
             List<Task> updateTasks = new()
@@ -112,7 +119,7 @@ namespace GMServer.MediatR
             return _bounties.GetDataFile().Bounties.Where(b => prestigeStage > b.UnlockStage).Select(x => x.BountyID).ToList();
         }
 
-        private List<UserBounty> GetNewUnlockedBounties(string userId, int stage, UserBounties userBounties)
+        private List<UserBounty> GetNewUnlockedBounties(int stage, UserBounties userBounties)
         {
             BountiesDataFile datafile = _bounties.GetDataFile();
 
@@ -121,15 +128,6 @@ namespace GMServer.MediatR
                 .Where(b => stage > b.UnlockStage)                                                  // Stage was completed
                 .Select(b => new UserBounty(b.BountyID))
                 .ToList();
-        }
-
-        private double CalculatePrestigePoints(List<UserArtefact> bounties, int stage)
-        {
-            double baseValue    = GameFormulas.PrestigePointsBase(stage);
-            var artefactBonuses = GameFormulas.CreateArtefactBonusList(bounties, _artefacts.GetDataFile());
-            var resolvedBonuses = GameFormulas.CreateResolvedBonusDictionary(artefactBonuses);
-
-            return baseValue * resolvedBonuses.Get(BonusType.MULTIPLY_PRESTIGE_BONUS, 1);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace GMServer.MediatR.BountyShopHandler
     public class GetUserBountyShopRequest : IRequest<GetUserBountyShopResponse>
     {
         public string UserID;
-        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
+        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
     }
 
     public class GetUserBountyShopResponse
@@ -71,7 +71,7 @@ namespace GMServer.MediatR.BountyShopHandler
             };
         }
 
-        private string GetShopSeed(CurrentServerRefresh<IDailyServerRefresh> refresh, UserBountyShopState state)
+        private string GetShopSeed(CurrentServerRefresh<IDailyRefresh> refresh, UserBountyShopState state)
         {
             if (state is not null)
                 return state.Seed;
@@ -111,7 +111,7 @@ namespace GMServer.MediatR.BountyShopHandler
             return shopDataFile.GetConfig(hourlyIncome);
         }
 
-        private UserBountyShop GetItems(CurrentServerRefresh<IDailyServerRefresh> refresh, UserBountyShopState state, BountyShopConfig config)
+        private UserBountyShop GetItems(CurrentServerRefresh<IDailyRefresh> refresh, UserBountyShopState state, BountyShopConfig config)
         {
             // Get the seed used to fetch the deterministic items (from state or re-calculated)
             string seed = GetShopSeed(refresh, state);

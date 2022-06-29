@@ -16,7 +16,7 @@ namespace GMServer.MediatR.BountyShopHandler
         public string UserID;
         public string ItemID;
         public List<UserBSCurrencyItem> ShopCurrencyItems;
-        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
+        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
     }
 
     public class PurchaseCurrencyItemResponse : AbstractResponseWithError

@@ -12,7 +12,7 @@ namespace GMServer.MediatR
     public class GetUserDataRequest : IRequest<GetUserDataResponse>
     {
         public string UserID;
-        public CurrentServerRefresh<IDailyServerRefresh> DailyRefresh;
+        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
     }
 
     public class GetUserDataResponse

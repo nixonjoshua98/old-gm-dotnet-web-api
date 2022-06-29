@@ -36,7 +36,7 @@ namespace GMServer
             services.AddScoped<RequestContext>();
 
             // Server Refresh Intervals
-            services.AddSingleton(new ServerRefresh<IDailyServerRefresh>() { Hour = 20, Interval = TimeSpan.FromDays(1) });
+            services.AddSingleton(new ServerRefresh<IDailyRefresh>() { Hour = 20, Interval = TimeSpan.FromDays(1) });
         }
 
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
