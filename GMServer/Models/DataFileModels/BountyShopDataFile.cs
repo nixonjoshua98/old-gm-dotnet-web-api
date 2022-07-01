@@ -59,7 +59,7 @@ namespace GMServer.Models.DataFileModels
     public class BSArmouryItemGradeConfig : LootItem
     {
         [JsonRequired]
-        public ItemGrade ItemGrade;
+        public ItemGradeID ItemGrade;
 
         [JsonRequired]
         public int PurchaseCost;

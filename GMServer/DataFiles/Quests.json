@@ -21,11 +21,11 @@
       "LongValue": 25,
       "RewardMercId": 2
     },
-    // 250 Enemies
     {
+      // 500 Enemies
       "QuestId": 3,
       "ActionType": 1,
-      "LongValue": 250,
+      "LongValue": 500,
       "RewardMercId": 3
     }
   ],

@@ -32,6 +32,7 @@
       "Name": "Stone Golem",
       "MercID": 0,
       "BaseDamage": 10,
+      "Grade": 10,
       "RechargeRate": 2.5,
       "Passives": [
         {
@@ -60,6 +61,7 @@
       "Name": "Fallen Angel",
       "MercID": 1,
       "BaseDamage": 15,
+      "Grade": 20,
       "RechargeRate": 5.0,
       "Passives": [
         {
@@ -88,6 +90,7 @@
       "Name": "Demon Knight",
       "MercID": 2,
       "BaseDamage": 20,
+      "Grade": 30,
       "RechargeRate": 6.0,
       "Passives": [
         {
@@ -116,6 +119,7 @@
       "Name": "Skeleton Knight",
       "MercID": 3,
       "BaseDamage": 25,
+      "Grade": 20,
       "RechargeRate": 6.5,
       "Passives": [
         {

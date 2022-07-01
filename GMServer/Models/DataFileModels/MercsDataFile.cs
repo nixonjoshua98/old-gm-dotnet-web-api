@@ -24,8 +24,10 @@ namespace GMServer.Models.DataFileModels
     {
         [JsonProperty(PropertyName = "MercID")]
         public int ID;
+
         public string Name;
         public float BaseDamage;
+        public ItemGradeID Grade;
         public float RechargeRate;
         public List<MercPassiveBonus> Passives;
     }

@@ -1,6 +1,6 @@
 ﻿namespace GMServer.Common
 {
-    public enum ItemGrade
+    public enum ItemGradeID : byte
     {
         None = 0,
         Common = 10,
