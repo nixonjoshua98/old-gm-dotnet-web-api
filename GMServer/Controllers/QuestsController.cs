@@ -5,6 +5,7 @@ using GMServer.MediatR.QuestHandlers;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
 using MediatR;
+using GMServer.Encryption;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -49,8 +50,9 @@ namespace GMServer.Controllers
             }
         }
 
-        [HttpPut("Merc")]
         [Authorize]
+        [EncryptedRequestBody]
+        [HttpPut("Merc")]
         public async Task<IActionResult> CompleteMercQuest(CompleteMercQuestBody body)
         {
             try
@@ -58,7 +60,8 @@ namespace GMServer.Controllers
                 var resp = await _mediator.Send(new CompleteMercQuestRequest
                 {
                     UserID = User.UserID(),
-                    QuestID = body.QuestID
+                    QuestID = body.QuestID,
+                    GameState = body.GameState
                 });
 
                 return this.ResponseOrError(resp);
@@ -72,7 +75,7 @@ namespace GMServer.Controllers
 
         [HttpPut("Daily")]
         [Authorize]
-        public async Task<IActionResult> CompleteDailyQuest(CompleteQuestBody body, [FromServices] RequestContext context)
+        public async Task<IActionResult> CompleteDailyQuest(CompleteDailyQuestBody body, [FromServices] RequestContext context)
         {
             try
             {

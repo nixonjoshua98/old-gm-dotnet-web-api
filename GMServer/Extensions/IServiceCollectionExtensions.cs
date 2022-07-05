@@ -42,7 +42,7 @@ namespace GMServer
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
         {
             IMongoClient client     = new MongoClient(configuration["MongoSettings:ConnectionString"]);
-            IMongoDatabase database = client.GetDatabase(configuration["MongoSettings:DatabaseName"]);
+            IMongoDatabase database = client.GetDatabase("GMDatabase");
 
             services.AddSingleton(database);
             services.AddSingleton(client);

@@ -31,7 +31,7 @@ namespace GMServer.Services
         public BountiesService(IDataFileCache cache, IMongoDatabase mongo)
         {
             _cache = cache;
-            _bounties = mongo.GetCollection<UserBounties>("Bounties");
+            _bounties = mongo.GetCollection<UserBounties>("UserBounties");
         }
 
         public async Task IncrementBountyDefeatsAsync(string userId, List<int> bountyIds)
@@ -99,7 +99,7 @@ namespace GMServer.Services
 
             foreach (var bounty in bounties)
             {
-                var filter = UserBountyNotUnlockedFilter(userId, bounty.BountyID);
+                var filter = UserLockedBountyFilter(userId, bounty.BountyID);
 
                 var update = Builders<UserBounties>.Update
                     .AddToSet(s => s.UnlockedBounties, bounty);
@@ -128,7 +128,7 @@ namespace GMServer.Services
         /// <summary>
         /// Filter for matching against a user document where the user does not have the provided bounty unlocked
         /// </summary>
-        private FilterDefinition<UserBounties> UserBountyNotUnlockedFilter(string userId, int bountyId)
+        private FilterDefinition<UserBounties> UserLockedBountyFilter(string userId, int bountyId)
         {
             return Builders<UserBounties>.Filter.Eq(x => x.UserID, userId) &
                     Builders<UserBounties>.Filter.Not(

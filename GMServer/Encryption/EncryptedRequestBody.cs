@@ -1,10 +1,10 @@
-﻿using GMServer.Common;
-using GMServer.Models.Settings;
+﻿using GMServer.Models.Settings;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace GMServer.Encryption
 {
@@ -14,8 +14,15 @@ namespace GMServer.Encryption
         {
             EncryptionSettings settings = context.HttpContext.RequestServices.GetService<EncryptionSettings>();
 
-            var request = context.HttpContext.Request;
+            HttpRequest request = context.HttpContext.Request;
 
+            request.Body = await DecryptRequest(request, settings);
+
+            await next();
+        }
+
+        async Task<MemoryStream> DecryptRequest(HttpRequest request, EncryptionSettings settings)
+        {
             string cipherRequest;
 
             using (var reader = new StreamReader(request.Body))
@@ -25,9 +32,7 @@ namespace GMServer.Encryption
 
             string plainRequest = AES.Decrypt(cipherRequest, settings);
 
-            request.Body = new MemoryStream(System.Text.Encoding.ASCII.GetBytes(plainRequest));
-
-            await next();
+            return new MemoryStream(System.Text.Encoding.ASCII.GetBytes(plainRequest));
         }
     }
 }

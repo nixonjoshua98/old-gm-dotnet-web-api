@@ -1,11 +1,13 @@
-﻿using GMServer.Models.DataFileModels;
+﻿using GMServer.Common;
+using GMServer.Models;
+using GMServer.Models.DataFileModels;
+using GMServer.Models.UserModels;
 using GMServer.Services;
 using MediatR;
+using System;
 using System.Linq;
 using System.Threading;
-using GMServer.Models.UserModels;
 using System.Threading.Tasks;
-using System;
 
 namespace GMServer.MediatR.QuestHandlers
 {
@@ -13,6 +15,7 @@ namespace GMServer.MediatR.QuestHandlers
     {
         public string UserID;
         public int QuestID;
+        public LocalGameState GameState;
     }
 
     public class CompleteMercQuestResponse : AbstractResponseWithError
@@ -60,7 +63,6 @@ namespace GMServer.MediatR.QuestHandlers
 
         public async Task<CompleteMercQuestResponse> HandleRequest(CompleteMercQuestRequest request)
         {
-            /* Fetch datafile */
             var datafile = _quests.GetDataFile();
             var quest    = datafile.MercQuests.First(x => x.ID == request.QuestID);
 
@@ -72,11 +74,23 @@ namespace GMServer.MediatR.QuestHandlers
             else if (userMerc is not null)
                 return new("Merc reward already unlocked", 400);
 
+            else if (!IsQuestComplete(quest, request.GameState))
+                return new("Quest requirement not met", 400);
+
             /* Update Database */
             await _quests.InsertQuestProgress(new UserMercQuest(request.UserID, request.QuestID) { CompletedTime = DateTime.UtcNow });
             await _mercs.InsertMercAsync(new UserMerc(request.UserID, quest.RewardMercID) { UnlockTime = DateTime.UtcNow});
 
             return new CompleteMercQuestResponse(quest.RewardMercID);
+        }
+
+        bool IsQuestComplete(MercQuest quest, LocalGameState localState)
+        {
+            return quest.ActionType switch
+            {
+                QuestActionType.StageReached => localState.CurrentStage >= quest.LongValue,
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }

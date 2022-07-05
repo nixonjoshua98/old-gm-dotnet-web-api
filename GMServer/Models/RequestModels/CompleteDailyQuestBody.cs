@@ -2,7 +2,7 @@
 
 namespace GMServer.Models.RequestModels
 {
-    public class CompleteQuestBody
+    public class CompleteDailyQuestBody
     {
         public int QuestID;
         public DailyUserAccountStats LocalDailyStats;
@@ -11,5 +11,6 @@ namespace GMServer.Models.RequestModels
     public class CompleteMercQuestBody
     {
         public int QuestID;
+        public GMServer.Models.LocalGameState GameState;
     }
 }

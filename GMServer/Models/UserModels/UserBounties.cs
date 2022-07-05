@@ -9,7 +9,7 @@ namespace GMServer.Models.UserModels
     public class UserBounty
     {
         public int BountyID;
-        public int Level;
+        public int Level = 1;
         public int NumDefeats;
 
         public UserBounty() { }
@@ -24,6 +24,7 @@ namespace GMServer.Models.UserModels
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID;
+
         public DateTime LastClaimTime;
         public List<int> ActiveBounties = new();
         public List<UserBounty> UnlockedBounties = new();
