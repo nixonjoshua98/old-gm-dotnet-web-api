@@ -1,5 +1,6 @@
 [
   {
+    "GradeID": 20,
     "ArtefactId": 1,
     "BonusType": 601,
     "CostCoeff": 0.5,
@@ -8,6 +9,7 @@
     "LevelEffect": 0.5
   },
   {
+    "GradeID": 10,
     "ArtefactId": 2,
     "BonusType": 802,
     "CostCoeff": 1,
@@ -16,6 +18,7 @@
     "LevelEffect": 0.6
   },
   {
+    "GradeID": 30,
     "ArtefactId": 3,
     "BonusType": 601,
     "CostCoeff": 0.7,
@@ -24,6 +27,7 @@
     "LevelEffect": 0.8
   },
   {
+    "GradeID": 20,
     "ArtefactId": 4,
     "BonusType": 801,
     "CostCoeff": 0.8,
@@ -32,6 +36,7 @@
     "LevelEffect": 0.4
   },
   {
+    "GradeID": 10,
     "ArtefactId": 6,
     "BonusType": 601,
     "CostCoeff": 0.6,
@@ -40,6 +45,7 @@
     "LevelEffect": 0.5
   },
   {
+    "GradeID": 20,
     "ArtefactId": 7,
     "BonusType": 800,
     "CostCoeff": 1,
@@ -48,6 +54,7 @@
     "LevelEffect": 0.3
   },
   {
+    "GradeID": 10,
     "ArtefactId": 8,
     "BonusType": 602,
     "CostCoeff": 0.5,
@@ -56,6 +63,7 @@
     "LevelEffect": 0.75
   },
   {
+    "GradeID": 30,
     "ArtefactId": 9,
     "BonusType": 300,
     "MaxLevel": 10,
@@ -65,6 +73,7 @@
     "LevelEffect": 0.005
   },
   {
+    "GradeID": 20,
     "ArtefactId": 10,
     "BonusType": 800,
     "CostCoeff": 0.7,
@@ -73,6 +82,7 @@
     "LevelEffect": 0.4
   },
   {
+    "GradeID": 20,
     "ArtefactId": 11,
     "BonusType": 603,
     "CostCoeff": 0.7,
@@ -81,6 +91,7 @@
     "LevelEffect": 0.75
   },
   {
+    "GradeID": 10,
     "ArtefactId": 12,
     "BonusType": 500,
     "CostCoeff": 0.5,
@@ -89,6 +100,7 @@
     "LevelEffect": 0.05
   },
   {
+    "GradeID": 30,
     "ArtefactId": 13,
     "BonusType": 802,
     "CostCoeff": 0.9,
@@ -97,6 +109,7 @@
     "LevelEffect": 0.5
   },
   {
+    "GradeID": 10,
     "ArtefactId": 14,
     "BonusType": 400,
     "CostCoeff": 0.5,
@@ -105,6 +118,7 @@
     "LevelEffect": 0.25
   },
   {
+    "GradeID": 20,
     "ArtefactId": 17,
     "BonusType": 602,
     "CostCoeff": 0.5,
@@ -113,6 +127,7 @@
     "LevelEffect": 0.5
   },
   {
+    "GradeID": 30,
     "ArtefactId": 18,
     "BonusType": 601,
     "CostCoeff": 0.8,
@@ -121,6 +136,7 @@
     "LevelEffect": 0.4
   },
   {
+    "GradeID": 20,
     "ArtefactId": 19,
     "BonusType": 603,
     "CostCoeff": 0.5,
@@ -129,6 +145,7 @@
     "LevelEffect": 0.5
   },
   {
+    "GradeID": 10,
     "ArtefactId": 23,
     "BonusType": 801,
     "CostCoeff": 0.6,
@@ -137,6 +154,7 @@
     "LevelEffect": 0.5
   },
   {
+    "GradeID": 30,
     "ArtefactId": 25,
     "BonusType": 801,
     "CostCoeff": 0.75,

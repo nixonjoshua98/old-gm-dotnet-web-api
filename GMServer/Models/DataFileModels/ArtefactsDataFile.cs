@@ -12,6 +12,8 @@ namespace GMServer.Models.DataFileModels
 
         public BonusType BonusType;
 
+        public ItemGradeID GradeID;
+
         public int MaxLevel = 1_000;
 
         public float CostExpo;
