@@ -21,8 +21,8 @@ namespace GMServer.MediatR.BountyHandlers
         public UserCurrencies Currencies;
 
         public ClaimBountyPointsResponse() { }
-        public ClaimBountyPointsResponse(string message, int code) : base(message, code) { }
-        public static ClaimBountyPointsResponse AsError(string m, int code) => new(m, code);
+        protected ClaimBountyPointsResponse(string message, int code) : base(message, code) { }
+        public static ClaimBountyPointsResponse AsError(string m, int code) => new() { Error = new(m, code) };
     }
 
     public class ClaimBountyPointsHandler : IRequestHandler<ClaimBountyPointRequest, ClaimBountyPointsResponse>

@@ -30,9 +30,9 @@ namespace GMServer.Encryption
                 cipherRequest = await reader.ReadToEndAsync();
             }
 
-            string plainRequest = AES.Decrypt(cipherRequest, settings);
+            string plainText = AES.Decrypt(cipherRequest, settings);
 
-            return new MemoryStream(System.Text.Encoding.ASCII.GetBytes(plainRequest));
+            return new MemoryStream(System.Text.Encoding.ASCII.GetBytes(plainText));
         }
     }
 }

@@ -188,9 +188,9 @@ namespace GMServer.MediatR.BountyShopHandler
             };
 
             // Find all unique item grades which are available
-            IEnumerable<ItemGradeID> itemGrades = config.ArmouryItems.ItemGrades.Select(x => x.ItemGrade).Distinct();
+            IEnumerable<ItemGrade> itemGrades = config.ArmouryItems.ItemGrades.Select(x => x.ItemGrade).Distinct();
 
-            foreach (ItemGradeID itemGrade in itemGrades)
+            foreach (ItemGrade itemGrade in itemGrades)
             {
                 // Find all the armoury items which belong to that grade
                 List<ArmouryItem> gradeArmouryItems = armouryItems.Where(x => x.Grade == itemGrade).ToList();

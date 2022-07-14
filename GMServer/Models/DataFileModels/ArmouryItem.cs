@@ -11,7 +11,7 @@ namespace GMServer.Models.DataFileModels
         public string Name = "Item Name";
 
         public BonusType BonusType;
-        public ItemGradeID Grade = ItemGradeID.Common;
+        public ItemGrade Grade = ItemGrade.Common;
 
         public float BaseEffect;
         public float LevelEffect;

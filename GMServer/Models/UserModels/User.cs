@@ -5,9 +5,12 @@ namespace GMServer.Models
 {
     public class User
     {
-        [BsonId, BsonRepresentation(BsonType.ObjectId)]
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
         public string ID;
 
         public string DeviceID;
+
+        public string AccessToken;
     }
 }

@@ -26,9 +26,9 @@ namespace GMServer.MediatR.Login
     public class DeviceLoginHandler : IRequestHandler<DeviceLoginRequest, DeviceLoginResponse>
     {
         private readonly AuthenticationService _auth;
-        private readonly UserService _users;
+        private readonly IUserService _users;
 
-        public DeviceLoginHandler(AuthenticationService auth, UserService users)
+        public DeviceLoginHandler(AuthenticationService auth, IUserService users)
         {
             _auth = auth;
             _users = users;
@@ -36,7 +36,7 @@ namespace GMServer.MediatR.Login
 
         public async Task<DeviceLoginResponse> Handle(DeviceLoginRequest request, CancellationToken cancellationToken)
         {
-            User user = await _users.GetUserByDeviceIDAsync(request.DeviceID);
+            User user = await _users.GetUserByDeviceAsync(request.DeviceID);
 
             if (user is null)
             {
@@ -45,19 +45,11 @@ namespace GMServer.MediatR.Login
                 await _users.InsertUserAsync(user);
             }
 
-            await _auth.InvalidateUserSessionsAsync(user);
+            string newAccessToken = _auth.GenerateAccessToken();
 
-            string token = _auth.CreateToken(user);
+            await _users.UpdateAccessTokenAsync(user, newAccessToken);
 
-            AuthenticatedSession session = new()
-            {
-                Token = token,
-                UserID = user.ID
-            };
-
-            await _auth.InsertSessionAsync(session);
-
-            return new DeviceLoginResponse(user.ID, session.Token);
+            return new DeviceLoginResponse(user.ID, newAccessToken);
         }
     }
 }

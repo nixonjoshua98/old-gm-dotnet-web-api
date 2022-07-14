@@ -12,7 +12,7 @@ namespace GMServer.Models.DataFileModels
 
         public BonusType BonusType;
 
-        public ItemGradeID GradeID;
+        public ItemGrade GradeID;
 
         public int MaxLevel = 1_000;
 

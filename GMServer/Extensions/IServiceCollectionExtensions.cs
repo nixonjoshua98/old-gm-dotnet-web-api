@@ -19,18 +19,18 @@ namespace GMServer
     {
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddSingleton<AuthenticationService>();
-            services.AddSingleton<UserService>();
-            services.AddSingleton<IDataFileCache, DataFileCache>();
-            services.AddSingleton<ArtefactsService>();
-            services.AddSingleton<MercsService>();
-            services.AddSingleton<ArmouryService>();
-            services.AddSingleton<AccountStatsService>();
-            services.AddSingleton<IBountiesService, BountiesService>();
-            services.AddSingleton<QuestsService>();
-            services.AddSingleton<PrestigeService>();
-            services.AddSingleton<CurrenciesService>();
-            services.AddSingleton<BountyShopService>();
+            services.AddScoped<AuthenticationService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDataFileCache, DataFileCache>();
+            services.AddScoped<ArtefactsService>();
+            services.AddScoped<MercsService>();
+            services.AddScoped<ArmouryService>();
+            services.AddScoped<AccountStatsService>();
+            services.AddScoped<IBountiesService, BountiesService>();
+            services.AddScoped<QuestsService>();
+            services.AddScoped<PrestigeService>();
+            services.AddScoped<CurrenciesService>();
+            services.AddScoped<BountyShopService>();
 
             // Scoped
             services.AddScoped<RequestContext>();
@@ -47,7 +47,7 @@ namespace GMServer
             services.AddSingleton(database);
             services.AddSingleton(client);
 
-            services.AddSingleton<IMongoTransactionContext, MongoTransactionContext>();
+            //services.AddScoped<IMongoContext, MongoContext>();
         }
 
         public static T Configure<T>(this IServiceCollection services, IConfiguration configuration, string section)
@@ -69,7 +69,6 @@ namespace GMServer
                 opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(opt =>
             {
-                // Setup our JWT authentication handler
                 opt.SecurityTokenValidators.Clear();
                 opt.SecurityTokenValidators.Add(new JWTSecurityTokenHandler(services.BuildServiceProvider()));
 
@@ -81,8 +80,7 @@ namespace GMServer
                     ValidateIssuerSigningKey = true,
                     ValidateIssuer = false,
                     ValidateLifetime = false,
-                    ValidateAudience = true,
-                    ValidAudience = settings.Audience
+                    ValidateAudience = false,
                 };
 
                 opt.Events = new JwtBearerEvents()
@@ -91,7 +89,6 @@ namespace GMServer
                     {
                         context.Response.OnStarting(() =>
                         {
-
                             // Our JWT handler may throw a custom exception which will 'hopefully' force the user to
                             // invalidate and delete all local game progress.
                             if (context.Exception.GetType() == typeof(InvalidTokenException))

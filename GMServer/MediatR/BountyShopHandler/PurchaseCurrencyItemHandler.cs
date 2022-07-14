@@ -42,6 +42,11 @@ namespace GMServer.MediatR.BountyShopHandler
 
         public async Task<PurchaseCurrencyItemResponse> Handle(PurchaseCurrencyItemRequest request, CancellationToken cancellationToken)
         {
+            return await HandleRequestAsync(request);
+        }
+
+        public async Task<PurchaseCurrencyItemResponse> HandleRequestAsync(PurchaseCurrencyItemRequest request)
+        {
             var shopItem = request.ShopCurrencyItems.First(x => x.ID == request.ItemID);
 
             // Verify the item is in stock

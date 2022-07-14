@@ -1,12 +1,13 @@
 ﻿using GMServer.Models.UserModels;
 using MongoDB.Driver;
 using System.Threading.Tasks;
+using GMServer.Extensions;
 
 namespace GMServer.Services
 {
     public class CurrenciesService
     {
-        private readonly IMongoCollection<UserCurrencies> _currencies;
+        private IMongoCollection<UserCurrencies> _currencies;
 
         public CurrenciesService(IMongoDatabase mongo)
         {

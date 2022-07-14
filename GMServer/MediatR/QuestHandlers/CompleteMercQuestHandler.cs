@@ -37,18 +37,15 @@ namespace GMServer.MediatR.QuestHandlers
         private readonly QuestsService _quests;
         private readonly MercsService _mercs;
 
-        private IMongoTransactionContext _trans;
-
-        public CompleteMercQuestHandler(MercsService mercs, QuestsService quests, IMongoTransactionContext trans)
+        public CompleteMercQuestHandler(MercsService mercs, QuestsService quests)
         {
             _quests = quests;
             _mercs = mercs;
-            _trans = trans;
         }
 
         public async Task<CompleteMercQuestResponse> Handle(CompleteMercQuestRequest request, CancellationToken cancellationToken)
         {
-            return await _trans.RunInTransaction(session => HandleRequest(request));
+            return await HandleRequest(request);
         }
 
         async Task<(UserMercQuest, UserMerc)> LoadUserDataFromMongo(string userId, MercQuest quest)

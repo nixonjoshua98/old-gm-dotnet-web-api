@@ -27,7 +27,7 @@ namespace GMServer.Models.DataFileModels
 
         public string Name;
         public float BaseDamage;
-        public ItemGradeID Grade;
+        public ItemGrade Grade;
         public float RechargeRate;
         public List<MercPassiveBonus> Passives;
     }

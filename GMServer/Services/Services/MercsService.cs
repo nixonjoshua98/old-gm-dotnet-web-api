@@ -48,19 +48,5 @@ namespace GMServer.Services
         {
             return _cache.Load<MercsDataFile>(DataFiles.Mercs);
         }
-
-        /* Query Definitions */
-
-        //private (FilterDefinition<UserMerc>, UpdateDefinition<UserMerc>) CreateQuery(string userId, MercUpdateModel model)
-        //{
-        //    FilterDefinition<UserMerc> filter = Builders<UserMerc>.Filter.Where(x => x.UserID == userId && x.MercID == model.MercID);
-
-        //    UpdateDefinition<UserMerc> update = Builders<UserMerc>.Update
-        //        .Inc(x => x.ExpertiseLevel, model.Levels)
-        //        .Inc(x => x.ExpertiseExp, model.ExpertiseExp)
-        //        .Inc(x => x.UpgradePoints, model.UpgradePoints);
-
-        //    return (filter, update);
-        //}
     }
 }

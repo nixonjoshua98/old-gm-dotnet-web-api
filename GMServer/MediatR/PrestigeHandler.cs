@@ -42,27 +42,23 @@ namespace GMServer.MediatR
         private readonly PrestigeService _prestige;
         private readonly IBountiesService _bounties;
 
-        IMongoTransactionContext _trans;
-
         public PrestigeHandler(
             ArtefactsService artefacts,
             CurrenciesService currencies,
             PrestigeService prestige,
             IBountiesService bounties,
-            AccountStatsService accountStats,
-            IMongoTransactionContext trans)
+            AccountStatsService accountStats)
         {
             _accountStats = accountStats;
             _artefacts = artefacts;
             _currencies = currencies;
             _prestige = prestige;
             _bounties = bounties;
-            _trans = trans;
         }
 
         public async Task<PrestigeResponse> Handle(PrestigeRequest request, CancellationToken cancellationToken)
         {
-            return await _trans.RunInTransaction((session) => HandleRequest(request));
+            return await HandleRequest(request);
         }
 
         async Task<(List<UserArtefact>, UserBounties)> LoadDataFromMongo(string uid)
@@ -98,10 +94,9 @@ namespace GMServer.MediatR
             List<Task> updateTasks = new()
             {
                 _currencies.IncrementAsync(request.UserID, new() { PrestigePoints = points }),
-                _accountStats.UpdateUserLifetimeStatsAsync(request.UserID, new() { HighestPrestigeStage = prestigeStage, TotalPrestiges = 1 })
+                _accountStats.UpdateUserLifetimeStatsAsync(request.UserID, new() { HighestPrestigeStage = prestigeStage, TotalPrestiges = 1 }),
+                _prestige.InsertPrestigeLogAsync(new(request.UserID, prestigeStage, DateTime.UtcNow, points))
             };
-
-            updateTasks.Add(_prestige.InsertPrestigeLogAsync(new(request.UserID, prestigeStage, DateTime.UtcNow, points)));
 
             if (unlockedBounties.Count > 0)  // Insert newly unlocked bounties
                 updateTasks.Add(_bounties.InsertBountiesAsync(request.UserID, unlockedBounties));

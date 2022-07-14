@@ -1,5 +1,4 @@
-﻿using GMServer.Common;
-using GMServer.Models.Settings;
+﻿using GMServer.Models.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,7 @@ namespace GMServer.Encryption
     {
         public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
         {
-            EncryptionSettings settings = context.HttpContext.RequestServices.GetService<EncryptionSettings>();
+            EncryptionSettings settings = context.HttpContext.RequestServices.GetRequiredService<EncryptionSettings>();
 
             var response = context.HttpContext.Response;
 

@@ -117,7 +117,7 @@ namespace GMServer.Services
             var update = Builders<UserBounties>.Update
                 .Set(s => s.LastClaimTime, claimTime);
 
-            await _bounties.UpdateOneAsync(x => x.UserID == userId, update, new() { IsUpsert = true });
+            await _bounties.UpdateOneAsync(x => x.UserID == userId, update, new() { IsUpsert = true});
         }
 
         public BountiesDataFile GetDataFile()

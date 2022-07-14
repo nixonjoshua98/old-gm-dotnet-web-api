@@ -38,17 +38,13 @@ namespace GMServer
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "GMServer", Version = "v1" });
             });
 
-            services.AddLogging(opt =>
-            {
-                opt.AddSerilog();
-            });
+            services.AddLogging(opt => opt.AddSerilog());
 
-            services.Configure<EncryptionSettings>(Configuration, "Encryption");
+            services.Configure<EncryptionSettings>(Configuration, "EncryptionSettings");
 
-            services.AddMediatR(typeof(Startup));
             services.AddMongo(Configuration);
             services.AddServices();
-
+            services.AddMediatR(typeof(Startup));
             services.AddJWTAuthentication(Configuration);
         }
 

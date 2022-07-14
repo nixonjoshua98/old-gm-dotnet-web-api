@@ -12,22 +12,28 @@ namespace GMServer.Authentication
     public class JWTSecurityTokenHandler : JwtSecurityTokenHandler
     {
         private readonly AuthenticationService _auth;
+        private readonly IUserService _users;
 
         public JWTSecurityTokenHandler(IServiceProvider serviceProvider)
         {
             _auth = serviceProvider.GetRequiredService<AuthenticationService>();
+            _users = serviceProvider.GetRequiredService<IUserService>();
         }
+
+        public override bool CanReadToken(string token) => true;
 
         public override ClaimsPrincipal ValidateToken(string token, TokenValidationParameters validationParameters, out SecurityToken validatedToken)
         {
-            var claimsPrincipal = base.ValidateToken(token, validationParameters, out validatedToken);
+            User user = _users.GetUserByAccessToken(token);
 
-            AuthenticatedSession session = _auth.GetSession(token);
-
-            if (session is null || !session.IsValid)
+            if (user is null)
+            {
                 throw new InvalidTokenException();
+            }
 
-            return claimsPrincipal;
+            string jwtToken = _auth.CreateToken(user);
+
+            return base.ValidateToken(jwtToken, validationParameters, out validatedToken);
         }
     }
 }
