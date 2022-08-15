@@ -1,8 +1,8 @@
-﻿using GMServer.Context;
-using GMServer.Exceptions;
+﻿using GMServer.Common.Types;
 using GMServer.Extensions;
 using GMServer.MediatR.BountyShopHandler;
 using GMServer.Models.RequestModels;
+using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +25,6 @@ namespace GMServer.Controllers
             _context = context;
         }
 
-
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> Get()
@@ -39,7 +38,7 @@ namespace GMServer.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "GetBountyShop");
-                return new InternalServerError(ex.Message);
+                return ServerError.InternalServerError;
             }
         }
 
@@ -51,20 +50,17 @@ namespace GMServer.Controllers
             {
                 var userShop = await GetUserBountyShop();
 
-                var resp = await _mediator.Send(new PurchaseCurrencyItemRequest
-                {
-                    UserID = User.UserID(),
-                    ItemID = body.ItemID,
-                    ShopCurrencyItems = userShop.ShopItems.CurrencyItems,
-                    DailyRefresh = _context.DailyRefresh
-                });
+                var resp = await _mediator.Send(new PurchaseCurrencyItemCommand(UserID: User.UserID(),
+                                                                                ItemID: body.ItemID,
+                                                                                ShopCurrencyItems: userShop.ShopItems.CurrencyItems,
+                                                                                DailyRefresh: _context.DailyRefresh));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "PurchaseCurrency");
-                return new InternalServerError(ex.Message);
+                return ServerError.InternalServerError;
             }
         }
 
@@ -76,27 +72,24 @@ namespace GMServer.Controllers
             {
                 var userShop = await GetUserBountyShop();
 
-                var resp = await _mediator.Send(new PurchaseArmouryItemRequest
-                {
-                    UserID = User.UserID(),
-                    ShopItemID = body.ItemID,
-                    ShopArmouryItems = userShop.ShopItems.ArmouryItems,
-                    DailyRefresh = _context.DailyRefresh
-                });
+                var resp = await _mediator.Send(new PurchaseArmouryItemCommand(UserID: User.UserID(),
+                                                                               ShopItemID: body.ItemID,
+                                                                               ShopArmouryItems: userShop.ShopItems.ArmouryItems,
+                                                                               DailyRefresh: _context.DailyRefresh));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "PurchaseArmouryItem");
-                return new InternalServerError(ex.Message);
+                return ServerError.InternalServerError;
             }
         }
 
         /// <summary>
         /// General mediator request for the current user bounty shop (used in most requests)
         /// </summary>
-        async Task<GetUserBountyShopResponse> GetUserBountyShop()
+        private async Task<GetUserBountyShopResponse> GetUserBountyShop()
         {
             return await _mediator.Send(new GetUserBountyShopRequest { DailyRefresh = _context.DailyRefresh, UserID = User.UserID() });
         }

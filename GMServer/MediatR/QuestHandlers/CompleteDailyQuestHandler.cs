@@ -1,9 +1,11 @@
-﻿using GMServer.Common;
+﻿using GMServer.Caching.DataFiles.Models;
+using GMServer.Common;
+using GMServer.Common.Types;
 using GMServer.Context;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
+using SRC.DataFiles.Cache;
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,56 +13,49 @@ using System.Threading.Tasks;
 
 namespace GMServer.MediatR.QuestHandlers
 {
-    public class CompleteDailyQuestRequest : IRequest<CompleteDailyQuestResponse>
-    {
-        public string UserID;
-        public int QuestID;
-        public DailyUserAccountStats LocalDailyStats;
-        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
-    }
+    public record CompleteDailyQuestCommand(string UserID,
+                                            int QuestID,
+                                            DailyUserAccountStats LocalDailyStats,
+                                            CurrentServerRefresh<IDailyRefresh> DailyRefresh) : IRequest<Result<CompleteDailyQuestResponse>>;
 
-    public class CompleteDailyQuestResponse : AbstractResponseWithError
-    {
-        public int DiamondsRewarded;
+    public record CompleteDailyQuestResponse(int DiamondsRewarded);
 
-        public CompleteDailyQuestResponse(int diamondsRewarded)
-        {
-            DiamondsRewarded = diamondsRewarded;
-        }
-
-        public CompleteDailyQuestResponse(string message, int code) : base(message, code)
-        {
-        }
-    }
-
-    public class CompleteDailyQuestHandler : IRequestHandler<CompleteDailyQuestRequest, CompleteDailyQuestResponse>
+    public class CompleteDailyQuestHandler : IRequestHandler<CompleteDailyQuestCommand, Result<CompleteDailyQuestResponse>>
     {
         private readonly QuestsService _quests;
         private readonly CurrenciesService _currencies;
-
-        public CompleteDailyQuestHandler(QuestsService quests, CurrenciesService currencies)
+        private readonly IDataFileCache _dataFiles;
+        public CompleteDailyQuestHandler(QuestsService quests, CurrenciesService currencies, IDataFileCache dataFiles)
         {
             _quests = quests;
             _currencies = currencies;
+            _dataFiles = dataFiles;
         }
 
-        public async Task<CompleteDailyQuestResponse> Handle(CompleteDailyQuestRequest request, CancellationToken cancellationToken)
+        bool ValidateRequest(CompleteDailyQuestCommand request, UserDailyQuest questProgress, DailyQuest questData, out ServerError error)
         {
+            error = default;
+
             if (!request.DailyRefresh.IsBetween(request.LocalDailyStats.DateTime))
-                return new("Local data is outdated", 400);
+                error = new("Local data is outdated", 400);
 
-            /* Fetch datafile */
-            var datafile    = _quests.GetDataFile();
-            var quest       = datafile.DailyQuests.First(x => x.ID == request.QuestID);
+            else if (questProgress is not null)
+                error = new("Quest already completed", 400);
 
-            /* Fetch user data */
-            var userQuest = await _quests.GetDailyQuestProgressAsync(request.UserID, request.QuestID, request.DailyRefresh);
+            else if(!IsQuestCompleted(questData, request.LocalDailyStats))
+                error = new("Quest requirements not met", 400);
 
-            if (userQuest is not null)
-                return new("Quest already completed", 400);
+            return error == default;
+        }
 
-            if (!IsQuestCompleted(quest, request.LocalDailyStats))
-                return new("Quest requirements not met", 400);
+        public async Task<Result<CompleteDailyQuestResponse>> Handle(CompleteDailyQuestCommand request, CancellationToken cancellationToken)
+        {
+            var datafile = _dataFiles.Quests;
+            DailyQuest quest = datafile.DailyQuests.First(x => x.ID == request.QuestID);
+            UserDailyQuest? userQuest = await _quests.GetDailyQuestProgressAsync(request.UserID, request.QuestID, request.DailyRefresh);
+
+            if (!ValidateRequest(request, userQuest, quest, out var error))
+                return error;
 
             await _quests.InsertQuestProgress(new UserDailyQuest(request.UserID, request.QuestID) { CompletedTime = DateTime.UtcNow });
             await _currencies.IncrementAsync(request.UserID, new() { Diamonds = quest.DiamondsRewarded });

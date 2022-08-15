@@ -1,6 +1,6 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Common.Types;
 using GMServer.Extensions;
-using GMServer.MediatR.ArtefactHandler;
+using GMServer.MediatR.Artefacts;
 using GMServer.Models.RequestModels;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,45 +22,37 @@ namespace GMServer.Controllers
             _mediator = mediator;
         }
 
-
-        [HttpPut("BulkUpgrade")]
         [Authorize]
+        [HttpPut("BulkUpgrade")]
         public async Task<IActionResult> BulkUpgrade(BulkUpgradeArtefactBody body)
         {
             try
             {
-                var resp = await _mediator.Send(new BulkUpgradeArtefactRequest
-                {
-                    UserID = User.UserID(),
-                    Artefacts = body.Artefacts
-                });
+                var resp = await _mediator.Send(new BulkUpgradeArtefactCommand(UserID: User.UserID(), Artefacts: body.Artefacts));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "BulkUpgradeArtefact");
-                return new InternalServerError("Failed to upgrade artefacts");
+                return ServerError.InternalServerError;
             }
         }
 
-        [HttpGet("Unlock")]
         [Authorize]
+        [HttpGet("Unlock")]
         public async Task<IActionResult> UnlockArtefact()
         {
             try
             {
-                var resp = await _mediator.Send(new UnlockArtefactRequest
-                {
-                    UserID = User.UserID(),
-                });
+                var resp = await _mediator.Send(new UnlockArtefactCommand(UserID: User.UserID()));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "UnlockArtefact");
-                return new InternalServerError("Failed to unlock new artefact");
+                return ServerError.InternalServerError;
             }
         }
     }

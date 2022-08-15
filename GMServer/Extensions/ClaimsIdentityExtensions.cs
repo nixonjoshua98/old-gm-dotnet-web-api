@@ -1,5 +1,5 @@
-﻿using GMServer.Authentication;
-using GMServer.Exceptions;
+﻿using GMServer.Common.Exceptions;
+using System;
 using System.Linq;
 using System.Security.Claims;
 
@@ -7,9 +7,15 @@ namespace GMServer.Extensions
 {
     public static class ClaimsIdentityExtensions
     {
-        public static string UserID(this ClaimsPrincipal principal)
+        public static string UserID(this ClaimsPrincipal principal) => GetRequiredClaim(principal, Authentication.ClaimTypes.UserID);
+
+        public static string GetRequiredClaim(this ClaimsPrincipal principal, string claimType)
         {
-            return principal.Claims.FirstOrDefault(claim => claim.Type == ClaimNames.UserID)?.Value ?? throw new MissingRequiredClaimException(ClaimNames.UserID);
+            var identity = (principal.Identity as ClaimsIdentity) ?? throw new Exception("Identity not found");
+
+            var claim = identity.Claims.FirstOrDefault(c => c.Type == claimType) ?? throw new MissingRequiredClaimException(claimType);
+
+            return claim.Value;
         }
     }
 }

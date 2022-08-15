@@ -1,9 +1,8 @@
-﻿using GMServer.Cache;
-using GMServer.Common;
+﻿using GMServer.Common;
 using GMServer.Context;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+using GMServer.Mongo.Models;
 using MongoDB.Driver;
+using SRC.DataFiles.Cache;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,36 +56,29 @@ namespace GMServer.Services
             return (await _mercs.Find(x => x.UserID == userId).ToListAsync()).Select(x => x.QuestID).ToList();
         }
 
-        /* Data File */
-
-        public QuestsDataFile GetDataFile()
-        {
-            return _cache.Load<QuestsDataFile>(DataFiles.Quests);
-        }
-
         /* Filters */
 
-        FilterDefinition<UserMercQuest> _MercQuestFilter(string userId, int questId)
+        private FilterDefinition<UserMercQuest> _MercQuestFilter(string userId, int questId)
         {
-            return Builders<UserMercQuest>.Filter.Where(x => 
-                x.UserID == userId && 
-                x.QuestID == questId && 
+            return Builders<UserMercQuest>.Filter.Where(x =>
+                x.UserID == userId &&
+                x.QuestID == questId &&
                 x.QuestType == QuestType.Merc
                 );
         }
 
-        FilterDefinition<UserDailyQuest> _DailyQuestFilter(string userId, int questId, CurrentServerRefresh<IDailyRefresh> refresh)
+        private FilterDefinition<UserDailyQuest> _DailyQuestFilter(string userId, int questId, CurrentServerRefresh<IDailyRefresh> refresh)
         {
-            return Builders<UserDailyQuest>.Filter.Where(x => 
-                x.UserID == userId && 
-                x.QuestID == questId && 
-                x.CompletedTime >= refresh.Previous && 
+            return Builders<UserDailyQuest>.Filter.Where(x =>
+                x.UserID == userId &&
+                x.QuestID == questId &&
+                x.CompletedTime >= refresh.Previous &&
                 x.CompletedTime < refresh.Next &&
                 x.QuestType == QuestType.Daily
                 );
         }
 
-        FilterDefinition<UserDailyQuest> _DailyQuestFilter(string userId, CurrentServerRefresh<IDailyRefresh> refresh)
+        private FilterDefinition<UserDailyQuest> _DailyQuestFilter(string userId, CurrentServerRefresh<IDailyRefresh> refresh)
         {
             return Builders<UserDailyQuest>.Filter.Where(x =>
                 x.UserID == userId &&

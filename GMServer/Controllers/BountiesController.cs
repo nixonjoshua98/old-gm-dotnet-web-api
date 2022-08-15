@@ -1,4 +1,5 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Common.Encryption;
+using GMServer.Common.Types;
 using GMServer.Extensions;
 using GMServer.MediatR.BountyHandlers;
 using GMServer.Models.RequestModels;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using System;
 using System.Threading.Tasks;
-using GMServer.Encryption;
 
 namespace GMServer.Controllers
 {
@@ -23,23 +23,20 @@ namespace GMServer.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("Claim")]
         [Authorize]
+        [HttpGet("Claim")]
         public async Task<IActionResult> ClaimBountyPoints()
         {
             try
             {
-                var resp = await _mediator.Send(new ClaimBountyPointRequest
-                {
-                    UserID = User.UserID()
-                });
+                var resp = await _mediator.Send(new ClaimBountyPointRequest(UserID: User.UserID()));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "ClaimBountyPoints");
-                return new InternalServerError("Failed to claim points");
+                return ServerError.InternalServerError;
             }
         }
 
@@ -50,19 +47,16 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new ToggleActiveBountyRequest
-                {
-                    UserID = User.UserID(),
-                    IsActive = body.IsActive,
-                    BountyID = body.BountyID
-                });
+                var resp = await _mediator.Send(new ToggleActiveBountyCommand(UserID: User.UserID(),
+                                                                              BountyID: body.BountyID,
+                                                                              IsActive: body.IsActive));
 
-                return this.ResponseOrError(resp);
+                return Ok(resp);
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "ToggleActiveBounty");
-                return new InternalServerError();
+                return ServerError.InternalServerError;
             }
         }
 
@@ -72,18 +66,14 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new UpgradeBountyRequest()
-                {
-                    UserID = User.UserID(),
-                    BountyID = body.BountyID
-                });
+                var resp = await _mediator.Send(new UpgradeBountyCommand(UserID: User.UserID(), BountyID: body.BountyID));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "UpgradeBounty");
-                return new InternalServerError("Failed to upgrade bounty");
+                return ServerError.InternalServerError;
             }
         }
     }

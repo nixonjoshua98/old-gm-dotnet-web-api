@@ -1,12 +1,12 @@
-﻿using GMServer.Context;
-using GMServer.Exceptions;
+﻿using GMServer.Common.Encryption;
+using GMServer.Common.Types;
 using GMServer.Extensions;
 using GMServer.MediatR;
 using GMServer.Models.RequestModels;
+using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using GMServer.Encryption;
 using Serilog;
 using System;
 using System.Threading.Tasks;
@@ -32,22 +32,22 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new PrestigeRequest
+                var resp = await _mediator.Send(new PrestigeRequest(User.UserID(), body.LocalState));
+
+                var userData = await _mediator.Send(new GetUserDataRequest { UserID = User.UserID(), DailyRefresh = context.DailyRefresh });
+                var dataFiles = await _mediator.Send(new GetDataFilesCommand());
+
+                return Ok(new
                 {
-                    UserID = User.UserID(), 
-                    LocalState = body.LocalState
+                    userData,
+                    dataFiles
                 });
-
-                resp.UserData = await _mediator.Send(new GetUserDataRequest { UserID = User.UserID(), DailyRefresh = context.DailyRefresh });
-                resp.DataFiles = await _mediator.Send(new GetDataFileRequest());
-
-                return this.ResponseOrError(resp);
             }
 
             catch (Exception ex)
             {
                 Log.Error(ex, "Prestige");
-                return new InternalServerError("Failed to prestige");
+                return ServerError.InternalServerError;
             }
         }
     }

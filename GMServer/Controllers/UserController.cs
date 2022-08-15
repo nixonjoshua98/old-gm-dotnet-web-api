@@ -1,4 +1,4 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Common.Types;
 using GMServer.Extensions;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
@@ -34,7 +34,7 @@ namespace GMServer.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "UpdateLifetimeStats");
-                return new InternalServerError("Failed to update stats");
+                return ServerError.InternalServerError;
             }
         }
     }

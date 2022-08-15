@@ -1,63 +1,49 @@
-﻿using GMServer.Models.UserModels;
+﻿using GMServer.Common.Types;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
+using SRC.DataFiles.Cache;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GMServer.MediatR.ArmouryHandlers
 {
-    public class UpgradeArmouryItemRequest : IRequest<UpgradeArmouryItemResponse>
-    {
-        public string UserID;
-        public int ItemID;
-    }
+    public record UpgradeArmouryItemCommand(string UserID, int ItemID) : IRequest<Result<UpgradeArmouryItemResponse>>;
 
-    public class UpgradeArmouryItemResponse : AbstractResponseWithError
-    {
-        public UserArmouryItem Item;
-        public int UpgradeCost;
+    public record UpgradeArmouryItemResponse(UserArmouryItem Item, int UpgradeCost);
 
-        public UpgradeArmouryItemResponse(string message, int code) : base(message, code)
-        {
-        }
-
-        public UpgradeArmouryItemResponse(UserArmouryItem item, int upgradeCost)
-        {
-            Item = item;
-            UpgradeCost = upgradeCost;
-        }
-    }
-
-    public class UpgradeArmouryItemHandler : IRequestHandler<UpgradeArmouryItemRequest, UpgradeArmouryItemResponse>
+    public class UpgradeArmouryItemHandler : IRequestHandler<UpgradeArmouryItemCommand, Result<UpgradeArmouryItemResponse>>
     {
         private readonly ArmouryService _armory;
         private readonly CurrenciesService _currencies;
+        private readonly IDataFileCache _dataFiles;
 
-        public UpgradeArmouryItemHandler(ArmouryService armoury, CurrenciesService currencies)
+        public UpgradeArmouryItemHandler(ArmouryService armoury, CurrenciesService currencies, IDataFileCache dataFiles)
         {
             _armory = armoury;
             _currencies = currencies;
+            _dataFiles = dataFiles;
         }
 
-        public async Task<UpgradeArmouryItemResponse> Handle(UpgradeArmouryItemRequest request, CancellationToken cancellationToken)
+        public async Task<Result<UpgradeArmouryItemResponse>> Handle(UpgradeArmouryItemCommand request, CancellationToken cancellationToken)
         {
-            var datafile = _armory.GetDataFile();
+            var datafile = _dataFiles.Armoury;
 
             var userItem = await _armory.GetArmouryItemAsync(request.UserID, request.ItemID);
             var itemData = datafile.FirstOrDefault(x => x.ID == request.ItemID);
 
             if (userItem is null || itemData is null)
-                return new("Item is not valid", 400);
+                return new ServerError("Item is not valid", 400);
 
             var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
             var upgradeCost = CalculateUpgradeCost(userItem);
 
             if (upgradeCost > userCurrencies.ArmouryPoints)
-                return new("Cannot afford upgrade", 400);
+                return new ServerError("Cannot afford upgrade", 400);
 
-            await _currencies.IncrementAsync(request.UserID, new() { ArmouryPoints = -upgradeCost });
+            await _currencies.UpdateUserAsync(request.UserID, upd => upd.Inc(doc => doc.ArmouryPoints, -upgradeCost));
 
             var upgradedItem = await _armory.IncrementItemAsync(request.UserID, request.ItemID, new() { Level = 1 });
 

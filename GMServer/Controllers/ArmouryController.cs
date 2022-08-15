@@ -1,4 +1,4 @@
-﻿using GMServer.Exceptions;
+﻿using GMServer.Common.Types;
 using GMServer.Extensions;
 using GMServer.MediatR.ArmouryHandlers;
 using GMServer.Models.RequestModels;
@@ -22,24 +22,20 @@ namespace GMServer.Controllers
             _mediator = mediator;
         }
 
-        [HttpPut("Upgrade")]
         [Authorize]
+        [HttpPut("Upgrade")]
         public async Task<IActionResult> UpgradeItem(UpgradeArmouryItemBody body)
         {
             try
             {
-                var resp = await _mediator.Send(new UpgradeArmouryItemRequest()
-                {
-                    UserID = User.UserID(),
-                    ItemID = body.ItemID
-                });
+                var resp = await _mediator.Send(new UpgradeArmouryItemCommand(UserID: User.UserID(), ItemID: body.ItemID));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "UpgradeArmouryItem");
-                return new InternalServerError("Failed to upgrade item");
+                return ServerError.InternalServerError;
             }
         }
     }

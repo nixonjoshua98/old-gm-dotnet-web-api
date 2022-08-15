@@ -1,8 +1,6 @@
-﻿using GMServer.Exceptions;
-using GMServer.MediatR;
+﻿using GMServer.MediatR;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace GMServer.Controllers
@@ -21,16 +19,9 @@ namespace GMServer.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var datafile = await _mediator.Send(new GetDataFileRequest());
+            var datafile = await _mediator.Send(new GetDataFilesCommand());
 
-                return Ok(datafile);
-            }
-            catch (Exception ex)
-            {
-                return new InternalServerError(ex.Message);
-            }
+            return Ok(datafile);
         }
     }
 }

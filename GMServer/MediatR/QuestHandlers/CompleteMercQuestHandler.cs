@@ -1,9 +1,11 @@
-﻿using GMServer.Common;
+﻿using GMServer.Caching.DataFiles.Models;
+using GMServer.Common;
+using GMServer.Common.Types;
 using GMServer.Models;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
+using SRC.DataFiles.Cache;
 using System;
 using System.Linq;
 using System.Threading;
@@ -11,44 +13,41 @@ using System.Threading.Tasks;
 
 namespace GMServer.MediatR.QuestHandlers
 {
-    public class CompleteMercQuestRequest : IRequest<CompleteMercQuestResponse>
-    {
-        public string UserID;
-        public int QuestID;
-        public LocalGameState GameState;
-    }
+    public record CompleteMercQuestRequest(string UserID, int QuestID, LocalGameState GameState) : IRequest<Result<CompleteMercQuestResponse>>;
 
-    public class CompleteMercQuestResponse : AbstractResponseWithError
-    {
-        public int UnlockedMerc;
+    public record CompleteMercQuestResponse(int UnlockedMerc);
 
-        public CompleteMercQuestResponse(int merc)
-        {
-            UnlockedMerc = merc;
-        }
-
-        public CompleteMercQuestResponse(string message, int code) : base(message, code)
-        {
-        }
-    }
-
-    public class CompleteMercQuestHandler : IRequestHandler<CompleteMercQuestRequest, CompleteMercQuestResponse>
+    public class CompleteMercQuestHandler : IRequestHandler<CompleteMercQuestRequest, Result<CompleteMercQuestResponse>>
     {
         private readonly QuestsService _quests;
         private readonly MercsService _mercs;
+        private readonly IDataFileCache _dataFiles;
 
-        public CompleteMercQuestHandler(MercsService mercs, QuestsService quests)
+        public CompleteMercQuestHandler(MercsService mercs, QuestsService quests, IDataFileCache dataFiles)
         {
             _quests = quests;
             _mercs = mercs;
+            _dataFiles = dataFiles;
         }
 
-        public async Task<CompleteMercQuestResponse> Handle(CompleteMercQuestRequest request, CancellationToken cancellationToken)
+        public async Task<Result<CompleteMercQuestResponse>> Handle(CompleteMercQuestRequest request, CancellationToken cancellationToken)
         {
-            return await HandleRequest(request);
+            var datafile = _dataFiles.Quests;
+            var quest = datafile.MercQuests.First(x => x.ID == request.QuestID);
+
+            (var userQuest, var userMerc) = await LoadUserDataFromMongo(request.UserID, quest);
+
+            if (ValidateRequest(request, userQuest, userMerc, quest, out var error))
+                return error;
+
+            /* Update Database */
+            await _quests.InsertQuestProgress(new UserMercQuest(request.UserID, request.QuestID) { CompletedTime = DateTime.UtcNow });
+            await _mercs.InsertMercAsync(new UserMerc(request.UserID, quest.RewardMercID) { UnlockTime = DateTime.UtcNow });
+
+            return new CompleteMercQuestResponse(quest.RewardMercID);
         }
 
-        async Task<(UserMercQuest, UserMerc)> LoadUserDataFromMongo(string userId, MercQuest quest)
+        private async Task<(UserMercQuest, UserMerc)> LoadUserDataFromMongo(string userId, MercQuest quest)
         {
             var questProgressTask = _quests.GetMercQuestProgressAsync(userId, quest.ID);
             var userMercTask = _mercs.GetMerc(userId, quest.RewardMercID);
@@ -58,30 +57,25 @@ namespace GMServer.MediatR.QuestHandlers
             return (questProgressTask.Result, userMercTask.Result);
         }
 
-        public async Task<CompleteMercQuestResponse> HandleRequest(CompleteMercQuestRequest request)
+        bool ValidateRequest(CompleteMercQuestRequest request, UserMercQuest questProgress, UserMerc userMerc, MercQuest questData, out ServerError error)
         {
-            var datafile = _quests.GetDataFile();
-            var quest    = datafile.MercQuests.First(x => x.ID == request.QuestID);
+            error = default;
+            if (questData is null)
+                error = new("Quest not found", 400);
 
-            (var userQuest, var userMerc) = await LoadUserDataFromMongo(request.UserID, quest);
-
-            if (userQuest is not null)
-                return new("Quest already completed", 400);
+            if (questProgress is not null)
+                error = new("Quest already completed", 400);
 
             else if (userMerc is not null)
-                return new("Merc reward already unlocked", 400);
+                error = new("Merc reward already unlocked", 400);
 
-            else if (!IsQuestComplete(quest, request.GameState))
-                return new("Quest requirement not met", 400);
+            else if (!IsQuestComplete(questData, request.GameState))
+                error = new("Quest requirement not met", 400);
 
-            /* Update Database */
-            await _quests.InsertQuestProgress(new UserMercQuest(request.UserID, request.QuestID) { CompletedTime = DateTime.UtcNow });
-            await _mercs.InsertMercAsync(new UserMerc(request.UserID, quest.RewardMercID) { UnlockTime = DateTime.UtcNow});
-
-            return new CompleteMercQuestResponse(quest.RewardMercID);
+            return error == default;
         }
 
-        bool IsQuestComplete(MercQuest quest, LocalGameState localState)
+        private bool IsQuestComplete(MercQuest quest, LocalGameState localState)
         {
             return quest.ActionType switch
             {

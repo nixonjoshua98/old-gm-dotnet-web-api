@@ -1,10 +1,11 @@
-﻿using GMServer.Common;
+﻿using GMServer.Caching.DataFiles.Models;
+using GMServer.Common;
 using GMServer.Context;
 using GMServer.LootTable;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
+using SRC.DataFiles.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,12 +32,13 @@ namespace GMServer.MediatR.BountyShopHandler
         private readonly IBountiesService _bounties;
         private readonly BountyShopService _bountyshop;
         private readonly ArmouryService _armoury;
-
-        public GetUserBountyShopHandler(BountyShopService bountyshop, ArmouryService armoury, IBountiesService bounties)
+        private readonly IDataFileCache _dataFiles;
+        public GetUserBountyShopHandler(BountyShopService bountyshop, ArmouryService armoury, IBountiesService bounties, IDataFileCache dataFiles)
         {
             _bounties = bounties;
             _armoury = armoury;
             _bountyshop = bountyshop;
+            _dataFiles = dataFiles;
         }
 
         public async Task<GetUserBountyShopResponse> Handle(GetUserBountyShopRequest request, CancellationToken cancellationToken)
@@ -94,14 +96,14 @@ namespace GMServer.MediatR.BountyShopHandler
 
         private async Task<BountyShopConfig> GetShopTableConfig(string userId, UserBountyShopState state)
         {
-            var shopDataFile = _bountyshop.GetDataFile();
+            var shopDataFile = _dataFiles.BountyShop;
 
             if (state is not null)
             {
                 return shopDataFile.GetLevelConfig(state.Level);
             }
 
-            var bountyDataFile = _bounties.GetDataFile();
+            var bountyDataFile = _dataFiles.Bounties;
 
             var userBounties = await _bounties.GetUserBountiesAsync(userId);
 
@@ -177,7 +179,7 @@ namespace GMServer.MediatR.BountyShopHandler
 
         private RDSTable CreateArmouryItemsLootTable(BountyShopConfig config)
         {
-            List<ArmouryItem> armouryItems = _armoury.GetDataFile();
+            List<ArmouryItem> armouryItems = _dataFiles.Armoury;
 
             // Create the root table for all armoury items
             RDSTable table = new()

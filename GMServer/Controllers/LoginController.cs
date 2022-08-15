@@ -1,8 +1,7 @@
-﻿using GMServer.Context;
-using GMServer.Exceptions;
-using GMServer.Extensions;
+﻿using GMServer.Common.Types;
 using GMServer.MediatR;
 using GMServer.MediatR.Login;
+using GMServer.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
@@ -30,23 +29,25 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new DeviceLoginRequest 
-                {
-                    DeviceID = deviceId
-                });
+                var resp = await _mediator.Send(new DeviceLoginCommand(DeviceID: deviceId));
 
-                resp.UserData = await _mediator.Send(new GetUserDataRequest
+                var userData = await _mediator.Send(new GetUserDataRequest
                 {
                     UserID = resp.UserID,
                     DailyRefresh = _context.DailyRefresh
                 });
 
-                return this.ResponseOrError(resp);
+                return Ok(new
+                {
+                    resp.UserID,
+                    resp.Token,
+                    userData
+                });
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "DeviceLogin");
-                return new InternalServerError("Device login failed");
+                return ServerError.InternalServerError;
             }
         }
     }

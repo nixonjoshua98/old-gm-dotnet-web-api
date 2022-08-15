@@ -1,14 +1,14 @@
-﻿using GMServer.Context;
-using GMServer.Exceptions;
+﻿using GMServer.Common.Encryption;
+using GMServer.Common.Types;
 using GMServer.Extensions;
 using GMServer.MediatR.QuestHandlers;
 using GMServer.Models.RequestModels;
 using GMServer.Services;
 using MediatR;
-using GMServer.Encryption;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SRC.DataFiles.Cache;
 using System;
 using System.Threading.Tasks;
 
@@ -20,11 +20,13 @@ namespace GMServer.Controllers
     {
         private readonly IMediator _mediator;
         private readonly QuestsService _quests;
+        private readonly IDataFileCache _dataFiles;
 
-        public QuestsController(IMediator mediator, QuestsService quests)
+        public QuestsController(IMediator mediator, QuestsService quests, IDataFileCache dataFiles)
         {
             _mediator = mediator;
             _quests = quests;
+            _dataFiles = dataFiles;
         }
 
         [HttpGet]
@@ -38,7 +40,7 @@ namespace GMServer.Controllers
                     DateTime = DateTime.UtcNow,
                     CompletedDailyQuests = await _quests.GetCompletedDailyQuestsAsync(User.UserID(), context.DailyRefresh),
                     CompletedMercQuests = await _quests.GetCompletedMercQuestsAsync(User.UserID()),
-                    Quests = _quests.GetDataFile()
+                    Quests = _dataFiles.Quests
                 };
 
                 return Ok(resp);
@@ -46,7 +48,7 @@ namespace GMServer.Controllers
             catch (Exception ex)
             {
                 Log.Error(ex, "GetQuests");
-                return new InternalServerError("Failed to get quests");
+                return ServerError.InternalServerError;
             }
         }
 
@@ -57,19 +59,16 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new CompleteMercQuestRequest
-                {
-                    UserID = User.UserID(),
-                    QuestID = body.QuestID,
-                    GameState = body.GameState
-                });
+                var resp = await _mediator.Send(new CompleteMercQuestRequest(UserID: User.UserID(),
+                                                                             QuestID: body.QuestID,
+                                                                             GameState: body.GameState));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "CompleteMercQuest");
-                return new InternalServerError("Failed to complete quest");
+                return ServerError.InternalServerError;
             }
         }
 
@@ -79,20 +78,17 @@ namespace GMServer.Controllers
         {
             try
             {
-                var resp = await _mediator.Send(new CompleteDailyQuestRequest()
-                {
-                    UserID = User.UserID(),
-                    QuestID = body.QuestID,
-                    LocalDailyStats = body.LocalDailyStats,
-                    DailyRefresh = context.DailyRefresh
-                });
+                var resp = await _mediator.Send(new CompleteDailyQuestCommand(UserID: User.UserID(),
+                                                                              QuestID: body.QuestID,
+                                                                              LocalDailyStats: body.LocalDailyStats,
+                                                                              DailyRefresh: context.DailyRefresh));
 
-                return this.ResponseOrError(resp);
+                return resp.ToResponse();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "CompleteDailyQuest");
-                return new InternalServerError("Failed to complete quest");
+                return ServerError.InternalServerError;
             }
         }
     }

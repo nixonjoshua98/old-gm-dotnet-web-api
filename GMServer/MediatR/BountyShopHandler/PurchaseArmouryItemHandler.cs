@@ -1,5 +1,6 @@
-﻿using GMServer.Context;
-using GMServer.Models.UserModels;
+﻿using GMServer.Common.Types;
+using GMServer.Context;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
 using System;
@@ -10,29 +11,18 @@ using System.Threading.Tasks;
 
 namespace GMServer.MediatR.BountyShopHandler
 {
-    public class PurchaseArmouryItemRequest : IRequest<PurchaseArmouryItemResponse>
-    {
-        public string UserID;
-        public string ShopItemID;
-        public List<UserBSArmouryItem> ShopArmouryItems;
-        public CurrentServerRefresh<IDailyRefresh> DailyRefresh;
-    }
+    public record PurchaseArmouryItemCommand(string UserID,
+                                             string ShopItemID,
+                                             List<UserBSArmouryItem> ShopArmouryItems,
+                                             CurrentServerRefresh<IDailyRefresh> DailyRefresh) : IRequest<Result<PurchaseArmouryItemResponse>>;
 
-    public class PurchaseArmouryItemResponse : AbstractResponseWithError
-    {
-        public UserCurrencies Currencies;
-        public UserArmouryItem ArmouryItem;
+    public record PurchaseArmouryItemResponse(UserArmouryItem ArmouryItem, UserCurrencies Currencies);
 
-        public PurchaseArmouryItemResponse() {}
-        public PurchaseArmouryItemResponse(string message, int code) : base(message, code) { }
-        public static PurchaseArmouryItemResponse AsError(string m, int code) => new(m, code);
-    }
-
-    public class PurchaseArmouryItemHandler : IRequestHandler<PurchaseArmouryItemRequest, PurchaseArmouryItemResponse>
+    public class PurchaseArmouryItemHandler : IRequestHandler<PurchaseArmouryItemCommand, Result<PurchaseArmouryItemResponse>>
     {
-        private BountyShopService _bountyshop;
-        private CurrenciesService _currencies;
-        private ArmouryService _armoury;
+        private readonly BountyShopService _bountyshop;
+        private readonly CurrenciesService _currencies;
+        private readonly ArmouryService _armoury;
 
         public PurchaseArmouryItemHandler(BountyShopService bountyshop, CurrenciesService currencies, ArmouryService armoury)
         {
@@ -41,40 +31,41 @@ namespace GMServer.MediatR.BountyShopHandler
             _bountyshop = bountyshop;
         }
 
-        public async Task<PurchaseArmouryItemResponse> Handle(PurchaseArmouryItemRequest request, CancellationToken cancellationToken)
+        private bool ValidateRequest(UserBSArmouryItem shopItem, BountyShopPurchase shopPurchase, UserCurrencies currencies, out ServerError error)
         {
-            var shopItem = request.ShopArmouryItems.First(x => x.ID == request.ShopItemID);
+            error = default;
 
-            var purchasedItem = await _bountyshop.GetPurchasedItemAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
+            // Item has already been purchased
+            if (shopPurchase is not null)
+                error = new("Item already purchased", 400);
 
-            if (purchasedItem is not null) // Item has already been purchased
-                return PurchaseArmouryItemResponse.AsError("Item already purchased", 400);
+            // User cannot afford the purchase
+            else if (shopItem.PurchaseCost > currencies.BountyPoints)
+                error = new("Cannot afford purchase", 400);
 
-            var userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
+            return error == default;
+        }
 
-            if (shopItem.PurchaseCost > userCurrencies.BountyPoints)
-                return new("Cannot afford purchase", 400);
+        public async Task<Result<PurchaseArmouryItemResponse>> Handle(PurchaseArmouryItemCommand request, CancellationToken cancellationToken)
+        {
+            UserBSArmouryItem shopItem = request.ShopArmouryItems.First(x => x.ID == request.ShopItemID);
+
+            BountyShopPurchase? purchasedItem = await _bountyshop.GetPurchasedItemAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
+            UserCurrencies userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
+
+            if (!ValidateRequest(shopItem, purchasedItem, userCurrencies, out var error))
+                return error;
 
             userCurrencies = await _currencies.IncrementAsync(request.UserID, new() { BountyPoints = -shopItem.PurchaseCost });
 
-            await InsertShopPurchase(request.UserID, request.ShopItemID);
+            await _bountyshop.InsertShopPurchaseAsync(new(request.UserID, request.ShopItemID, DateTime.UtcNow));
 
             var armouryItem = await InsertArmouryItemAsync(request, shopItem);
 
-            return new PurchaseArmouryItemResponse { ArmouryItem = armouryItem, Currencies = userCurrencies };
+            return new PurchaseArmouryItemResponse(armouryItem, userCurrencies);
         }
 
-        async Task InsertShopPurchase(string userId, string itemId)
-        {
-            await _bountyshop.InsertShopPurchaseAsync(new()
-            {
-                UserID = userId,
-                ItemID = itemId,
-                PurchaseTime = DateTime.UtcNow
-            });
-        }
-
-        private async Task<UserArmouryItem> InsertArmouryItemAsync(PurchaseArmouryItemRequest request, UserBSArmouryItem item)
+        private async Task<UserArmouryItem> InsertArmouryItemAsync(PurchaseArmouryItemCommand request, UserBSArmouryItem item)
         {
             UserArmouryItem armouryItem = await _armoury.GetArmouryItemAsync(request.UserID, item.ItemID);
 

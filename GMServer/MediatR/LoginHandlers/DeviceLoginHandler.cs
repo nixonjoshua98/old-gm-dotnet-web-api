@@ -1,4 +1,5 @@
-﻿using GMServer.Models;
+﻿using GMServer.Authentication;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
 using System.Threading;
@@ -6,35 +7,20 @@ using System.Threading.Tasks;
 
 namespace GMServer.MediatR.Login
 {
-    public class DeviceLoginRequest : IRequest<DeviceLoginResponse>
-    {
-        public string DeviceID;
-    }
+    public record DeviceLoginCommand(string DeviceID) : IRequest<DeviceLoginResponse>;
 
-    public class DeviceLoginResponse : AbstractLoginResponse
-    {
-        public string UserID;
-        public string Token;
+    public record DeviceLoginResponse(string UserID, string Token);
 
-        public DeviceLoginResponse(string userID, string token)
-        {
-            UserID = userID;
-            Token = token;
-        }
-    }
-
-    public class DeviceLoginHandler : IRequestHandler<DeviceLoginRequest, DeviceLoginResponse>
+    public class DeviceLoginHandler : IRequestHandler<DeviceLoginCommand, DeviceLoginResponse>
     {
-        private readonly AuthenticationService _auth;
         private readonly IUserService _users;
 
-        public DeviceLoginHandler(AuthenticationService auth, IUserService users)
+        public DeviceLoginHandler(IUserService users)
         {
-            _auth = auth;
             _users = users;
         }
 
-        public async Task<DeviceLoginResponse> Handle(DeviceLoginRequest request, CancellationToken cancellationToken)
+        public async Task<DeviceLoginResponse> Handle(DeviceLoginCommand request, CancellationToken cancellationToken)
         {
             User user = await _users.GetUserByDeviceAsync(request.DeviceID);
 
@@ -45,7 +31,7 @@ namespace GMServer.MediatR.Login
                 await _users.InsertUserAsync(user);
             }
 
-            string newAccessToken = _auth.GenerateAccessToken();
+            string newAccessToken = AuthUtility.GenerateAccessToken();
 
             await _users.UpdateAccessTokenAsync(user, newAccessToken);
 

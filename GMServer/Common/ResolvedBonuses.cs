@@ -1,25 +1,18 @@
-﻿using GMServer.Common;
+﻿using GMServer.Caching.DataFiles.Models;
+using GMServer.Common;
 using GMServer.Common.Classes;
 using GMServer.Extensions;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.RequestModels;
-using GMServer.Models.UserModels;
-using GMServer.Services;
-using MediatR;
+using GMServer.Mongo.Models;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace GMServer
 {
     public class ResolvedBonuses
     {
-        List<BonusTypeValuePair> ArtefactBonuses;
-
-        Dictionary<BonusType, double> Bonuses;
+        private List<BonusTypeValuePair> ArtefactBonuses;
+        private Dictionary<BonusType, double> Bonuses;
 
         /// <summary>
         /// Preferred creation method
@@ -60,19 +53,19 @@ namespace GMServer
             return GameFormulas.PrestigePointsBase(stage) * Get(BonusType.MULTIPLY_PRESTIGE_BONUS);
         }
 
-        void Add(List<UserArtefact> artefacts, List<Artefact> datafile)
+        private void Add(List<UserArtefact> artefacts, List<Artefact> datafile)
         {
             ArtefactBonuses = CreateArtefactBonusList(artefacts, datafile);
         }
 
-        void Calculate()
+        private void Calculate()
         {
             Bonuses = GameFormulas.CreateResolvedBonusDictionary(
                 ArtefactBonuses
                 );
         }
 
-        static List<BonusTypeValuePair> CreateArtefactBonusList(List<UserArtefact> userArtefacts, List<Artefact> artefacts)
+        private static List<BonusTypeValuePair> CreateArtefactBonusList(List<UserArtefact> userArtefacts, List<Artefact> artefacts)
         {
             List<BonusTypeValuePair> ls = new();
 

@@ -1,6 +1,6 @@
 ﻿namespace GMServer.Authentication
 {
-    public static class ClaimNames
+    public static class ClaimTypes
     {
         public const string UserID = "USER-ID";
     }

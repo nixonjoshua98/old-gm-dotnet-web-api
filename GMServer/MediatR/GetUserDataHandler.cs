@@ -1,7 +1,8 @@
 ﻿using GMServer.Context;
-using GMServer.Models.UserModels;
+using GMServer.Mongo.Models;
 using GMServer.Services;
 using MediatR;
+using SRC.DataFiles.Cache;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -35,6 +36,7 @@ namespace GMServer.MediatR
         private readonly MercsService _mercs;
         private readonly AccountStatsService _stats;
         private readonly IBountiesService _bounties;
+        private readonly IDataFileCache _dataFiles;
 
         public GetUserDataHandler(
             ArtefactsService artefacts,
@@ -43,7 +45,8 @@ namespace GMServer.MediatR
             MercsService mercs,
             IBountiesService bounties,
             QuestsService quests,
-            AccountStatsService stats)
+            AccountStatsService stats,
+            IDataFileCache dataFiles)
         {
             _artefacts = artefacts;
             _armoury = armoury;
@@ -52,6 +55,7 @@ namespace GMServer.MediatR
             _mercs = mercs;
             _stats = stats;
             _bounties = bounties;
+            _dataFiles = dataFiles;
         }
 
         public async Task<GetUserDataResponse> Handle(GetUserDataRequest request, CancellationToken cancellationToken)
@@ -68,7 +72,7 @@ namespace GMServer.MediatR
                     DateTime = DateTime.UtcNow,
                     CompletedDailyQuests = await _quests.GetCompletedDailyQuestsAsync(request.UserID, request.DailyRefresh),
                     CompletedMercQuests = await _quests.GetCompletedMercQuestsAsync(request.UserID),
-                    Quests = _quests.GetDataFile()
+                    Quests = _dataFiles.Quests
                 },
                 LifetimeStats = await _stats.GetUserLifetimeStatsAsync(request.UserID)
             };

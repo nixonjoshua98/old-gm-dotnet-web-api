@@ -1,7 +1,4 @@
-﻿using GMServer.Cache;
-using GMServer.Common;
-using GMServer.Models.DataFileModels;
-using GMServer.Models.UserModels;
+﻿using GMServer.Mongo.Models;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -10,12 +7,10 @@ namespace GMServer.Services
 {
     public class ArmouryService
     {
-        private readonly IDataFileCache _cache;
         private readonly IMongoCollection<UserArmouryItem> _armoury;
 
-        public ArmouryService(IDataFileCache cache, IMongoDatabase mongo)
+        public ArmouryService(IMongoDatabase mongo)
         {
-            _cache = cache;
             _armoury = mongo.GetCollection<UserArmouryItem>("ArmouryItems");
         }
 
@@ -37,11 +32,6 @@ namespace GMServer.Services
                 .Inc(x => x.Owned, incr.Owned);
 
             return await _armoury.FindOneAndUpdateAsync(filter, update, new() { IsUpsert = upsert, ReturnDocument = ReturnDocument.After });
-        }
-
-        public List<ArmouryItem> GetDataFile()
-        {
-            return _cache.Load<List<ArmouryItem>>(DataFiles.Armoury);
         }
     }
 }
