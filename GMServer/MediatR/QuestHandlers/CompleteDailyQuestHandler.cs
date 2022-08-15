@@ -32,7 +32,7 @@ namespace GMServer.MediatR.QuestHandlers
             _dataFiles = dataFiles;
         }
 
-        bool ValidateRequest(CompleteDailyQuestCommand request, UserDailyQuest questProgress, DailyQuest questData, out ServerError error)
+        private bool ValidateRequest(CompleteDailyQuestCommand request, UserDailyQuest questProgress, DailyQuest questData, out ServerError error)
         {
             error = default;
 
@@ -42,7 +42,7 @@ namespace GMServer.MediatR.QuestHandlers
             else if (questProgress is not null)
                 error = new("Quest already completed", 400);
 
-            else if(!IsQuestCompleted(questData, request.LocalDailyStats))
+            else if (!IsQuestCompleted(questData, request.LocalDailyStats))
                 error = new("Quest requirements not met", 400);
 
             return error == default;

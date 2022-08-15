@@ -1,5 +1,4 @@
 ﻿using GMServer.Mongo.Extensions;
-using GMServer.Mongo.Models;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;

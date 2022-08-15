@@ -57,7 +57,7 @@ namespace GMServer.MediatR.QuestHandlers
             return (questProgressTask.Result, userMercTask.Result);
         }
 
-        bool ValidateRequest(CompleteMercQuestRequest request, UserMercQuest questProgress, UserMerc userMerc, MercQuest questData, out ServerError error)
+        private bool ValidateRequest(CompleteMercQuestRequest request, UserMercQuest questProgress, UserMerc userMerc, MercQuest questData, out ServerError error)
         {
             error = default;
             if (questData is null)
