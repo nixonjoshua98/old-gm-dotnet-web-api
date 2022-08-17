@@ -5,8 +5,8 @@ namespace GMServer.Caching.DataFiles.Models
 {
     public class BountyLevel
     {
-        public int NumDefeatsRequired;
-
+        public int Level;
+        public int KillsRequired;
         public float BonusValue;
     }
 
@@ -14,7 +14,8 @@ namespace GMServer.Caching.DataFiles.Models
     {
         public int BountyID;
         public string Name;
-        public int HourlyIncome;
+        public int Tier;
+        public int PointsPerHour;
         public BonusType BonusType;
         public int UnlockStage;
         public string Description = "This enemy prefers to not share his food";

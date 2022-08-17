@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace GMServer.Mongo.Models
 {
+    [BsonIgnoreExtraElements]
     public class UserBounty
     {
         public int BountyID;
         public int Level = 1;
-        public int NumDefeats;
+        public int CurrentKillCount;
 
-        public UserBounty() { }
         public UserBounty(int id)
         {
             BountyID = id;
@@ -26,10 +26,6 @@ namespace GMServer.Mongo.Models
         public string UserID;
 
         public DateTime LastClaimTime;
-        public List<int> ActiveBounties = new();
         public List<UserBounty> UnlockedBounties = new();
-
-        public bool IsBountyActive(int id) => ActiveBounties.Any(x => x == id);
-        public bool IsBountyUnlocked(int id) => UnlockedBounties.Any(x => x.BountyID == id);
     }
 }

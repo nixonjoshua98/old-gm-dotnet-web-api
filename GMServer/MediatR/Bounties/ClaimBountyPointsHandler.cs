@@ -65,11 +65,11 @@ namespace GMServer.MediatR.BountyHandlers
 
             double total = 0;
 
-            foreach (int bountyId in bounties.ActiveBounties)
+            foreach (var userBounty in bounties.UnlockedBounties)
             {
-                Bounty bounty = datafile.Bounties.First(x => x.BountyID == bountyId);
+                Bounty bounty = datafile.Bounties.First(x => x.BountyID == userBounty.BountyID);
 
-                total += hoursSinceClaim * bounty.HourlyIncome;
+                total += hoursSinceClaim * bounty.PointsPerHour;
             }
 
             return (long)Math.Floor(total);

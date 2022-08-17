@@ -2,206 +2,158 @@
   "MaxUnclaimedHours": 8,
   "Bounties": [
     {
-      "BountyId": 0,
+      "BountyID": 0,
       "Name": "Little Jimmy",
       "Description": "The law of the jungle suggests the little guy is the weakest.",
-      "HourlyIncome": 100,
+      "PointsPerHour": 100,
       "UnlockStage": 1,
+      "Tier": 20,
       "BonusType": 800,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 3,
+          "Level": 2,
+          "KillsRequired": 3,
           "BonusValue": 2
         },
         {
-          "NumDefeatsRequired": 5,
+          "Level": 3,
+          "KillsRequired": 5,
           "BonusValue": 2.5
         },
         {
-          "NumDefeatsRequired": 10,
+          "Level": 4,
+          "KillsRequired": 10,
           "BonusValue": 3
         },
         {
-          "NumDefeatsRequired": 25,
+          "Level": 5,
+          "KillsRequired": 25,
           "BonusValue": 5
+        },
+        {
+          "Level": 6,
+          "KillsRequired": 25,
+          "BonusValue": 6
         }
       ]
     },
     {
-      "BountyId": 1,
+      "BountyID": 1,
       "Name": "Bounty One",
-      "HourlyIncome": 115,
+      "PointsPerHour": 115,
+      "Tier": 0,
       "UnlockStage": 2,
       "BonusType": 600,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 1.5
-        },
-        {
-          "NumDefeatsRequired": 3,
-          "BonusValue": 2
-        },
-        {
-          "NumDefeatsRequired": 5,
-          "BonusValue": 2.5
-        },
-        {
-          "NumDefeatsRequired": 10,
-          "BonusValue": 3
-        },
-        {
-          "NumDefeatsRequired": 25,
-          "BonusValue": 5
         }
       ]
     },
     {
-      "BountyId": 2,
+      "BountyID": 2,
       "Name": "Bounty Two",
-      "HourlyIncome": 125,
+      "PointsPerHour": 125,
       "UnlockStage": 3,
+      "Tier": 0,
       "BonusType": 601,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 1.5
-        },
-        {
-          "NumDefeatsRequired": 3,
-          "BonusValue": 2
-        },
-        {
-          "NumDefeatsRequired": 5,
-          "BonusValue": 2.5
-        },
-        {
-          "NumDefeatsRequired": 10,
-          "BonusValue": 3
-        },
-        {
-          "NumDefeatsRequired": 25,
-          "BonusValue": 5
         }
       ]
     },
     {
-      "BountyId": 3,
+      "BountyID": 3,
       "Name": "Bounty Three",
-      "HourlyIncome": 135,
+      "PointsPerHour": 135,
+      "Tier": 10,
       "UnlockStage": 4,
       "BonusType": 300,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 0.005
         },
         {
-          "NumDefeatsRequired": 3,
+          "Level": 2,
+          "KillsRequired": 3,
           "BonusValue": 0.0075
         },
         {
-          "NumDefeatsRequired": 15,
+          "Level": 3,
+          "KillsRequired": 15,
           "BonusValue": 0.01
         },
         {
-          "NumDefeatsRequired": 25,
+          "Level": 4,
+          "KillsRequired": 25,
           "BonusValue": 0.015
         },
         {
-          "NumDefeatsRequired": 40,
+          "Level": 5,
+          "KillsRequired": 40,
           "BonusValue": 0.02
         }
       ]
     },
     {
-      "BountyId": 4,
+      "BountyID": 4,
       "Name": "Bounty Four",
-      "HourlyIncome": 150,
+      "PointsPerHour": 150,
+      "Tier": 30,
       "UnlockStage": 5,
       "BonusType": 600,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 1.5
         },
         {
-          "NumDefeatsRequired": 3,
+          "Level": 2,
+          "KillsRequired": 3,
           "BonusValue": 2
-        },
-        {
-          "NumDefeatsRequired": 5,
-          "BonusValue": 2.5
-        },
-        {
-          "NumDefeatsRequired": 10,
-          "BonusValue": 3
-        },
-        {
-          "NumDefeatsRequired": 25,
-          "BonusValue": 5
         }
       ]
     },
     {
-      "BountyId": 5,
+      "BountyID": 5,
       "Name": "Bounty Five",
-      "HourlyIncome": 160,
+      "Tier": 20,
+      "PointsPerHour": 160,
       "UnlockStage": 6,
       "BonusType": 600,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 1.5
-        },
-        {
-          "NumDefeatsRequired": 3,
-          "BonusValue": 2
-        },
-        {
-          "NumDefeatsRequired": 5,
-          "BonusValue": 2.5
-        },
-        {
-          "NumDefeatsRequired": 10,
-          "BonusValue": 3
-        },
-        {
-          "NumDefeatsRequired": 25,
-          "BonusValue": 5
         }
       ]
     },
     {
-      "BountyId": 6,
+      "BountyID": 6,
       "Name": "Bounty Six",
-      "HourlyIncome": 175,
+      "Tier": 10,
+      "PointsPerHour": 175,
       "UnlockStage": 7,
       "BonusType": 600,
       "Levels": [
         {
-          "NumDefeatsRequired": 0,
+          "Level": 1,
+          "KillsRequired": 0,
           "BonusValue": 1.5
-        },
-        {
-          "NumDefeatsRequired": 3,
-          "BonusValue": 2
-        },
-        {
-          "NumDefeatsRequired": 5,
-          "BonusValue": 2.5
-        },
-        {
-          "NumDefeatsRequired": 10,
-          "BonusValue": 3
-        },
-        {
-          "NumDefeatsRequired": 25,
-          "BonusValue": 5
         }
       ]
     }

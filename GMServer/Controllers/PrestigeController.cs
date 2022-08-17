@@ -26,7 +26,6 @@ namespace GMServer.Controllers
 
         [HttpPut]
         [Authorize]
-        [EncryptedRequestBody]
         [EncryptedResponseBody]
         public async Task<IActionResult> Prestige(PrestigeBody body, [FromServices] RequestContext context)
         {

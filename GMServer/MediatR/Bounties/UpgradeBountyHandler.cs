@@ -33,7 +33,7 @@ namespace GMServer.MediatR.BountyHandlers
             Bounty bounty = datafile.Bounties.FirstOrDefault(x => x.BountyID == request.BountyID);
 
             // Perform some request validation
-            if (ValidateRequest(userBounty, bounty, out var error))
+            if (!ValidateRequest(userBounty, bounty, out var error))
                 return error;
 
             await _bounties.IncrementBountyLevelAsync(request.UserID, request.BountyID, 1);
@@ -58,9 +58,9 @@ namespace GMServer.MediatR.BountyHandlers
 
         private bool CanLevelUp(UserBounty userBounty, Bounty bounty)
         {
-            var highestLevel = bounty.Levels.LastOrDefault(x => userBounty.NumDefeats >= x.NumDefeatsRequired);
+            var highestLevel = bounty.Levels.LastOrDefault(x => userBounty.CurrentKillCount >= x.KillsRequired);
 
-            return highestLevel is null ? false : (bounty.Levels.IndexOf(highestLevel) + 1) > userBounty.Level;
+            return highestLevel is not null && highestLevel.Level > userBounty.Level;
         }
     }
 }

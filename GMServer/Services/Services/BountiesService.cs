@@ -10,13 +10,11 @@ namespace GMServer.Services
 {
     public interface IBountiesService
     {
-        Task AddActiveBountyAsync(string userId, int bountyId);
         Task<UserBounties> GetUserBountiesAsync(string userId);
         Task<UserBounty> GetUserBountyAsync(string userId, int bountyId);
         Task IncrementBountyDefeatsAsync(string userId, List<int> bountyIds);
         Task IncrementBountyLevelAsync(string userId, int bountyId, int levels);
         Task InsertBountiesAsync(string userId, List<UserBounty> bounties);
-        Task RemoveActiveBountyAsync(string userId, int bountyId);
         Task UpdateUserAsync(string userId, Func<UpdateDefinitionBuilder<UserBounties>, UpdateDefinition<UserBounties>> update);
     }
 
@@ -34,22 +32,12 @@ namespace GMServer.Services
             var requests = bountyIds.Select(bountyId =>
             {
                 var filter = _bounties.BountyFilter(userId, bountyId);
-                var update = _bounties.Update.Inc(x => x.UnlockedBounties[-1].NumDefeats, 1);
+                var update = _bounties.Update.Inc(x => x.UnlockedBounties[-1].CurrentKillCount, 1);
 
                 return new UpdateOneModel<UserBounties>(filter, update);
             }).ToList();
 
             await _bounties.BulkWriteAsync(requests);
-        }
-
-        public async Task RemoveActiveBountyAsync(string userId, int bountyId)
-        {
-            await _bounties.UpdateOneAsync(x => x.UserID == userId, upd => upd.Pull(x => x.ActiveBounties, bountyId));
-        }
-
-        public async Task AddActiveBountyAsync(string userId, int bountyId)
-        {
-            await _bounties.UpdateOneAsync(x => x.UserID == userId, upd => upd.AddToSet(x => x.ActiveBounties, bountyId));
         }
 
         public async Task IncrementBountyLevelAsync(string userId, int bountyId, int levels)

@@ -108,7 +108,7 @@ namespace GMServer.MediatR.BountyShopHandler
             var userBounties = await _bounties.GetUserBountiesAsync(userId);
 
             // Calculate the total maximum hourly income
-            long hourlyIncome = bountyDataFile.Bounties.Where(bounty => userBounties.UnlockedBounties.Where(x => x.BountyID == bounty.BountyID).Count() >= 1).Sum(x => x.HourlyIncome);
+            long hourlyIncome = bountyDataFile.Bounties.Where(bounty => userBounties.UnlockedBounties.Where(x => x.BountyID == bounty.BountyID).Count() >= 1).Sum(x => x.PointsPerHour);
 
             return shopDataFile.GetConfig(hourlyIncome);
         }
