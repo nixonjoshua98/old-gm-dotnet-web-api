@@ -1,10 +1,10 @@
-﻿using GMServer.Common.Exceptions;
-using GMServer.Models.Settings;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using SRC.Common.Exceptions;
+using SRC.Models.Settings;
 using System.Threading.Tasks;
 
-namespace GMServer.Authentication
+namespace SRC.Authentication
 {
     public class JWTBearerOptionsPostConfigureOptions : IPostConfigureOptions<JwtBearerOptions>
     {

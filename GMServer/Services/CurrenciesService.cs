@@ -1,10 +1,10 @@
-﻿using GMServer.Mongo.Models;
-using GMServer.Mongo.Repositories;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Mongo.Models;
+using SRC.Mongo.Repositories;
 using System;
 using System.Threading.Tasks;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public class CurrenciesService
     {
@@ -36,6 +36,11 @@ namespace GMServer.Services
         public async Task UpdateUserAsync(string userId, Func<UpdateDefinitionBuilder<UserCurrencies>, UpdateDefinition<UserCurrencies>> update)
         {
             await _currencies.UpdateOneAsync(doc => doc.UserID == userId, update, upsert: true);
+        }
+
+        public async Task<UserCurrencies> UpdateUserAsync(IClientSessionHandle session, string userId, Func<UpdateDefinitionBuilder<UserCurrencies>, UpdateDefinition<UserCurrencies>> update)
+        {
+            return await _currencies.FindOneAndUpdateAsync(session, doc => doc.UserID == userId, update(_currencies.Update), upsert: true);
         }
     }
 }

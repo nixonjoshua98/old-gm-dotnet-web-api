@@ -1,9 +1,9 @@
-﻿using GMServer.MediatR;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SRC.MediatR;
 using System.Threading.Tasks;
 
-namespace GMServer.Controllers
+namespace SRC.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

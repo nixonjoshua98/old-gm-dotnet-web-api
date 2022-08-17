@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace GMServer.Common
+namespace SRC.Common
 {
     public static class Utility
     {

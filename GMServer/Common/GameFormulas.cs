@@ -1,10 +1,10 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common.Classes;
-using GMServer.Mongo.Models;
+﻿using SRC.Caching.DataFiles.Models;
+using SRC.Common.Classes;
+using SRC.Mongo.Models;
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.Common
+namespace SRC.Common
 {
     public static class GameFormulas
     {

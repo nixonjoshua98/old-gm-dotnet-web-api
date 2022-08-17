@@ -1,9 +1,9 @@
-﻿using GMServer.Common.Exceptions;
+﻿using SRC.Common.Exceptions;
 using System;
 using System.Linq;
 using System.Security.Claims;
 
-namespace GMServer.Extensions
+namespace SRC.Extensions
 {
     public static class ClaimsIdentityExtensions
     {

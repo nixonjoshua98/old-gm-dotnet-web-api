@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     /*
      * NB, When adding a new currency we also need to add the currency to the service for updates

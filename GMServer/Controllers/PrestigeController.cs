@@ -1,17 +1,17 @@
-﻿using GMServer.Common.Encryption;
-using GMServer.Common.Types;
-using GMServer.Extensions;
-using GMServer.MediatR;
-using GMServer.Models.RequestModels;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SRC.Common.Encryption;
+using SRC.Common.Types;
+using SRC.Extensions;
+using SRC.MediatR;
+using SRC.Models.RequestModels;
+using SRC.Services;
 using System;
 using System.Threading.Tasks;
 
-namespace GMServer.Controllers
+namespace SRC.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

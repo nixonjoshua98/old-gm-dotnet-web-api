@@ -1,9 +1,9 @@
-﻿using GMServer.Common;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using SRC.Common;
 using System;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     public abstract class AbstractUserQuest
     {

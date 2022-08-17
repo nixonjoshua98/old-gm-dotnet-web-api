@@ -1,9 +1,9 @@
-﻿using GMServer.Models.Settings;
+﻿using SRC.Models.Settings;
 using System;
 using System.IO;
 using System.Security.Cryptography;
 
-namespace GMServer.Common.Encryption
+namespace SRC.Common.Encryption
 {
     public static class AES
     {

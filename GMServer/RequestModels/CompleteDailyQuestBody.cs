@@ -1,6 +1,6 @@
-﻿using GMServer.Mongo.Models;
+﻿using SRC.Mongo.Models;
 
-namespace GMServer.Models.RequestModels
+namespace SRC.Models.RequestModels
 {
     public class CompleteDailyQuestBody
     {
@@ -11,6 +11,6 @@ namespace GMServer.Models.RequestModels
     public class CompleteMercQuestBody
     {
         public int QuestID;
-        public GMServer.Models.LocalGameState GameState;
+        public SRC.Models.LocalGameState GameState;
     }
 }

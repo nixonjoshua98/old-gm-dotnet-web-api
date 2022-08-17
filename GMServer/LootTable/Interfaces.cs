@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GMServer.LootTable
+namespace SRC.LootTable
 {
     /// <summary>
     /// This interface contains the properties an object must have to be a valid rds result object.

@@ -1,39 +1,38 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common.Types;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Caching.DataFiles.Models;
+using SRC.Common.Types;
 using SRC.DataFiles.Cache;
+using SRC.Mongo;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.BountyHandlers
+namespace SRC.MediatR.BountyHandlers
 {
     public record ClaimBountyPointRequest(string UserID) : IRequest<Result<ClaimBountyPointsResponse>>
     {
 
     }
 
-    public class ClaimBountyPointsResponse
-    {
-        public DateTime ClaimTime;
-        public long PointsClaimed;
-        public UserCurrencies Currencies;
-    }
+    public record ClaimBountyPointsResponse(long PointsClaimed,
+                                            UserCurrencies Currencies);
 
     public class ClaimBountyPointsHandler : IRequestHandler<ClaimBountyPointRequest, Result<ClaimBountyPointsResponse>>
     {
         private readonly IBountiesService _bounties;
         private readonly CurrenciesService _currencies;
         private readonly IDataFileCache _dataFiles;
+        private readonly IMongoSessionFactory _mongoSession;
 
-        public ClaimBountyPointsHandler(CurrenciesService currencies, IBountiesService bounties, IDataFileCache dataFiles)
+        public ClaimBountyPointsHandler(CurrenciesService currencies, IBountiesService bounties, IDataFileCache dataFiles, IMongoSessionFactory mongoSession)
         {
             _bounties = bounties;
             _currencies = currencies;
             _dataFiles = dataFiles;
+            _mongoSession = mongoSession;
         }
 
         public async Task<Result<ClaimBountyPointsResponse>> Handle(ClaimBountyPointRequest request, CancellationToken cancellationToken)
@@ -44,17 +43,15 @@ namespace GMServer.MediatR.BountyHandlers
 
             long points = CalculateClaimPoints(dt, userBounties);
 
-            if (points <= 0) // User cannot claim a zero balance
+            // Update the claim time and increment the points earned
+            UserCurrencies updatedCurrencies = await _mongoSession.RunInTransaction(async (session, cToken) =>
             {
-                return new ServerError("Cannot claim zero points", 400);
-            }
+                await _bounties.UpdateUserAsync(session, request.UserID, upd => upd.Set(doc => doc.LastClaimTime, dt));
 
-            // Set the claim time
-            await _bounties.UpdateUserAsync(request.UserID, upd => upd.Set(doc => doc.LastClaimTime, dt));
+                return await _currencies.UpdateUserAsync(session, request.UserID, upd => upd.Inc(doc => doc.BountyPoints, points));
+            });
 
-            UserCurrencies updatedCurrencies = await _currencies.IncrementAsync(request.UserID, new() { BountyPoints = points });
-
-            return new ClaimBountyPointsResponse() { ClaimTime = dt, PointsClaimed = points, Currencies = updatedCurrencies };
+            return new ClaimBountyPointsResponse(points, updatedCurrencies);
         }
 
         private long CalculateClaimPoints(DateTime now, UserBounties bounties)

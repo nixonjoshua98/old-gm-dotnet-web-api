@@ -1,12 +1,12 @@
-﻿using GMServer.Mongo.Models;
-using GMServer.Mongo.Repositories;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Mongo.Models;
+using SRC.Mongo.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public interface IBountiesService
     {
@@ -16,6 +16,8 @@ namespace GMServer.Services
         Task IncrementBountyLevelAsync(string userId, int bountyId, int levels);
         Task InsertBountiesAsync(string userId, List<UserBounty> bounties);
         Task UpdateUserAsync(string userId, Func<UpdateDefinitionBuilder<UserBounties>, UpdateDefinition<UserBounties>> update);
+        Task UpdateUserAsync(IClientSessionHandle session, string userId, Func<UpdateDefinitionBuilder<UserBounties>, UpdateDefinition<UserBounties>> update);
+
     }
 
     public class BountiesService : IBountiesService
@@ -86,6 +88,11 @@ namespace GMServer.Services
         public async Task UpdateUserAsync(string userId, Func<UpdateDefinitionBuilder<UserBounties>, UpdateDefinition<UserBounties>> update)
         {
             await _bounties.UpdateOneAsync(doc => doc.UserID == userId, update);
+        }
+
+        public async Task UpdateUserAsync(IClientSessionHandle session, string userId, Func<UpdateDefinitionBuilder<UserBounties>, UpdateDefinition<UserBounties>> update)
+        {
+            await _bounties.UpdateOneAsync(session, doc => doc.UserID == userId, update(_bounties.Update), upsert: false);
         }
     }
 }

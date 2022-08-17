@@ -1,15 +1,15 @@
-﻿using GMServer.Common.Types;
-using GMServer.MediatR;
-using GMServer.MediatR.Login;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SRC.Common.Types;
+using SRC.MediatR;
+using SRC.MediatR.Login;
+using SRC.Services;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
-namespace GMServer.Controllers
+namespace SRC.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

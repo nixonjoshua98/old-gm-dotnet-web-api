@@ -1,4 +1,4 @@
-﻿namespace GMServer.Models.Settings
+﻿namespace SRC.Models.Settings
 {
     public class EncryptionSettings
     {

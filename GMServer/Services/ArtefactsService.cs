@@ -1,11 +1,11 @@
-﻿using GMServer.Models.RequestModels;
-using GMServer.Mongo.Models;
-using GMServer.Mongo.Repositories;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Models.RequestModels;
+using SRC.Mongo.Models;
+using SRC.Mongo.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public class ArtefactsService
     {

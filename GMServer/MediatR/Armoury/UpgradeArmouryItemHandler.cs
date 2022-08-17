@@ -1,13 +1,13 @@
-﻿using GMServer.Common.Types;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Common.Types;
 using SRC.DataFiles.Cache;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.ArmouryHandlers
+namespace SRC.MediatR.ArmouryHandlers
 {
     public record UpgradeArmouryItemCommand(string UserID, int ItemID) : IRequest<Result<UpgradeArmouryItemResponse>>;
 

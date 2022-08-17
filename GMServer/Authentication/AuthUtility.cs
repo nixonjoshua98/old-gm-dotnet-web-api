@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace GMServer.Authentication
+namespace SRC.Authentication
 {
     public static class AuthUtility
     {

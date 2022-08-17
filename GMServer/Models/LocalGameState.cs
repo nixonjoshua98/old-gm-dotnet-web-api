@@ -1,4 +1,4 @@
-﻿namespace GMServer.Models
+﻿namespace SRC.Models
 {
     public class LocalGameState
     {

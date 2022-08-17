@@ -1,9 +1,9 @@
-﻿using GMServer.Mongo.Models;
-using GMServer.Mongo.Repositories;
+﻿using SRC.Mongo.Models;
+using SRC.Mongo.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public interface IMercsService
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GMServer.Context
+namespace SRC.Context
 {
     public class CurrentServerRefresh<T>
     {

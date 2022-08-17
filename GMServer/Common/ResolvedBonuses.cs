@@ -1,13 +1,13 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common;
-using GMServer.Common.Classes;
-using GMServer.Extensions;
-using GMServer.Mongo.Models;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Caching.DataFiles.Models;
+using SRC.Common;
+using SRC.Common.Classes;
+using SRC.Extensions;
+using SRC.Mongo.Models;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GMServer
+namespace SRC
 {
     public class ResolvedBonuses
     {

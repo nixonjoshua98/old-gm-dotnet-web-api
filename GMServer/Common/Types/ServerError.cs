@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace GMServer.Common.Types
+namespace SRC.Common.Types
 {
     public class ServerError : ObjectResult
     {

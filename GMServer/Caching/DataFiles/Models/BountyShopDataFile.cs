@@ -1,10 +1,10 @@
-﻿using GMServer.Common;
-using GMServer.LootTable;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SRC.Common;
+using SRC.LootTable;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GMServer.Caching.DataFiles.Models
+namespace SRC.Caching.DataFiles.Models
 {
     public class BountyShopDataFile
     {

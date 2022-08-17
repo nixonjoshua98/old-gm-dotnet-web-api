@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     [BsonIgnoreExtraElements]
     public class UserArtefact

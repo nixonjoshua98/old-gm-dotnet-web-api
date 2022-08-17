@@ -1,16 +1,16 @@
-﻿using GMServer.Common;
-using GMServer.Common.Types;
-using GMServer.Context;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Common;
+using SRC.Common.Types;
+using SRC.Context;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.BountyShopHandler
+namespace SRC.MediatR.BountyShopHandler
 {
     public record PurchaseCurrencyItemCommand(string UserID,
                                               string ItemID,

@@ -1,8 +1,8 @@
-﻿using GMServer.Common;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SRC.Common;
 using System.Collections.Generic;
 
-namespace GMServer.Caching.DataFiles.Models
+namespace SRC.Caching.DataFiles.Models
 {
     public abstract class AbstractQuest
     {

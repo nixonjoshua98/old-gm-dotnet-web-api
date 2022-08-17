@@ -1,14 +1,14 @@
-﻿using GMServer.Context;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Context;
 using SRC.DataFiles.Cache;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR
+namespace SRC.MediatR
 {
     public class GetUserDataRequest : IRequest<GetUserDataResponse>
     {

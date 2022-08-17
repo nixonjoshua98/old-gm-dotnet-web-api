@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     /*
      * NB, When adding a new statistic we will need to update the service update methods to include it

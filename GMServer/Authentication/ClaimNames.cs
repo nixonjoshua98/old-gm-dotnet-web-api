@@ -1,4 +1,4 @@
-﻿namespace GMServer.Authentication
+﻿namespace SRC.Authentication
 {
     public static class ClaimTypes
     {

@@ -1,17 +1,17 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Models.RequestModels;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
 using MongoDB.Driver;
+using SRC.Caching.DataFiles.Models;
 using SRC.DataFiles.Cache;
+using SRC.Models.RequestModels;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR
+namespace SRC.MediatR
 {
     public record PrestigeRequest(string UserID, LocalGameState LocalState) : IRequest<PrestigeResponse>;
 

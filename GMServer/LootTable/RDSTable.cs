@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GMServer.LootTable
+namespace SRC.LootTable
 {
     /// <summary>
     /// Holds a table of RDS objects. This class is "the randomizer" of the RDS.

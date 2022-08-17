@@ -1,8 +1,8 @@
-﻿using GMServer.Mongo.Models;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Mongo.Models;
 using System.Threading.Tasks;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public class AccountStatsService
     {

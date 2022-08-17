@@ -1,12 +1,12 @@
-﻿using GMServer.Models.Settings;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
+using SRC.Models.Settings;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace GMServer.Common.Encryption
+namespace SRC.Common.Encryption
 {
     public class EncryptedResponseBody : Attribute, IAsyncResultFilter
     {

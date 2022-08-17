@@ -1,4 +1,4 @@
-﻿namespace GMServer.LootTable
+﻿namespace SRC.LootTable
 {
     public abstract class LootItem
     {

@@ -1,14 +1,14 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common.Types;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Caching.DataFiles.Models;
+using SRC.Common.Types;
 using SRC.DataFiles.Cache;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.BountyHandlers
+namespace SRC.MediatR.BountyHandlers
 {
     public record UpgradeBountyCommand(string UserID, int BountyID) : IRequest<Result<UpgradeBountyResponse>>;
 

@@ -1,7 +1,7 @@
-﻿using GMServer.Common;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SRC.Common;
 
-namespace GMServer.Caching.DataFiles.Models
+namespace SRC.Caching.DataFiles.Models
 {
     public class ArmouryItem
     {

@@ -1,4 +1,4 @@
-﻿namespace GMServer.LootTable
+﻿namespace SRC.LootTable
 {
     /// <summary>
     /// This class holds a single RDS value.

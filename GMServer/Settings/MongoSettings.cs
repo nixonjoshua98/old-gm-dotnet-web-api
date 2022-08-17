@@ -1,4 +1,4 @@
-﻿namespace GMServer.Settings
+﻿namespace SRC.Settings
 {
     public class MongoSettings
     {

@@ -1,10 +1,10 @@
-﻿using GMServer.Models.Settings;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SRC.Models.Settings;
 
-namespace GMServer.Authentication.Extensions
+namespace SRC.Authentication.Extensions
 {
     public static class AuthenticationExtensions
     {

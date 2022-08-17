@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace GMServer.Common.Types
+namespace SRC.Common.Types
 {
     public readonly struct Result<T> where T : class
     {

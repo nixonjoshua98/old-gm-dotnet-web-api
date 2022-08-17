@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GMServer.Common.Exceptions
+namespace SRC.Common.Exceptions
 {
     public class InvalidTokenException : Exception
     {

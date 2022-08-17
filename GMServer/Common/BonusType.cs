@@ -1,4 +1,4 @@
-﻿namespace GMServer.Common
+﻿namespace SRC.Common
 {
     public enum BonusType
     {

@@ -1,18 +1,18 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common;
-using GMServer.Common.Types;
-using GMServer.Models.RequestModels;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Caching.DataFiles.Models;
+using SRC.Common;
+using SRC.Common.Types;
 using SRC.DataFiles.Cache;
+using SRC.Models.RequestModels;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.Artefacts
+namespace SRC.MediatR.Artefacts
 {
     public record BulkUpgradeArtefactCommand(string UserID, List<UserArtefactUpgrade> Artefacts) : IRequest<Result<BulkUpgradeArtefactResponse>>;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GMServer.Models.RequestModels
+namespace SRC.Models.RequestModels
 {
     public class GameState
     {

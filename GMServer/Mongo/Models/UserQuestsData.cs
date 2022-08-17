@@ -1,8 +1,8 @@
-﻿using GMServer.Caching.DataFiles.Models;
+﻿using SRC.Caching.DataFiles.Models;
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     public class UserQuests
     {

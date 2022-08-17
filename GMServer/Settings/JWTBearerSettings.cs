@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 
-namespace GMServer.Models.Settings
+namespace SRC.Models.Settings
 {
     public class JWTBearerSettings
     {

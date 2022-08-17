@@ -1,8 +1,3 @@
-using GMServer;
-using GMServer.Authentication.Extensions;
-using GMServer.Caching.DataFiles.Extensions;
-using GMServer.Models.Settings;
-using GMServer.Mongo.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +7,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
+using SRC;
+using SRC.Authentication.Extensions;
+using SRC.Caching.DataFiles.Extensions;
+using SRC.Models.Settings;
+using SRC.Mongo.Extensions;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

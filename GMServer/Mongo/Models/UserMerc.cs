@@ -2,7 +2,7 @@
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     [BsonIgnoreExtraElements]
     public class UserMerc

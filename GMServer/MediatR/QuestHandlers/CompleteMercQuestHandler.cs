@@ -1,17 +1,17 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common;
-using GMServer.Common.Types;
-using GMServer.Models;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Caching.DataFiles.Models;
+using SRC.Common;
+using SRC.Common.Types;
 using SRC.DataFiles.Cache;
+using SRC.Models;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.QuestHandlers
+namespace SRC.MediatR.QuestHandlers
 {
     public record CompleteMercQuestRequest(string UserID, int QuestID, LocalGameState GameState) : IRequest<Result<CompleteMercQuestResponse>>;
 

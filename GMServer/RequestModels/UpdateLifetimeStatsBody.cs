@@ -1,6 +1,6 @@
-﻿using GMServer.Mongo.Models;
+﻿using SRC.Mongo.Models;
 
-namespace GMServer.Models.RequestModels
+namespace SRC.Models.RequestModels
 {
     public class UpdateLifetimeStatsBody
     {

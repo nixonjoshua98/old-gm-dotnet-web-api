@@ -1,14 +1,14 @@
-﻿using GMServer.Common.Types;
-using GMServer.Extensions;
-using GMServer.Models.RequestModels;
-using GMServer.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SRC.Common.Types;
+using SRC.Extensions;
+using SRC.Models.RequestModels;
+using SRC.Services;
 using System;
 using System.Threading.Tasks;
 
-namespace GMServer.Controllers
+namespace SRC.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

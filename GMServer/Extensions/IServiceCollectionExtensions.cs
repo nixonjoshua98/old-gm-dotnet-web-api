@@ -1,10 +1,10 @@
-﻿using GMServer.Context;
-using GMServer.Services;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SRC.Context;
+using SRC.Services;
 using System;
 
-namespace GMServer
+namespace SRC
 {
     public static class IServiceCollectionExtensions
     {

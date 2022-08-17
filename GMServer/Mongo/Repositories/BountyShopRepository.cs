@@ -1,7 +1,7 @@
-﻿using GMServer.Mongo.Models;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Mongo.Models;
 
-namespace GMServer.Mongo.Repositories
+namespace SRC.Mongo.Repositories
 {
     public interface IBountyShopRepository : BaseClasses.IMongoRepository<UserBountyShopState>
     {

@@ -1,11 +1,11 @@
-﻿using GMServer.Authentication;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using MediatR;
+﻿using MediatR;
+using SRC.Authentication;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR.Login
+namespace SRC.MediatR.Login
 {
     public record DeviceLoginCommand(string DeviceID) : IRequest<DeviceLoginResponse>;
 

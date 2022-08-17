@@ -1,4 +1,4 @@
-﻿namespace GMServer.Common.Classes
+﻿namespace SRC.Common.Classes
 {
     public class BonusTypeValuePair
     {

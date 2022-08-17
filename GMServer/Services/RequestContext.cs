@@ -1,6 +1,6 @@
-﻿using GMServer.Context;
+﻿using SRC.Context;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public class RequestContext
     {

@@ -1,11 +1,11 @@
-﻿using GMServer.Mongo.Extensions;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Mongo.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace GMServer.Mongo.Repositories.BaseClasses
+namespace SRC.Mongo.Repositories.BaseClasses
 {
     public interface IMongoRepository<TDocument>
     {
@@ -24,6 +24,12 @@ namespace GMServer.Mongo.Repositories.BaseClasses
                                               bool isUpsert,
                                               ReturnDocument returnDocument = ReturnDocument.After);
 
+        Task<TDocument> FindOneAndUpdateAsync(IClientSessionHandle session,
+                                              Expression<Func<TDocument, bool>> filter,
+                                              UpdateDefinition<TDocument> update,
+                                              bool upsert,
+                                              ReturnDocument returnDocument = ReturnDocument.After);
+
         Task<TDocument> FindOneAndUpdateAsync(Expression<Func<TDocument, bool>> filter,
                                               Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update,
                                               bool isUpsert,
@@ -33,8 +39,11 @@ namespace GMServer.Mongo.Repositories.BaseClasses
         Task InsertOneAsync(TDocument document);
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, UpdateDefinition<TDocument> update);
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update, bool upsert);
+        Task UpdateOneAsync(IClientSessionHandle session, Expression<Func<TDocument, bool>> filter, UpdateDefinition<TDocument> update, bool upsert);
+
         Task UpdateOneAsync(FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update);
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update);
+
         Task BulkWriteAsync<T>(List<T> ls) where T : WriteModel<TDocument>;
         Task ReplaceOneAsync(Expression<Func<TDocument, bool>> filter, TDocument document, bool isUpsert);
     }
@@ -88,6 +97,18 @@ namespace GMServer.Mongo.Repositories.BaseClasses
             });
         }
 
+        public async Task<TDocument> FindOneAndUpdateAsync(IClientSessionHandle session, Expression<Func<TDocument, bool>> filter,
+                                                   UpdateDefinition<TDocument> update,
+                                                   bool isUpsert = false,
+                                                   ReturnDocument returnDocument = ReturnDocument.After)
+        {
+            return await _collection.FindOneAndUpdateAsync(session, filter, update, new()
+            {
+                IsUpsert = isUpsert,
+                ReturnDocument = returnDocument
+            });
+        }
+
         public async Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filter)
         {
             return await _collection.Find(filter).FirstOrDefaultAsync();
@@ -123,6 +144,11 @@ namespace GMServer.Mongo.Repositories.BaseClasses
             await _collection.FindOneAndUpdateAsync(filter, update(Update));
         }
 
+        public void UpdateOne(IClientSessionHandle session, Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update)
+        {
+            _collection.FindOneAndUpdate(session, filter, update(Update));
+        }
+
         public async Task<TDocument> FindOneAndUpdateAsync(Expression<Func<TDocument, bool>> filter,
                                                            Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update,
                                                            bool upsert,
@@ -143,6 +169,14 @@ namespace GMServer.Mongo.Repositories.BaseClasses
         public async Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update, bool upsert)
         {
             await _collection.UpdateOneAsync(filter, update(Update), new UpdateOptions() { IsUpsert = upsert });
+        }
+
+        public async Task UpdateOneAsync(IClientSessionHandle session,
+                                         Expression<Func<TDocument, bool>> filter,
+                                         UpdateDefinition<TDocument> update,
+                                         bool upsert)
+        {
+            await _collection.UpdateOneAsync(session, filter, update, new UpdateOptions() { IsUpsert = upsert });
         }
     }
 }

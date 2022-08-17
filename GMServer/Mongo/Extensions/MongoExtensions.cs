@@ -1,11 +1,11 @@
-﻿using GMServer.Mongo.Repositories;
-using GMServer.Settings;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using SRC.Mongo.Repositories;
+using SRC.Settings;
 using System;
 
-namespace GMServer.Mongo.Extensions
+namespace SRC.Mongo.Extensions
 {
     public static class MongoExtensions
     {
@@ -23,6 +23,8 @@ namespace GMServer.Mongo.Extensions
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<MongoSettings>(configuration, "MongoDB");
+
+            services.AddSingleton<IMongoSessionFactory, MongoSessionFactory>();
 
             services.AddSingleton<IMongoClient, MongoClient>((services) =>
             {

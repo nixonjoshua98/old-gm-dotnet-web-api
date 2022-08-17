@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SRC.DataFiles.Cache;
 
-namespace GMServer.Caching.DataFiles.Extensions
+namespace SRC.Caching.DataFiles.Extensions
 {
     public static class DataFileExtensions
     {

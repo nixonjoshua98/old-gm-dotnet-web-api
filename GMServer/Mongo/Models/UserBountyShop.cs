@@ -1,12 +1,12 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using GMServer.Common;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
+using SRC.Caching.DataFiles.Models;
+using SRC.Common;
 using System;
 using System.Collections.Generic;
 
-namespace GMServer.Mongo.Models
+namespace SRC.Mongo.Models
 {
     public abstract class AbstractUserBountyShopItem
     {

@@ -1,11 +1,11 @@
-﻿using GMServer.Context;
-using GMServer.Mongo.Models;
-using GMServer.Mongo.Repositories;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
+using SRC.Context;
+using SRC.Mongo.Models;
+using SRC.Mongo.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace GMServer.Services
+namespace SRC.Services
 {
     public class BountyShopService
     {

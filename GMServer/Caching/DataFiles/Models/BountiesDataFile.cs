@@ -1,7 +1,7 @@
-﻿using GMServer.Common;
+﻿using SRC.Common;
 using System.Collections.Generic;
 
-namespace GMServer.Caching.DataFiles.Models
+namespace SRC.Caching.DataFiles.Models
 {
     public class BountyLevel
     {

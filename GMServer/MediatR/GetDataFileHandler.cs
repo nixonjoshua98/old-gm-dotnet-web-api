@@ -1,11 +1,11 @@
-﻿using GMServer.Caching.DataFiles.Models;
-using MediatR;
+﻿using MediatR;
+using SRC.Caching.DataFiles.Models;
 using SRC.DataFiles.Cache;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GMServer.MediatR
+namespace SRC.MediatR
 {
     public record GetDataFilesCommand : IRequest<GetDataFileResponse>;
 

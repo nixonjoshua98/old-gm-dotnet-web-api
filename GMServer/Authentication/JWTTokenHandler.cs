@@ -1,12 +1,12 @@
-﻿using GMServer.Common.Exceptions;
-using GMServer.Models.Settings;
-using GMServer.Mongo.Models;
-using GMServer.Services;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
+using SRC.Common.Exceptions;
+using SRC.Models.Settings;
+using SRC.Mongo.Models;
+using SRC.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace GMServer.Authentication
+namespace SRC.Authentication
 {
     public class JWTTokenHandler : JwtSecurityTokenHandler
     {
