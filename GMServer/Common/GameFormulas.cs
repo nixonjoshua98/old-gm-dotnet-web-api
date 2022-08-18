@@ -1,5 +1,6 @@
 ﻿using SRC.Caching.DataFiles.Models;
 using SRC.Common.Classes;
+using SRC.Common.Enums;
 using SRC.Mongo.Models;
 using System;
 using System.Collections.Generic;

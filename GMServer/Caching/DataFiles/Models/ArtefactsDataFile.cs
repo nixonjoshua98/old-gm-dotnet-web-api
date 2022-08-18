@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SRC.Common;
+using SRC.Common.Enums;
 
 namespace SRC.Caching.DataFiles.Models
 {
@@ -12,7 +12,7 @@ namespace SRC.Caching.DataFiles.Models
 
         public BonusType BonusType;
 
-        public ItemGrade GradeID;
+        public Rarity GradeID;
 
         public int MaxLevel = 1_000;
 

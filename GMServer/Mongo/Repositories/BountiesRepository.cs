@@ -11,7 +11,7 @@ namespace SRC.Mongo.Repositories
 
     public class BountiesRepository : BaseClasses.MongoRepository<UserBounties>, IBountiesRepository
     {
-        public BountiesRepository(IMongoClient mongo) : base(mongo, "GMServer.UserBounties")
+        public BountiesRepository(IMongoClient mongo) : base(mongo, "GMServer.Bounties")
         {
 
         }

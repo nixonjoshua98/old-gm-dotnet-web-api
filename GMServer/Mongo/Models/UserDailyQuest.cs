@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using SRC.Common;
+using SRC.Common.Enums;
 using System;
 
 namespace SRC.Mongo.Models

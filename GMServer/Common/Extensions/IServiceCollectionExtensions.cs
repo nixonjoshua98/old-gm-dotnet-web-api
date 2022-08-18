@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SRC.Context;
 using SRC.Services;
+using SRC.Services.BountyShop;
 using System;
 
 namespace SRC
@@ -21,10 +22,10 @@ namespace SRC
             services.AddSingleton<CurrenciesService>();
             services.AddSingleton<BountyShopService>();
 
-            // Scoped
+            services.AddSingleton<IBountyShopFactory, BountyShopFactory>();
+
             services.AddScoped<RequestContext>();
 
-            // Server Refresh Intervals
             services.AddSingleton(new ServerRefresh<IDailyRefresh>() { Hour = 20, Interval = TimeSpan.FromDays(1) });
         }
 

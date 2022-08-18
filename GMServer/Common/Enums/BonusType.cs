@@ -1,4 +1,4 @@
-﻿namespace SRC.Common
+﻿namespace SRC.Common.Enums
 {
     public enum BonusType
     {

@@ -1,4 +1,4 @@
-﻿using SRC.Common;
+﻿using SRC.Common.Enums;
 using System.Collections.Generic;
 
 namespace SRC.Caching.DataFiles.Models

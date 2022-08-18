@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SRC.Common.Enums;
 using SRC.Common.Types;
 using SRC.Extensions;
+using SRC.Common;
 using SRC.MediatR.BountyShopHandler;
-using SRC.Models.RequestModels;
-using SRC.Services;
+using SRC.RequestModels.BountyShop;
+using SRC.Services.BountyShop;
 using System;
 using System.Threading.Tasks;
 
@@ -17,12 +19,12 @@ namespace SRC.Controllers
     public class BountyShopController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly RequestContext _context;
+        private readonly IBountyShopFactory _shopFactory;
 
-        public BountyShopController(IMediator mediator, RequestContext context)
+        public BountyShopController(IMediator mediator, IBountyShopFactory shopFactory)
         {
             _mediator = mediator;
-            _context = context;
+            _shopFactory = shopFactory;
         }
 
         [HttpGet]
@@ -31,9 +33,9 @@ namespace SRC.Controllers
         {
             try
             {
-                var resp = await GetUserBountyShop();
+                var shop = await _shopFactory.GenerateBountyShopAsync(User.UserID());
 
-                return Ok(resp);
+                return Ok(shop);
             }
             catch (Exception ex)
             {
@@ -42,56 +44,35 @@ namespace SRC.Controllers
             }
         }
 
-        [HttpPut("Purchase/Currency")]
+        [HttpPut("Purchase")]
         [Authorize]
-        public async Task<IActionResult> PurchaseCurrency(PurchaseBountyShopItemBody body)
+        public async Task<IActionResult> PurchaseItem(PurchaseBountyShopItem body)
         {
             try
             {
-                var userShop = await GetUserBountyShop();
+                if (body.ItemType == BountyShopItemType.CurrencyItem)
+                {
+                    var resp = await _mediator.Send(new PurchaseCurrencyItemCommand(UserID: User.UserID(),
+                                                                                    ItemID: body.ItemID,
+                                                                                    GameDayNumber: Utility.GetGameDayNumber()));
+                    return resp.ToResponse();
+                }
 
-                var resp = await _mediator.Send(new PurchaseCurrencyItemCommand(UserID: User.UserID(),
-                                                                                ItemID: body.ItemID,
-                                                                                ShopCurrencyItems: userShop.ShopItems.CurrencyItems,
-                                                                                DailyRefresh: _context.DailyRefresh));
+                else if (body.ItemType == BountyShopItemType.ArmouryItem)
+                {
+                    var resp = await _mediator.Send(new PurchaseArmouryItemCommand(UserID: User.UserID(),
+                                                                                   ItemID: body.ItemID,
+                                                                                   GameDayNumber: Utility.GetGameDayNumber()));
+                    return resp.ToResponse();
+                }
 
-                return resp.ToResponse();
+                throw new NotImplementedException();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "PurchaseCurrency");
+                Log.Error(ex, "PurchaseBountyShopItem");
                 return ServerError.InternalServerError;
             }
-        }
-
-        [HttpPut("Purchase/ArmouryItem")]
-        [Authorize]
-        public async Task<IActionResult> PurchaseArmouryItem(PurchaseBountyShopItemBody body)
-        {
-            try
-            {
-                var userShop = await GetUserBountyShop();
-
-                var resp = await _mediator.Send(new PurchaseArmouryItemCommand(UserID: User.UserID(),
-                                                                               ShopItemID: body.ItemID,
-                                                                               ShopArmouryItems: userShop.ShopItems.ArmouryItems,
-                                                                               DailyRefresh: _context.DailyRefresh));
-
-                return resp.ToResponse();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "PurchaseArmouryItem");
-                return ServerError.InternalServerError;
-            }
-        }
-
-        /// <summary>
-        /// General mediator request for the current user bounty shop (used in most requests)
-        /// </summary>
-        private async Task<GetUserBountyShopResponse> GetUserBountyShop()
-        {
-            return await _mediator.Send(new GetUserBountyShopRequest { DailyRefresh = _context.DailyRefresh, UserID = User.UserID() });
         }
     }
 }

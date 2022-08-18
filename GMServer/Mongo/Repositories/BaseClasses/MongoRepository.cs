@@ -46,6 +46,7 @@ namespace SRC.Mongo.Repositories.BaseClasses
 
         Task BulkWriteAsync<T>(List<T> ls) where T : WriteModel<TDocument>;
         Task ReplaceOneAsync(Expression<Func<TDocument, bool>> filter, TDocument document, bool isUpsert);
+        Task UpdateOneAsync(FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update, bool upsert);
     }
 
     public abstract class MongoRepository<TDocument> : IMongoRepository<TDocument>
@@ -164,6 +165,11 @@ namespace SRC.Mongo.Repositories.BaseClasses
         public async Task UpdateOneAsync(FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update)
         {
             await _collection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task UpdateOneAsync(FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update, bool upsert)
+        {
+            await _collection.UpdateOneAsync(filter, update, new UpdateOptions() { IsUpsert = upsert });
         }
 
         public async Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update, bool upsert)

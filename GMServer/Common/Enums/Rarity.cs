@@ -1,6 +1,6 @@
-﻿namespace SRC.Common
+﻿namespace SRC.Common.Enums
 {
-    public enum ItemGrade
+    public enum Rarity
     {
         None = 0,
         Common = 10,

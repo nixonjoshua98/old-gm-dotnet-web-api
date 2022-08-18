@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SRC.Common;
+using SRC.Common.Enums;
 
 namespace SRC.Caching.DataFiles.Models
 {
@@ -11,7 +11,7 @@ namespace SRC.Caching.DataFiles.Models
         public string Name = "Item Name";
 
         public BonusType BonusType;
-        public ItemGrade Grade = ItemGrade.Common;
+        public Rarity Grade = Rarity.Common;
 
         public float BaseEffect;
         public float LevelEffect;

@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SRC.Common;
+using SRC.Common.Enums;
 using System.Collections.Generic;
 
 namespace SRC.Caching.DataFiles.Models
@@ -27,7 +27,7 @@ namespace SRC.Caching.DataFiles.Models
 
         public string Name;
         public float BaseDamage;
-        public ItemGrade Grade;
+        public Rarity Grade;
         public List<MercPassiveBonus> Passives;
     }
 

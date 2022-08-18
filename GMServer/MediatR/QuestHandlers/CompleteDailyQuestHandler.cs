@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using SRC.Caching.DataFiles.Models;
-using SRC.Common;
+using SRC.Common.Enums;
 using SRC.Common.Types;
 using SRC.Context;
 using SRC.DataFiles.Cache;

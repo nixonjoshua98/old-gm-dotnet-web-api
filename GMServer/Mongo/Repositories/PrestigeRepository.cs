@@ -10,7 +10,7 @@ namespace SRC.Mongo.Repositories
 
     public class PrestigeRepository : BaseClasses.MongoRepository<UserPrestige>, IPrestigeRepository
     {
-        public PrestigeRepository(IMongoClient mongo) : base(mongo, "GMServer.UserPrestiges")
+        public PrestigeRepository(IMongoClient mongo) : base(mongo, "GMServer.Prestiges")
         {
 
         }

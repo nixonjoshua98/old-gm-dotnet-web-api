@@ -1,10 +1,10 @@
 ﻿using MediatR;
+using SRC.Common.Enums;
 using SRC.Common.Types;
-using SRC.Context;
+using SRC.Mongo;
 using SRC.Mongo.Models;
 using SRC.Services;
-using System;
-using System.Collections.Generic;
+using SRC.Services.BountyShop;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,9 +12,8 @@ using System.Threading.Tasks;
 namespace SRC.MediatR.BountyShopHandler
 {
     public record PurchaseArmouryItemCommand(string UserID,
-                                             string ShopItemID,
-                                             List<UserBSArmouryItem> ShopArmouryItems,
-                                             CurrentServerRefresh<IDailyRefresh> DailyRefresh) : IRequest<Result<PurchaseArmouryItemResponse>>;
+                                             string ItemID,
+                                             int GameDayNumber) : IRequest<Result<PurchaseArmouryItemResponse>>;
 
     public record PurchaseArmouryItemResponse(UserArmouryItem ArmouryItem, UserCurrencies Currencies);
 
@@ -23,20 +22,31 @@ namespace SRC.MediatR.BountyShopHandler
         private readonly BountyShopService _bountyshop;
         private readonly CurrenciesService _currencies;
         private readonly ArmouryService _armoury;
+        private readonly IBountyShopFactory _shopFactory;
+        private readonly IMongoSessionFactory _mongoSession;
 
-        public PurchaseArmouryItemHandler(BountyShopService bountyshop, CurrenciesService currencies, ArmouryService armoury)
+        public PurchaseArmouryItemHandler(BountyShopService bountyshop,
+                                          CurrenciesService currencies,
+                                          ArmouryService armoury,
+                                          IBountyShopFactory shopFactory,
+                                          IMongoSessionFactory mongoSession)
         {
             _currencies = currencies;
             _armoury = armoury;
             _bountyshop = bountyshop;
+            _shopFactory = shopFactory;
+            _mongoSession = mongoSession;
         }
 
-        private bool ValidateRequest(UserBSArmouryItem shopItem, BountyShopPurchase shopPurchase, UserCurrencies currencies, out ServerError error)
+        private bool ValidateRequest(UserBSArmouryItem shopItem, BountyShopModel shop, UserCurrencies currencies, out ServerError error)
         {
             error = default;
 
+            if (shopItem is null)
+                error = new("Item not found", 404);
+
             // Item has already been purchased
-            if (shopPurchase is not null)
+            else if (shop.GetPurchase(BountyShopItemType.ArmouryItem, shopItem.ID) is not null)
                 error = new("Item already purchased", 400);
 
             // User cannot afford the purchase
@@ -48,17 +58,24 @@ namespace SRC.MediatR.BountyShopHandler
 
         public async Task<Result<PurchaseArmouryItemResponse>> Handle(PurchaseArmouryItemCommand request, CancellationToken cancellationToken)
         {
-            UserBSArmouryItem shopItem = request.ShopArmouryItems.First(x => x.ID == request.ShopItemID);
+            var userShop    = await _shopFactory.GenerateBountyShopAsync(request.UserID);
+            var shopState   = await _bountyshop.GetUserShopAsync(request.UserID, userShop.GameDayNumber) ?? new();
 
-            BountyShopPurchase? purchasedItem = await _bountyshop.GetPurchasedItemAsync(request.UserID, request.ShopItemID, request.DailyRefresh);
+
+            var shopItem = userShop.ShopItems.ArmouryItems.FirstOrDefault(x => x.ID == request.ItemID);
+
             UserCurrencies userCurrencies = await _currencies.GetUserCurrenciesAsync(request.UserID);
 
-            if (!ValidateRequest(shopItem, purchasedItem, userCurrencies, out var error))
+            if (!ValidateRequest(shopItem, shopState, userCurrencies, out var error))
                 return error;
 
-            userCurrencies = await _currencies.IncrementAsync(request.UserID, new() { BountyPoints = -shopItem.PurchaseCost });
+            // Perform the purchase inside a transaction
+            userCurrencies = await _mongoSession.RunInTransaction(async (session, ct) =>
+            {
+                return await _currencies.UpdateUserAsync(session, request.UserID, upd => upd.Inc(doc => doc.BountyPoints, -shopItem.PurchaseCost));
+            });
 
-            await _bountyshop.InsertShopPurchaseAsync(new(request.UserID, request.ShopItemID, DateTime.UtcNow));
+            await _bountyshop.AddShopPurchaseAsync(request.UserID, request.GameDayNumber, new(request.ItemID, BountyShopItemType.ArmouryItem));
 
             var armouryItem = await InsertArmouryItemAsync(request, shopItem);
 

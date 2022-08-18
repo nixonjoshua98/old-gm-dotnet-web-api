@@ -20,7 +20,7 @@
           {
             // Common Armoury Items
             "ItemGrade": 10,
-            "PurchaseCost": 100,
+            "PurchaseCost": 1,
             "Weight": 100
           },
           {
@@ -28,7 +28,7 @@
             "ItemGrade": 20,
             "Always": true,
             "Weight": 25,
-            "PurchaseCost": 150
+            "PurchaseCost": 1
           }
         ]
       }

@@ -1,4 +1,6 @@
-﻿namespace SRC.Common.Classes
+﻿using SRC.Common.Enums;
+
+namespace SRC.Common.Classes
 {
     public class BonusTypeValuePair
     {

@@ -10,7 +10,7 @@ namespace SRC.Mongo.Repositories
 
     public class ArtefactRepository : BaseClasses.MongoRepository<UserArtefact>, IArtefactRepository
     {
-        public ArtefactRepository(IMongoClient mongo) : base(mongo, "GMServer.ArtefactsV2")
+        public ArtefactRepository(IMongoClient mongo) : base(mongo, "GMServer.Artefacts")
         {
 
         }

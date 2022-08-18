@@ -16,8 +16,8 @@ namespace SRC.Mongo.Extensions
             services.AddSingleton<IPrestigeRepository, PrestigeRepository>();
             services.AddSingleton<IMercRepository, MercRepository>();
             services.AddSingleton<IArtefactRepository, ArtefactRepository>();
-            services.AddSingleton<IBountyShopRepository, BountyShopRepository>();
             services.AddSingleton<IBountiesRepository, BountiesRepository>();
+            services.AddSingleton<IBountyShopRepository, BountyShopRepository>();
         }
 
         public static void AddMongo(this IServiceCollection services, IConfiguration configuration)
@@ -33,11 +33,11 @@ namespace SRC.Mongo.Extensions
                 return new MongoClient(settings.ConnectionString);
             });
 
-            services.AddSingleton<IMongoDatabase>(services =>
+            services.AddSingleton(services =>
             {
                 var client = services.GetRequiredService<IMongoClient>();
 
-                return client.GetDatabase("GMDatabase");
+                return client.GetDatabase("GMServer");
             });
         }
 

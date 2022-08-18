@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SRC.Common;
+﻿using SRC.Common.Enums;
 using SRC.LootTable;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,19 +48,15 @@ namespace SRC.Caching.DataFiles.Models
 
     public class BSArmouryItem : LootItem
     {
-        [JsonProperty(PropertyName = "ItemID")]
-        public int ID;
+        public int ItemID;
 
-        [JsonRequired]
         public int PurchaseCost;
     }
 
     public class BSArmouryItemGradeConfig : LootItem
     {
-        [JsonRequired]
-        public ItemGrade ItemGrade;
+        public Rarity ItemGrade;
 
-        [JsonRequired]
         public int PurchaseCost;
     }
 }

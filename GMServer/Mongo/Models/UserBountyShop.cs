@@ -1,28 +1,54 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using Newtonsoft.Json;
 using SRC.Caching.DataFiles.Models;
-using SRC.Common;
+using SRC.Common.Enums;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SRC.Mongo.Models
 {
-    public abstract class AbstractUserBountyShopItem
-    {
-        public string ID;
-        public int PurchaseCost;
-    }
-
     [BsonIgnoreExtraElements]
-    public class UserBountyShopState
+    public class BountyShopModel
     {
         [BsonRepresentation(BsonType.ObjectId)]
         public string UserID;
 
-        public DateTime LastUpdated;
-        public string Seed;
-        public int Level;
+        public int GameDayNumber;
+
+        public List<BountyShopPurchaseModel> Purchases = new();
+
+        public BountyShopPurchaseModel GetPurchase(BountyShopItemType itemType, string itemId)
+        {
+            return Purchases.FirstOrDefault(p => p.ItemID == itemId && p.ItemType == itemType);
+        }
+    }
+
+    public class BountyShopPurchaseModel
+    {
+        public string ItemID;
+        public BountyShopItemType ItemType;
+
+        public BountyShopPurchaseModel(string itemID, BountyShopItemType itemType)
+        {
+            ItemID = itemID;
+            ItemType = itemType;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+    public abstract class AbstractUserBountyShopItem
+    {
+        public string ID;
+        public int PurchaseCost;
     }
 
     public class UserBSCurrencyItem : AbstractUserBountyShopItem
@@ -51,7 +77,7 @@ namespace SRC.Mongo.Models
             return new()
             {
                 ID = $"AI-{idx}",
-                ItemID = item.ID,
+                ItemID = item.ItemID,
                 PurchaseCost = item.PurchaseCost
             };
         }
@@ -59,9 +85,6 @@ namespace SRC.Mongo.Models
 
     public class UserBountyShop
     {
-        [JsonIgnore]
-        public string Seed { get; set; }
-
         public List<UserBSCurrencyItem> CurrencyItems = new();
         public List<UserBSArmouryItem> ArmouryItems = new();
     }
@@ -74,13 +97,10 @@ namespace SRC.Mongo.Models
 
         public string ItemID;
 
-        public DateTime PurchaseTime;
+        public BountyShopItemType ItemType;
 
-        public BountyShopPurchase(string userID, string itemID, DateTime purchaseTime)
-        {
-            UserID = userID;
-            ItemID = itemID;
-            PurchaseTime = purchaseTime;
-        }
+        public int GameDayNumber;
+
+        public DateTime PurchaseTime;
     }
 }
