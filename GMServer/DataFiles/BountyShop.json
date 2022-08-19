@@ -5,30 +5,40 @@
       "HourlyIncomeRequired": 0,
 
       "CurrencyItems": {
+        "Weight": 10,
+
         "Items": [
           {
             // Armoury Points
             "CurrencyType": 200,
             "Quantity": 500,
-            "PurchaseCost": 10,
-            "Unique": true
+            "PurchaseCost": 150,
+            "Weight": 75
+          },
+          {
+            // Gemstones
+            "CurrencyType": 100,
+            "Quantity": 25,
+            "PurchaseCost": 500,
+            "Unique": true,
+            "Weight": 25
           }
         ]
       },
       "ArmouryItems": {
+        "Weight": 30,
+
         "ItemGrades": [
           {
-            // Common Armoury Items
             "ItemGrade": 10,
-            "PurchaseCost": 1,
+            "PurchaseCost": 200,
             "Weight": 100
           },
           {
-            // Rare Armoury Items
             "ItemGrade": 20,
-            "Always": true,
+            "PurchaseCost": 325,
             "Weight": 25,
-            "PurchaseCost": 1
+            "Always": true
           }
         ]
       }

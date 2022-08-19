@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SRC.Context;
 using SRC.Services;
-using SRC.Services.BountyShop;
 using System;
 
 namespace SRC
@@ -20,9 +19,7 @@ namespace SRC
             services.AddSingleton<QuestsService>();
             services.AddSingleton<PrestigeService>();
             services.AddSingleton<CurrenciesService>();
-            services.AddSingleton<BountyShopService>();
-
-            services.AddSingleton<IBountyShopFactory, BountyShopFactory>();
+            services.AddSingleton<IBountyShopService, BountyShopService>();
 
             services.AddScoped<RequestContext>();
 

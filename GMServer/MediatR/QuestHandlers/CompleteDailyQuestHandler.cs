@@ -58,7 +58,7 @@ namespace SRC.MediatR.QuestHandlers
                 return error;
 
             await _quests.InsertQuestProgress(new UserDailyQuest(request.UserID, request.QuestID) { CompletedTime = DateTime.UtcNow });
-            await _currencies.IncrementAsync(request.UserID, new() { Diamonds = quest.DiamondsRewarded });
+            await _currencies.IncrementAsync(request.UserID, new() { Gemstones = quest.DiamondsRewarded });
 
             return new CompleteDailyQuestResponse(quest.DiamondsRewarded);
         }

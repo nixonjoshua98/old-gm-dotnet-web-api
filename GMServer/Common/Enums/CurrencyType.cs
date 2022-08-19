@@ -2,6 +2,10 @@
 {
     public enum CurrencyType
     {
-        ArmouryPoints = 200
+        Gemstones = 100,
+        ArmouryPoints = 200,
+        PrestigePoints = 300,
+        BountyPoints = 400,
+        Gold = 500,
     }
 }

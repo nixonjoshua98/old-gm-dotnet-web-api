@@ -1,7 +1,7 @@
 [
   {
     "ItemID": 0,
-    "Name": "Weapon of Items",
+    "Name": "Improved Axe",
     "BonusType": 400,
     "BaseEffect": 1.25,
     "LevelEffect": 0.05
@@ -23,7 +23,7 @@
   },
   {
     "ItemID": 3,
-    "Name": "43444444444444444",
+    "Name": "Weak Spike Bat",
     "BonusType": 602,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05
@@ -58,7 +58,7 @@
   },
   {
     "ItemID": 8,
-    "Name": "...",
+    "Name": "Simple Saber",
     "BonusType": 802,
     "BaseEffect": 1.3,
     "LevelEffect": 0.05

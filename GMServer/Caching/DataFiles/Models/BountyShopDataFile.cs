@@ -51,6 +51,12 @@ namespace SRC.Caching.DataFiles.Models
         public int ItemID;
 
         public int PurchaseCost;
+
+        public BSArmouryItem(int itemID, int purchaseCost)
+        {
+            ItemID = itemID;
+            PurchaseCost = purchaseCost;
+        }
     }
 
     public class BSArmouryItemGradeConfig : LootItem

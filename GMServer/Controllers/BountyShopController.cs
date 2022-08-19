@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
+using SRC.Common;
 using SRC.Common.Enums;
 using SRC.Common.Types;
 using SRC.Extensions;
-using SRC.Common;
 using SRC.MediatR.BountyShopHandler;
 using SRC.RequestModels.BountyShop;
-using SRC.Services.BountyShop;
+using SRC.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -19,12 +19,12 @@ namespace SRC.Controllers
     public class BountyShopController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IBountyShopFactory _shopFactory;
+        private readonly IBountyShopService _bountyShop;
 
-        public BountyShopController(IMediator mediator, IBountyShopFactory shopFactory)
+        public BountyShopController(IMediator mediator, IBountyShopService bountyShop)
         {
             _mediator = mediator;
-            _shopFactory = shopFactory;
+            _bountyShop = bountyShop;
         }
 
         [HttpGet]
@@ -33,7 +33,7 @@ namespace SRC.Controllers
         {
             try
             {
-                var shop = await _shopFactory.GenerateBountyShopAsync(User.UserID());
+                var shop = await _bountyShop.GetUserShopAsync(User.UserID());
 
                 return Ok(shop);
             }

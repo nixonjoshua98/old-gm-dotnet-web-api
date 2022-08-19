@@ -38,8 +38,10 @@ namespace SRC.Mongo.Repositories.BaseClasses
         Task InsertManyAsync(List<TDocument> documents);
         Task InsertOneAsync(TDocument document);
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, UpdateDefinition<TDocument> update);
+
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update, bool upsert);
         Task UpdateOneAsync(IClientSessionHandle session, Expression<Func<TDocument, bool>> filter, UpdateDefinition<TDocument> update, bool upsert);
+        Task UpdateOneAsync(IClientSessionHandle session, FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update, bool upsert);
 
         Task UpdateOneAsync(FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update);
         Task UpdateOneAsync(Expression<Func<TDocument, bool>> filter, Func<UpdateDefinitionBuilder<TDocument>, UpdateDefinition<TDocument>> update);
@@ -183,6 +185,12 @@ namespace SRC.Mongo.Repositories.BaseClasses
                                          bool upsert)
         {
             await _collection.UpdateOneAsync(session, filter, update, new UpdateOptions() { IsUpsert = upsert });
+        }
+
+        public async Task UpdateOneAsync(IClientSessionHandle session, FilterDefinition<TDocument> filter, UpdateDefinition<TDocument> update, bool upsert)
+        {
+            await _collection.UpdateOneAsync(session, filter, update, new UpdateOptions() { IsUpsert = upsert });
+
         }
     }
 }

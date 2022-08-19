@@ -25,7 +25,7 @@ namespace SRC.Services
             return await _currencies.FindOneAndUpdateAsync(doc => doc.UserID == userId, upd =>
             {
                 return upd
-                    .Inc(x => x.Diamonds, incr.Diamonds)
+                    .Inc(x => x.Gemstones, incr.Gemstones)
                     .Inc(x => x.PrestigePoints, incr.PrestigePoints)
                     .Inc(x => x.BountyPoints, incr.BountyPoints)
                     .Inc(x => x.ArmouryPoints, incr.ArmouryPoints);

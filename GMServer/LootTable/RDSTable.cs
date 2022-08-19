@@ -16,6 +16,19 @@ namespace SRC.LootTable
         private readonly List<IRDSObject> AllPossibleItems = new();
         private List<IRDSObject> AvailableItems;
 
+        public RDSTable()
+        {
+
+        }
+
+        public RDSTable(double weight, bool unique, bool always)
+        {
+            Always = always;
+            Unique = unique;
+            Weight = weight;
+        }
+
+
         /// <summary>
         /// Adds the given entry to contents collection.
         /// </summary>
